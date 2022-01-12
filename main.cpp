@@ -1,12 +1,12 @@
 #include "magic_enum.hpp"
-#include <fstream>
-#include <iterator>
-#include <string>
-#include <vector>
-#include <variant>
 #include <cassert>
-#include <map>
+#include <fstream>
 #include <iostream>
+#include <iterator>
+#include <map>
+#include <string>
+#include <variant>
+#include <vector>
 
 class scanner_t {
 private:
@@ -25,7 +25,7 @@ private:
   };
   // clang-format on
 
-  std::map<std::string, tokenType> keywords{
+  const std::map<std::string, tokenType> keywords{
       {"and", tokenType::AND},   {"class", tokenType::CLASS}, {"else", tokenType::ELSE},     {"false", tokenType::FALSE},
       {"for", tokenType::FOR},   {"fun", tokenType::FUN},     {"if", tokenType::IF},         {"nil", tokenType::NIL},
       {"or", tokenType::OR},     {"print", tokenType::PRINT}, {"return", tokenType::RETURN}, {"super", tokenType::SUPER},
@@ -86,7 +86,7 @@ public:
     while (!isAtEnd()) {
       m_start = m_current;
 
-      switch (char c = advance(); c) {
+      switch (const char c = advance(); c) {
         case '(':
           m_tokens.push_back(token_t{tokenType::LEFT_PAREN, {}, m_line});
           break;
@@ -173,7 +173,7 @@ public:
             assert(false && "unterminated string");
 
           advance();
-          m_tokens.push_back(token_t{tokenType::STRING, std::string(m_start + 1, m_current - 1), m_line});
+          m_tokens.push_back(token_t{tokenType::STRING, m_source.substr(m_start + 1, m_current - m_start - 2), m_line});
           break;
 
         default:
@@ -193,9 +193,9 @@ public:
           else if (isAlpha(c)) {
             while (isAlphaNumeric(peek()))
               advance();
-            std::string text = m_source.substr(m_start, m_current - m_start);
-            tokenType type = keywords.at(text);
-            m_tokens.push_back(token_t{tokenType::IDENTIFIER, text, m_line});
+            const std::string identifier = m_source.substr(m_start, m_current - m_start);
+            tokenType type = keywords.at(identifier);
+            m_tokens.push_back(token_t{tokenType::IDENTIFIER, identifier, m_line});
           } else {
             assert(false && "unexpected character");
           }
@@ -209,16 +209,17 @@ public:
 };
 
 int main(int argc, const char *argv[]) {
-  std::ifstream fin{argv[1]};
-  auto source = std::string(std::istream_iterator<char>(fin >> std::noskipws), {});
-
+  const auto source = std::string(std::istream_iterator<char>(std::ifstream{argv[1]} >> std::noskipws), {});
   scanner_t scanner(source);
   auto tokens = scanner.scan();
 
   for (auto token : tokens) {
     std::cout << magic_enum::enum_name(token.m_type) << ' ';
-    if (auto ret = std::get_if<double>(&token.m_lexeme))
+    if (auto ret = std::get_if<std::string>(&token.m_lexeme))
       std::cout << *ret << ' ';
+    else if (auto ret = std::get_if<double>(&token.m_lexeme))
+      std::cout << *ret << ' ';
+
     std::cout << token.m_line << '\n';
   }
   std::cout << '\n';
