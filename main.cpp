@@ -8,23 +8,31 @@
 #include <variant>
 #include <vector>
 
+// clang-format off
+enum class tokenType : std::uint8_t {
+    LEFT_PAREN, RIGHT_PAREN, LEFT_BRACE, RIGHT_BRACE,                               // parenthesis
+    EQUAL, EQUAL_EQUAL, BANG, BANG_EQUAL, LESS, LESS_EQUAL, GREATER, GREATER_EQUAL, // comparison
+    PLUS, MINUS, STAR, SLASH,                                                       // operators
+    DOT, COMMA, SEMICOLON,                                                          // dot
+    STRING, IDENTIFIER, NUMBER,                                                     // expressions
+    AND, OR, TRUE, FALSE,                                                           // boolean
+    IF, ELSE,                                                                       // condition
+    FOR, WHILE,                                                                     // loop
+    CLASS, SUPER, FUN, RETURN, VAR, PRINT, THIS,                                    // keywords
+    NIL, END_OF_FILE
+  // clang-format on
+};
+
+struct token_t {
+  using literal_t = std::variant<std::string, double>;
+
+  tokenType m_type;
+  literal_t m_lexeme;
+  int m_line;
+};
+
 class scanner_t {
 private:
-  // clang-format off
-  enum class tokenType : std::uint8_t {
-      LEFT_PAREN, RIGHT_PAREN, LEFT_BRACE, RIGHT_BRACE,                               // parenthesis
-      EQUAL, EQUAL_EQUAL, BANG, BANG_EQUAL, LESS, LESS_EQUAL, GREATER, GREATER_EQUAL, // comparison
-      PLUS, MINUS, STAR, SLASH,                                                       // operators
-      DOT, COMMA, SEMICOLON,                                                          // dot
-      STRING, IDENTIFIER, NUMBER,                                                     // expressions
-      AND, OR, TRUE, FALSE,                                                           // boolean
-      IF, ELSE,                                                                       // condition
-      FOR, WHILE,                                                                     // loop
-      CLASS, SUPER, FUN, RETURN, VAR, PRINT, THIS,                                    // keywords
-      NIL, END_OF_FILE
-  };
-  // clang-format on
-
   const std::map<std::string, tokenType> keywords{
       {"and", tokenType::AND},   {"class", tokenType::CLASS}, {"else", tokenType::ELSE},     {"false", tokenType::FALSE},
       {"for", tokenType::FOR},   {"fun", tokenType::FUN},     {"if", tokenType::IF},         {"nil", tokenType::NIL},
@@ -32,14 +40,6 @@ private:
       {"this", tokenType::THIS}, {"true", tokenType::TRUE},   {"var", tokenType::VAR},       {"while", tokenType::WHILE}};
 
 public:
-  struct token_t {
-    using literal_t = std::variant<std::string, double>;
-
-    tokenType m_type;
-    literal_t m_lexeme;
-    int m_line;
-  };
-
   std::vector<token_t> m_tokens;
   int m_line = 1;
   std::size_t m_start = 0;
@@ -206,23 +206,36 @@ public:
     m_tokens.push_back(token_t{tokenType::END_OF_FILE, {}, m_line});
     return m_tokens;
   }
+
+  void debug() {
+    for (auto token : m_tokens) {
+      std::cout << magic_enum::enum_name(token.m_type) << ' ';
+      if (auto ret = std::get_if<std::string>(&token.m_lexeme))
+        std::cout << *ret << ' ';
+      else if (auto ret = std::get_if<double>(&token.m_lexeme))
+        std::cout << *ret << ' ';
+
+      std::cout << token.m_line << '\n';
+    }
+    std::cout << '\n';
+  }
+};
+
+class parser_t {
+private:
+  std::vector<token_t> m_tokens;
+
+public:
+  parser_t(std::vector<token_t> t) : m_tokens(t) {}
+  void parse();
 };
 
 int main(int argc, const char *argv[]) {
   const auto source = std::string(std::istream_iterator<char>(std::ifstream{argv[1]} >> std::noskipws), {});
   scanner_t scanner(source);
-  auto tokens = scanner.scan();
 
-  for (auto token : tokens) {
-    std::cout << magic_enum::enum_name(token.m_type) << ' ';
-    if (auto ret = std::get_if<std::string>(&token.m_lexeme))
-      std::cout << *ret << ' ';
-    else if (auto ret = std::get_if<double>(&token.m_lexeme))
-      std::cout << *ret << ' ';
-
-    std::cout << token.m_line << '\n';
-  }
-  std::cout << '\n';
+  const auto tokens = scanner.scan();
+  parser_t parser(tokens);
 
   return 0;
 }
