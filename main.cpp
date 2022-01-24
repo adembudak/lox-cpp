@@ -1,4 +1,5 @@
 #include "magic_enum.hpp"
+
 #include <cassert>
 #include <fstream>
 #include <iostream>
@@ -8,8 +9,10 @@
 #include <variant>
 #include <vector>
 
+namespace Lox {
+
 // clang-format off
-enum class tokenType : std::uint8_t {
+enum class tokenKind : std::uint8_t {
     LEFT_PAREN, RIGHT_PAREN, LEFT_BRACE, RIGHT_BRACE,                               // parenthesis
     EQUAL, EQUAL_EQUAL, BANG, BANG_EQUAL, LESS, LESS_EQUAL, GREATER, GREATER_EQUAL, // comparison
     PLUS, MINUS, STAR, SLASH,                                                       // operators
@@ -23,35 +26,37 @@ enum class tokenType : std::uint8_t {
   // clang-format on
 };
 
-struct token_t {
-  using literal_t = std::variant<std::string, double>;
+using literal_t = std::optional<std::variant<std::string, double>>;
 
-  tokenType m_type;
+struct Token {
+  tokenKind m_kind;
   literal_t m_lexeme;
-  int m_line;
+  std::size_t m_line;
 };
 
-class scanner_t {
+class Scanner {
 private:
-  const std::map<std::string, tokenType> keywords{
-      {"and", tokenType::AND},   {"class", tokenType::CLASS}, {"else", tokenType::ELSE},     {"false", tokenType::FALSE},
-      {"for", tokenType::FOR},   {"fun", tokenType::FUN},     {"if", tokenType::IF},         {"nil", tokenType::NIL},
-      {"or", tokenType::OR},     {"print", tokenType::PRINT}, {"return", tokenType::RETURN}, {"super", tokenType::SUPER},
-      {"this", tokenType::THIS}, {"true", tokenType::TRUE},   {"var", tokenType::VAR},       {"while", tokenType::WHILE}};
+  const std::map<std::string, tokenKind> keywords{
+      {"and", tokenKind::AND},   {"class", tokenKind::CLASS}, {"else", tokenKind::ELSE},     {"false", tokenKind::FALSE},
+      {"for", tokenKind::FOR},   {"fun", tokenKind::FUN},     {"if", tokenKind::IF},         {"nil", tokenKind::NIL},
+      {"or", tokenKind::OR},     {"print", tokenKind::PRINT}, {"return", tokenKind::RETURN}, {"super", tokenKind::SUPER},
+      {"this", tokenKind::THIS}, {"true", tokenKind::TRUE},   {"var", tokenKind::VAR},       {"while", tokenKind::WHILE}};
 
 public:
-  std::vector<token_t> m_tokens;
-  int m_line = 1;
+  std::size_t m_line = 1;
   std::size_t m_start = 0;
   std::size_t m_current = 0;
+
   std::string m_source;
+  std::vector<Token> m_tokens;
 
 public:
-  scanner_t(const std::string source) : m_source(source) {}
+  Scanner(const std::string &source)
+      : m_source(source) {}
 
-  std::vector<token_t> scan() {
+  // clang-format off
+  std::vector<Token> scan() {
 
-    // clang-format off
     auto peek = [&]() -> char 
     { return m_source.at(m_current); };
 
@@ -76,11 +81,11 @@ public:
              (c >= 'A' && c <= 'Z') || 
               c == '_'; };
 
-    auto isDigit = [&](const char c) 
+    auto isDigit = [&](const char c) -> bool
     { return c >= '0' && c <= '9'; };
 
     auto isAlphaNumeric = [&](const char c) -> bool
-    { return isAlpha(c)  || isDigit(c); };
+    { return isAlpha(c) || isDigit(c); };
 
     // clang-format on
     while (!isAtEnd()) {
@@ -88,59 +93,59 @@ public:
 
       switch (const char c = advance(); c) {
         case '(':
-          m_tokens.push_back(token_t{tokenType::LEFT_PAREN, {}, m_line});
+          m_tokens.push_back(Token{tokenKind::LEFT_PAREN, std::nullopt, m_line});
           break;
 
         case ')':
-          m_tokens.push_back(token_t{tokenType::RIGHT_PAREN, {}, m_line});
+          m_tokens.push_back(Token{tokenKind::RIGHT_PAREN, std::nullopt, m_line});
           break;
 
         case '{':
-          m_tokens.push_back(token_t{tokenType::LEFT_BRACE, {}, m_line});
+          m_tokens.push_back(Token{tokenKind::LEFT_BRACE, std::nullopt, m_line});
           break;
 
         case '}':
-          m_tokens.push_back(token_t{tokenType::RIGHT_BRACE, {}, m_line});
+          m_tokens.push_back(Token{tokenKind::RIGHT_BRACE, std::nullopt, m_line});
           break;
 
         case '.':
-          m_tokens.push_back(token_t{tokenType::DOT, {}, m_line});
+          m_tokens.push_back(Token{tokenKind::DOT, std::nullopt, m_line});
           break;
 
         case ',':
-          m_tokens.push_back(token_t{tokenType::COMMA, {}, m_line});
+          m_tokens.push_back(Token{tokenKind::COMMA, std::nullopt, m_line});
           break;
 
         case '-':
-          m_tokens.push_back(token_t{tokenType::MINUS, {}, m_line});
+          m_tokens.push_back(Token{tokenKind::MINUS, std::nullopt, m_line});
           break;
 
         case '+':
-          m_tokens.push_back(token_t{tokenType::PLUS, {}, m_line});
+          m_tokens.push_back(Token{tokenKind::PLUS, std::nullopt, m_line});
           break;
 
         case ';':
-          m_tokens.push_back(token_t{tokenType::SEMICOLON, {}, m_line});
+          m_tokens.push_back(Token{tokenKind::SEMICOLON, std::nullopt, m_line});
           break;
 
         case '*':
-          m_tokens.push_back(token_t{tokenType::STAR, {}, m_line});
+          m_tokens.push_back(Token{tokenKind::STAR, std::nullopt, m_line});
           break;
 
         case '!':
-          m_tokens.push_back(token_t{match('=') ? tokenType::BANG_EQUAL : tokenType::BANG, {}, m_line});
+          m_tokens.push_back(Token{match('=') ? tokenKind::BANG_EQUAL : tokenKind::BANG, std::nullopt, m_line});
           break;
 
         case '=':
-          m_tokens.push_back(token_t{match('=') ? tokenType::EQUAL_EQUAL : tokenType::EQUAL, {}, m_line});
+          m_tokens.push_back(Token{match('=') ? tokenKind::EQUAL_EQUAL : tokenKind::EQUAL, std::nullopt, m_line});
           break;
 
         case '<':
-          m_tokens.push_back(token_t{match('=') ? tokenType::LESS_EQUAL : tokenType::LESS, {}, m_line});
+          m_tokens.push_back(Token{match('=') ? tokenKind::LESS_EQUAL : tokenKind::LESS, std::nullopt, m_line});
           break;
 
         case '>':
-          m_tokens.push_back(token_t{match('=') ? tokenType::GREATER_EQUAL : tokenType::GREATER, {}, m_line});
+          m_tokens.push_back(Token{match('=') ? tokenKind::GREATER_EQUAL : tokenKind::GREATER, std::nullopt, m_line});
           break;
 
         case '/':
@@ -148,7 +153,7 @@ public:
             while (peek() != '\n' && !isAtEnd())
               advance();
           else
-            m_tokens.push_back(token_t{tokenType::SLASH, {}, m_line});
+            m_tokens.push_back(Token{tokenKind::SLASH, std::nullopt, m_line});
           break;
 
         case ' ':
@@ -173,7 +178,7 @@ public:
             assert(false && "unterminated string");
 
           advance();
-          m_tokens.push_back(token_t{tokenType::STRING, m_source.substr(m_start + 1, m_current - m_start - 2), m_line});
+          m_tokens.push_back(Token{tokenKind::STRING, m_source.substr(m_start + 1, m_current - m_start - 2), m_line});
           break;
 
         default:
@@ -187,15 +192,15 @@ public:
             while (isDigit(peek()))
               advance();
 
-            m_tokens.push_back(token_t{tokenType::NUMBER, std::stod(m_source.substr(m_start, m_current - m_start)), m_line});
+            m_tokens.push_back(Token{tokenKind::NUMBER, std::stod(m_source.substr(m_start, m_current - m_start)), m_line});
           }
 
           else if (isAlpha(c)) {
             while (isAlphaNumeric(peek()))
               advance();
             const std::string identifier = m_source.substr(m_start, m_current - m_start);
-            tokenType type = keywords.at(identifier);
-            m_tokens.push_back(token_t{tokenType::IDENTIFIER, identifier, m_line});
+            tokenKind type = keywords.at(identifier);
+            m_tokens.push_back(Token{tokenKind::IDENTIFIER, identifier, m_line});
           } else {
             assert(false && "unexpected character");
           }
@@ -203,39 +208,42 @@ public:
       }
     }
 
-    m_tokens.push_back(token_t{tokenType::END_OF_FILE, {}, m_line});
+    m_tokens.push_back(Token{tokenKind::END_OF_FILE, std::nullopt, m_line});
     return m_tokens;
   }
 
-  void debug() {
-    for (auto token : m_tokens) {
-      std::cout << magic_enum::enum_name(token.m_type) << ' ';
-      if (auto ret = std::get_if<std::string>(&token.m_lexeme))
-        std::cout << *ret << ' ';
-      else if (auto ret = std::get_if<double>(&token.m_lexeme))
-        std::cout << *ret << ' ';
+  void trace() {
+    if (m_tokens.empty())
+      return;
 
-      std::cout << token.m_line << '\n';
+    for (auto token : m_tokens) {
+      std::cout << token.m_line << '\t';
+      std::cout << magic_enum::enum_name(token.m_kind) << ' ';
+
+      if (token.m_lexeme.has_value()) {
+        if (auto ret = std::get_if<std::string>(&token.m_lexeme.value()))
+          std::cout << *ret << ' ';
+        else if (auto ret = std::get_if<double>(&token.m_lexeme.value()))
+          std::cout << *ret << ' ';
+      }
+
+      std::cout << '\n';
     }
-    std::cout << '\n';
   }
 };
 
-class parser_t {
-private:
-  std::vector<token_t> m_tokens;
-
-public:
-  parser_t(std::vector<token_t> t) : m_tokens(t) {}
-  void parse();
-};
+} // end namespace Lox
 
 int main(int argc, const char *argv[]) {
-  const auto source = std::string(std::istream_iterator<char>(std::ifstream{argv[1]} >> std::noskipws), {});
-  scanner_t scanner(source);
+  if (argc < 2)
+    return 1;
 
+  const auto source = std::string(std::istream_iterator<char>(std::ifstream{argv[1]} >> std::noskipws), {});
+
+  Lox::Scanner scanner(source);
   const auto tokens = scanner.scan();
-  parser_t parser(tokens);
+
+  scanner.trace();
 
   return 0;
 }
