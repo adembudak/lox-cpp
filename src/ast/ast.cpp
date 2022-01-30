@@ -64,3 +64,52 @@ UnaryExpr::UnaryExpr(Token &op, Expr &right)
 VariableExpr::VariableExpr(Token &name)
     : name(name) {
 }
+
+///////////////
+
+BlockStmt::BlockStmt(std::vector<Stmt> &statements)
+    : statements(statements) {
+}
+
+ClassStmt::ClassStmt(Token &name, VariableExpr &superClass, std::vector<FunctionStmt> &methods)
+    : name(name)
+    , superClass(superClass)
+    , methods(methods)
+
+{
+}
+
+ExpressionStmt::ExpressionStmt(Expr &expression)
+    : expression(expression) {
+}
+
+FunctionStmt::FunctionStmt(Token &name, std::vector<Token> &params, std::vector<Stmt> &body)
+    : name(name)
+    , params(params)
+    , body(body) {
+}
+
+IfStmt::IfStmt(Expr &condition, Stmt &thenBranch, Stmt &elseBranch)
+    : condition(condition)
+    , thenBranch(thenBranch)
+    , elseBranch(elseBranch) {
+}
+
+PrintStmt::PrintStmt(Expr &expression)
+    : expression(expression) {
+}
+
+ReturnStmt::ReturnStmt(Token &keyword, Expr &value)
+    : keyword(keyword)
+    , value(value) {
+}
+
+VarStmt::VarStmt(Token &name, Expr &initializer)
+    : name(name)
+    , initializer(initializer) {
+}
+
+WhileStmt::WhileStmt(Expr &condition, Stmt &body)
+    : condition(condition)
+    , body(body) {
+}

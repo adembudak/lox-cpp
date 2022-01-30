@@ -123,4 +123,91 @@ struct VariableExpr {
   VariableExpr(Token &name);
 };
 
+/////////////////////////////////////
+
+struct BlockStmt;
+struct ClassStmt;
+struct ExpressionStmt;
+struct FunctionStmt;
+struct IfStmt;
+struct PrintStmt;
+struct ReturnStmt;
+struct VarStmt;
+struct WhileStmt;
+
+// clang-format off
+using Stmt = variant<recursive_wrapper<BlockStmt>, 
+                     recursive_wrapper<ClassStmt>, 
+                     recursive_wrapper<ExpressionStmt>, 
+                     recursive_wrapper<FunctionStmt>,
+                     recursive_wrapper<IfStmt>, 
+                     recursive_wrapper<PrintStmt>, 
+                     recursive_wrapper<ReturnStmt>, 
+                     recursive_wrapper<VarStmt>,
+                     recursive_wrapper<WhileStmt>>;
+// clang-format on
+
+struct BlockStmt {
+  std::vector<Stmt> statements;
+
+  BlockStmt(std::vector<Stmt> &statements);
+};
+
+struct ClassStmt {
+  Token name;
+  VariableExpr superClass;
+  std::vector<FunctionStmt> methods;
+
+  ClassStmt(Token &name, VariableExpr &superClass, std::vector<FunctionStmt> &methods);
+};
+
+struct ExpressionStmt {
+  Expr expression;
+
+  ExpressionStmt(Expr &expression);
+};
+
+struct FunctionStmt {
+  Token name;
+  std::vector<Token> params;
+  std::vector<Stmt> body;
+
+  FunctionStmt(Token &name, std::vector<Token> &params, std::vector<Stmt> &body);
+};
+
+struct IfStmt {
+  Expr condition;
+  Stmt thenBranch;
+  Stmt elseBranch;
+
+  IfStmt(Expr &condition, Stmt &thenBranch, Stmt &elseBranch);
+};
+
+struct PrintStmt {
+  Expr expression;
+
+  PrintStmt(Expr &expression);
+};
+
+struct ReturnStmt {
+  Token keyword;
+  Expr value;
+
+  ReturnStmt(Token &keyword, Expr &value);
+};
+
+struct VarStmt {
+  Token name;
+  Expr initializer;
+
+  VarStmt(Token &name, Expr &initializer);
+};
+
+struct WhileStmt {
+  Expr condition;
+  Stmt body;
+
+  WhileStmt(Expr &condition, Stmt &body);
+};
+
 }
