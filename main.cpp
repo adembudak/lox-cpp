@@ -15,7 +15,13 @@ int main(int argc, const char *const argv[]) {
 
   lox::Scanner scanner(source);
   const auto tokens = scanner.scan();
-  scanner.trace();
+
+  lox::Parser parser(tokens);
+  auto expr = parser.parse();
+
+  if (expr) {
+    //   print
+  }
 
   return 0;
 }

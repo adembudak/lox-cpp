@@ -2,10 +2,28 @@
 #include "lox/token.h"
 
 #include <initializer_list>
+#include <iostream>
 #include <string_view>
 #include <algorithm>
+#include <stdexcept>
 
 using namespace lox;
+
+class parse_error : public std::runtime_error {
+  std::string err;
+  Token t;
+
+public:
+  parse_error(const Token &t, const std::string_view err)
+      : std::runtime_error(err.data())
+      , err(err)
+      , t(t) {
+  }
+
+  std::string error_string() const {
+    return "Error: " + err + "\nAt: " + std::to_string(t.m_line);
+  }
+};
 
 Token Parser::peek() const {
   return m_tokens[m_current];
@@ -46,7 +64,7 @@ Token Parser::consume(const tokenKind &token, const std::string_view err) {
     return advance();
   }
 
-  assert(false && err.data());
+  throw parse_error(peek(), err);
 }
 
 /////////////////////////
@@ -139,11 +157,23 @@ Expr Parser::primary() {
 
   if (match({tokenKind::LEFT_PAREN})) {
     Expr expr = expression();
-    consume(tokenKind::RIGHT_PAREN, "Expect ')' after expression.");
+
+    try {
+      consume(tokenKind::RIGHT_PAREN, "Expected ')' after expression.");
+    } catch (const parse_error &p) {
+      std::cerr << p.error_string() << '\n';
+    }
+
     return GroupingExpr(expr);
   }
 
-  assert(false);
+  throw(peek(), "Expected an expression");
 }
 
-//
+std::optional<Expr> Parser::parse() {
+  try {
+    return expression();
+  } catch (const parse_error &e) {
+    return std::nullopt;
+  }
+}

@@ -19,6 +19,8 @@ public:
       : m_tokens(tokens) {
   }
 
+  std::optional<Expr> parse();
+
 private:
   Token peek() const;
   bool isAtEnd() const;

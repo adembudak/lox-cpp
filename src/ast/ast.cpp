@@ -74,9 +74,7 @@ BlockStmt::BlockStmt(std::vector<Stmt> &statements)
 ClassStmt::ClassStmt(Token &name, VariableExpr &superClass, std::vector<FunctionStmt> &methods)
     : name(name)
     , superClass(superClass)
-    , methods(methods)
-
-{
+    , methods(methods) {
 }
 
 ExpressionStmt::ExpressionStmt(Expr &expression)

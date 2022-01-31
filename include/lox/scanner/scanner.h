@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "../token.h"
+#include "lox/token.h"
 
 namespace lox {
 
