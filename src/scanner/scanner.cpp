@@ -154,25 +154,6 @@ std::vector<Token> Scanner::scan() {
   return m_tokens;
 }
 
-void Scanner::trace() {
-  if (m_tokens.empty())
-    return;
-
-  for (auto token : m_tokens) {
-    std::cout << token.m_line << '\t';
-    std::cout << magic_enum::enum_name(token.m_kind) << ' ';
-
-    if (token.m_lexeme.has_value()) {
-      if (auto ret = std::get_if<std::string>(&token.m_lexeme.value()))
-        std::cout << *ret << ' ';
-      else if (auto ret = std::get_if<double>(&token.m_lexeme.value()))
-        std::cout << *ret << ' ';
-    }
-
-    std::cout << '\n';
-  }
-}
-
 char Scanner::peek() const {
   return m_source.at(m_current);
 }

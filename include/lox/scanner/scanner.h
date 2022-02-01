@@ -19,7 +19,6 @@ public:
   Scanner(const std::string &source);
 
   std::vector<Token> scan();
-  void trace();
 
 private:
   char peek() const;
