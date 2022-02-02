@@ -21,7 +21,7 @@ public:
   }
 
   std::string error_string() const {
-    return "Error: " + err + "\nAt: " + std::to_string(t.m_line);
+    return "Error: " + err + "\nAt: " + std::to_string(t.line);
   }
 };
 
@@ -30,7 +30,7 @@ Token Parser::peek() const {
 }
 
 bool Parser::isAtEnd() const {
-  return peek().m_kind == TokenKind::END_OF_FILE;
+  return peek().kind == TokenKind::END_OF_FILE;
 }
 
 Token Parser::previous() const {
@@ -47,7 +47,7 @@ Token Parser::advance() {
 bool Parser::check(const TokenKind &t) const {
   if (isAtEnd())
     return false;
-  return peek().m_kind == t;
+  return peek().kind == t;
 }
 
 bool Parser::match(std::initializer_list<TokenKind> tokens) {
@@ -136,7 +136,7 @@ Expr Parser::unary() {
 // primary -> NUMBER | STRING | "true" | "false" | "nil" | "(" expression ")" ;
 Expr Parser::primary() {
   if (match({TokenKind::NUMBER, TokenKind::STRING})) {
-    Literal literal = previous().m_lexeme;
+    Literal literal = previous().lexeme;
     return LiteralExpr(literal);
   }
 

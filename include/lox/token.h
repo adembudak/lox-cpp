@@ -24,9 +24,9 @@ enum class TokenKind : std::uint8_t {
 using Literal = std::optional<std::variant<std::string, double>>;
 
 struct Token {
-  TokenKind m_kind;
-  Literal m_lexeme;
-  std::size_t m_line;
+  TokenKind kind;
+  Literal lexeme;
+  std::size_t line;
 };
 
 }

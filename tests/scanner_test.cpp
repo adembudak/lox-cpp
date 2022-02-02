@@ -21,13 +21,13 @@ int main() {
     return 1;
 
   for (auto token : tokens) {
-    std::cout << token.m_line << '\t';
-    std::cout << magic_enum::enum_name(token.m_kind) << ' ';
+    std::cout << token.line << '\t';
+    std::cout << magic_enum::enum_name(token.kind) << ' ';
 
-    if (token.m_lexeme.has_value()) {
-      if (auto ret = std::get_if<std::string>(&token.m_lexeme.value()))
+    if (token.lexeme.has_value()) {
+      if (auto ret = std::get_if<std::string>(&token.lexeme.value()))
         std::cout << *ret << ' ';
-      else if (auto ret = std::get_if<double>(&token.m_lexeme.value()))
+      else if (auto ret = std::get_if<double>(&token.lexeme.value()))
         std::cout << *ret << ' ';
     }
 
