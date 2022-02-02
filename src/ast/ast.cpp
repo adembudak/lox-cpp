@@ -31,7 +31,7 @@ GroupingExpr::GroupingExpr(Expr &expression)
     : expression(expression) {
 }
 
-LiteralExpr::LiteralExpr(literal_t &literal)
+LiteralExpr::LiteralExpr(Literal &literal)
     : literal(literal) {
 }
 

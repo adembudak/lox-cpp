@@ -76,9 +76,9 @@ struct GroupingExpr {
 };
 
 struct LiteralExpr {
-  literal_t literal;
+  Literal literal;
 
-  LiteralExpr(literal_t &literal);
+  LiteralExpr(Literal &literal);
 };
 
 struct LogicalExpr {

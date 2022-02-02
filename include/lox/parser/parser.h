@@ -25,10 +25,10 @@ private:
   Token peek() const;
   bool isAtEnd() const;
   Token previous() const;
-  bool check(const tokenKind &t) const;
+  bool check(const TokenKind &t) const;
   Token advance();
-  bool match(std::initializer_list<tokenKind> tokens);
-  Token consume(const tokenKind &token, const std::string_view err);
+  bool match(std::initializer_list<TokenKind> tokens);
+  Token consume(const TokenKind &token, const std::string_view err);
 
 private:
   Expr expression();

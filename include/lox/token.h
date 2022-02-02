@@ -7,7 +7,7 @@
 
 namespace lox {
 // clang-format off
-enum class tokenKind : std::uint8_t {
+enum class TokenKind : std::uint8_t {
     LEFT_PAREN, RIGHT_PAREN, LEFT_BRACE, RIGHT_BRACE,                               // parenthesis
     EQUAL, EQUAL_EQUAL, BANG, BANG_EQUAL, LESS, LESS_EQUAL, GREATER, GREATER_EQUAL, // comparison
     PLUS, MINUS, STAR, SLASH,                                                       // operators
@@ -21,11 +21,11 @@ enum class tokenKind : std::uint8_t {
   // clang-format on
 };
 
-using literal_t = std::optional<std::variant<std::string, double>>;
+using Literal = std::optional<std::variant<std::string, double>>;
 
 struct Token {
-  tokenKind m_kind;
-  literal_t m_lexeme;
+  TokenKind m_kind;
+  Literal m_lexeme;
   std::size_t m_line;
 };
 

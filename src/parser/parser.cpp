@@ -30,7 +30,7 @@ Token Parser::peek() const {
 }
 
 bool Parser::isAtEnd() const {
-  return peek().m_kind == tokenKind::END_OF_FILE;
+  return peek().m_kind == TokenKind::END_OF_FILE;
 }
 
 Token Parser::previous() const {
@@ -44,13 +44,13 @@ Token Parser::advance() {
   return previous();
 }
 
-bool Parser::check(const tokenKind &t) const {
+bool Parser::check(const TokenKind &t) const {
   if (isAtEnd())
     return false;
   return peek().m_kind == t;
 }
 
-bool Parser::match(std::initializer_list<tokenKind> tokens) {
+bool Parser::match(std::initializer_list<TokenKind> tokens) {
   bool isThereAnMatch = std::any_of(tokens.begin(), tokens.end(), [&](const auto token) { return check(token); });
 
   if (isThereAnMatch) {
@@ -59,7 +59,7 @@ bool Parser::match(std::initializer_list<tokenKind> tokens) {
   return isThereAnMatch;
 }
 
-Token Parser::consume(const tokenKind &token, const std::string_view err) {
+Token Parser::consume(const TokenKind &token, const std::string_view err) {
   if (check(token)) {
     return advance();
   }
@@ -78,7 +78,7 @@ Expr Parser::expression() {
 Expr Parser::equality() {
   Expr expr = comparison();
 
-  while (match({tokenKind::BANG_EQUAL, tokenKind::EQUAL_EQUAL})) {
+  while (match({TokenKind::BANG_EQUAL, TokenKind::EQUAL_EQUAL})) {
     Token op = previous();
     Expr right = comparison();
     expr = BinaryExpr(expr, op, right);
@@ -90,7 +90,7 @@ Expr Parser::equality() {
 // comparison -> term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
 Expr Parser::comparison() {
   Expr expr = term();
-  while (match({tokenKind::GREATER, tokenKind::GREATER_EQUAL, tokenKind::LESS, tokenKind::LESS_EQUAL})) {
+  while (match({TokenKind::GREATER, TokenKind::GREATER_EQUAL, TokenKind::LESS, TokenKind::LESS_EQUAL})) {
     Token op = previous();
     Expr right = term();
     expr = BinaryExpr(expr, op, right);
@@ -102,7 +102,7 @@ Expr Parser::comparison() {
 Expr Parser::term() {
   Expr expr = factor();
 
-  while (match({tokenKind::MINUS, tokenKind::PLUS})) {
+  while (match({TokenKind::MINUS, TokenKind::PLUS})) {
     Token op = previous();
     Expr right = factor();
     expr = BinaryExpr(expr, op, right);
@@ -114,7 +114,7 @@ Expr Parser::term() {
 Expr Parser::factor() {
   Expr expr = unary();
 
-  while (match({tokenKind::SLASH, tokenKind::STAR})) {
+  while (match({TokenKind::SLASH, TokenKind::STAR})) {
     Token op = previous();
     Expr right = unary();
     expr = BinaryExpr(expr, op, right);
@@ -124,7 +124,7 @@ Expr Parser::factor() {
 
 // unary -> ( "!" | "-" ) unary | primary ;
 Expr Parser::unary() {
-  if (match({tokenKind::BANG, tokenKind::MINUS})) {
+  if (match({TokenKind::BANG, TokenKind::MINUS})) {
     Token op = previous();
     Expr right = unary();
     return UnaryExpr(op, right);
@@ -135,31 +135,31 @@ Expr Parser::unary() {
 
 // primary -> NUMBER | STRING | "true" | "false" | "nil" | "(" expression ")" ;
 Expr Parser::primary() {
-  if (match({tokenKind::NUMBER, tokenKind::STRING})) {
-    literal_t literal = previous().m_lexeme;
+  if (match({TokenKind::NUMBER, TokenKind::STRING})) {
+    Literal literal = previous().m_lexeme;
     return LiteralExpr(literal);
   }
 
-  if (match({tokenKind::TRUE})) {
-    literal_t trueLiteral = "true";
+  if (match({TokenKind::TRUE})) {
+    Literal trueLiteral = "true";
     return LiteralExpr(trueLiteral);
   }
 
-  if (match({tokenKind::FALSE})) {
-    literal_t falseLiteral = "false";
+  if (match({TokenKind::FALSE})) {
+    Literal falseLiteral = "false";
     return LiteralExpr(falseLiteral);
   }
 
-  if (match({tokenKind::NIL})) {
-    literal_t nilLiteral = "nil";
+  if (match({TokenKind::NIL})) {
+    Literal nilLiteral = "nil";
     return LiteralExpr(nilLiteral);
   }
 
-  if (match({tokenKind::LEFT_PAREN})) {
+  if (match({TokenKind::LEFT_PAREN})) {
     Expr expr = expression();
 
     try {
-      consume(tokenKind::RIGHT_PAREN, "Expected ')' after expression.");
+      consume(TokenKind::RIGHT_PAREN, "Expected ')' after expression.");
     } catch (const parse_error &p) {
       std::cerr << p.error_string() << '\n';
     }
