@@ -15,9 +15,7 @@ private:
   std::size_t m_current = 0;
 
 public:
-  Parser(const std::vector<Token> &tokens)
-      : m_tokens(tokens) {
-  }
+  Parser(const std::vector<Token> &tokens);
 
   std::optional<Expr> parse();
 

@@ -170,6 +170,10 @@ Expr Parser::primary() {
   throw(peek(), "Expected an expression");
 }
 
+Parser::Parser(const std::vector<Token> &tokens)
+    : m_tokens(tokens) {
+}
+
 std::optional<Expr> Parser::parse() {
   try {
     return expression();
