@@ -2,26 +2,27 @@
 #include "lox/scanner/scanner.h"
 #include "lox/ast/ast.h"
 #include "lox/parser/parser.h"
+#include "lox/prettyprint/prettyprint.h"
 
 #include <fstream>
+#include <iostream>
 #include <iterator>
 #include <string>
 
-int main(int argc, const char *const argv[]) {
-  if (argc < 2)
-    return 1;
+// clang-format off
 
-  const auto source = std::string(std::istream_iterator<char>(std::ifstream{argv[1]} >> std::noskipws), {});
+int main() {
 
-  lox::Scanner scanner(source);
-  const auto tokens = scanner.scan();
+  auto expr = 
+        lox::BinaryExpr(
+               lox::UnaryExpr(lox::Token{lox::TokenKind::MINUS, "-", 1}, lox::LiteralExpr(lox::Literal{123.0})), 
+               lox::Token{lox::TokenKind::STAR, "*", 1},
+               lox::GroupingExpr(lox::LiteralExpr(45.67))
+             );
 
-  lox::Parser parser(tokens);
-  auto expr = parser.parse();
+  // clang-format on
 
-  if (expr) {
-    //   print
-  }
+  lox::PrettyPrint(std::cout, expr);
 
   return 0;
 }
