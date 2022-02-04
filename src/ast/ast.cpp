@@ -10,7 +10,7 @@ AssignExpr::AssignExpr(Token &name, Expr &val)
     , value(val) {
 }
 
-BinaryExpr::BinaryExpr(Expr &left, Token &op, Expr &right)
+BinaryExpr::BinaryExpr(const Expr &left, const Token &op, const Expr &right)
     : left(left)
     , op(op)
     , right(right) {
@@ -27,11 +27,11 @@ GetExpr::GetExpr(Expr &object, Token &name)
     , name(name) {
 }
 
-GroupingExpr::GroupingExpr(Expr &expression)
+GroupingExpr::GroupingExpr(const Expr &expression)
     : expression(expression) {
 }
 
-LiteralExpr::LiteralExpr(Literal &literal)
+LiteralExpr::LiteralExpr(const Literal &literal)
     : literal(literal) {
 }
 
@@ -56,7 +56,7 @@ ThisExpr::ThisExpr(Token &keyword)
     : keyword(keyword) {
 }
 
-UnaryExpr::UnaryExpr(Token &op, Expr &right)
+UnaryExpr::UnaryExpr(const Token &op, const Expr &right)
     : op(op)
     , right(right) {
 }

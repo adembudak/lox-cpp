@@ -51,7 +51,7 @@ struct BinaryExpr {
   Token op;
   Expr right;
 
-  BinaryExpr(Expr &left, Token &op, Expr &right);
+  BinaryExpr(const Expr &left, const Token &op, const Expr &right);
 };
 
 struct CallExpr {
@@ -72,13 +72,13 @@ struct GetExpr {
 struct GroupingExpr {
   Expr expression;
 
-  GroupingExpr(Expr &expression);
+  GroupingExpr(const Expr &expression);
 };
 
 struct LiteralExpr {
   Literal literal;
 
-  LiteralExpr(Literal &literal);
+  LiteralExpr(const Literal &literal);
 };
 
 struct LogicalExpr {
@@ -114,7 +114,7 @@ struct UnaryExpr {
   Token op;
   Expr right;
 
-  UnaryExpr(Token &op, Expr &right);
+  UnaryExpr(const Token &op, const Expr &right);
 };
 
 struct VariableExpr {
