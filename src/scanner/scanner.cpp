@@ -1,7 +1,6 @@
 #include "lox/token.h"
 #include "lox/scanner/scanner.h"
 
-#include <magic_enum.hpp>
 #include <map>
 #include <string>
 #include <cassert>
