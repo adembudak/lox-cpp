@@ -43,7 +43,7 @@ struct AssignExpr {
   Token name;
   Expr value;
 
-  AssignExpr(Token &name, Expr &val);
+  AssignExpr(const Token &name, const Expr &val);
 };
 
 struct BinaryExpr {
@@ -59,14 +59,14 @@ struct CallExpr {
   Token paren;
   std::vector<Expr> arguments;
 
-  CallExpr(Expr &callee, Token &paren, std::vector<Expr> &arguments);
+  CallExpr(const Expr &callee, const Token &paren, const std::vector<Expr> &arguments);
 };
 
 struct GetExpr {
   Expr object;
   Token name;
 
-  GetExpr(Expr &object, Token &name);
+  GetExpr(const Expr &object, const Token &name);
 };
 
 struct GroupingExpr {
@@ -86,7 +86,7 @@ struct LogicalExpr {
   Token op;
   Expr right;
 
-  LogicalExpr(Expr &left, Token &op, Expr &right);
+  LogicalExpr(const Expr &left, const Token &op, const Expr &right);
 };
 
 struct SetExpr {
@@ -94,20 +94,20 @@ struct SetExpr {
   Token name;
   Expr val;
 
-  SetExpr(Expr &obj, Token &name, Expr &val);
+  SetExpr(const Expr &obj, const Token &name, const Expr &val);
 };
 
 struct SuperExpr {
   Token keyword;
   Token method;
 
-  SuperExpr(Token &keyword, Token &method);
+  SuperExpr(const Token &keyword, const Token &method);
 };
 
 struct ThisExpr {
   Token keyword;
 
-  ThisExpr(Token &keyword);
+  ThisExpr(const Token &keyword);
 };
 
 struct UnaryExpr {
@@ -120,7 +120,7 @@ struct UnaryExpr {
 struct VariableExpr {
   Token name;
 
-  VariableExpr(Token &name);
+  VariableExpr(const Token &name);
 };
 
 /////////////////////////////////////
@@ -150,7 +150,7 @@ using Stmt = variant<recursive_wrapper<BlockStmt>,
 struct BlockStmt {
   std::vector<Stmt> statements;
 
-  BlockStmt(std::vector<Stmt> &statements);
+  BlockStmt(const std::vector<Stmt> &statements);
 };
 
 struct ClassStmt {
@@ -158,13 +158,13 @@ struct ClassStmt {
   VariableExpr superClass;
   std::vector<FunctionStmt> methods;
 
-  ClassStmt(Token &name, VariableExpr &superClass, std::vector<FunctionStmt> &methods);
+  ClassStmt(const Token &name, const VariableExpr &superClass, const std::vector<FunctionStmt> &methods);
 };
 
 struct ExpressionStmt {
   Expr expression;
 
-  ExpressionStmt(Expr &expression);
+  ExpressionStmt(const Expr &expression);
 };
 
 struct FunctionStmt {
@@ -172,7 +172,7 @@ struct FunctionStmt {
   std::vector<Token> params;
   std::vector<Stmt> body;
 
-  FunctionStmt(Token &name, std::vector<Token> &params, std::vector<Stmt> &body);
+  FunctionStmt(const Token &name, const std::vector<Token> &params, const std::vector<Stmt> &body);
 };
 
 struct IfStmt {
@@ -180,34 +180,34 @@ struct IfStmt {
   Stmt thenBranch;
   Stmt elseBranch;
 
-  IfStmt(Expr &condition, Stmt &thenBranch, Stmt &elseBranch);
+  IfStmt(const Expr &condition, const Stmt &thenBranch, const Stmt &elseBranch);
 };
 
 struct PrintStmt {
   Expr expression;
 
-  PrintStmt(Expr &expression);
+  PrintStmt(const Expr &expression);
 };
 
 struct ReturnStmt {
   Token keyword;
   Expr value;
 
-  ReturnStmt(Token &keyword, Expr &value);
+  ReturnStmt(const Token &keyword, const Expr &value);
 };
 
 struct VarStmt {
   Token name;
   Expr initializer;
 
-  VarStmt(Token &name, Expr &initializer);
+  VarStmt(const Token &name, const Expr &initializer);
 };
 
 struct WhileStmt {
   Expr condition;
   Stmt body;
 
-  WhileStmt(Expr &condition, Stmt &body);
+  WhileStmt(const Expr &condition, const Stmt &body);
 };
 
 }
