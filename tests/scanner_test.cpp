@@ -25,9 +25,9 @@ int main() {
     std::cout << magic_enum::enum_name(token.kind) << ' ';
 
     if (token.lexeme.has_value()) {
-      if (auto ret = std::get_if<std::string>(&token.lexeme.value()))
+      if (const std::string *ret = std::get_if<std::string>(&token.lexeme.value()))
         std::cout << *ret << ' ';
-      else if (auto ret = std::get_if<double>(&token.lexeme.value()))
+      else if (const double *ret = std::get_if<double>(&token.lexeme.value()))
         std::cout << *ret << ' ';
     }
 
