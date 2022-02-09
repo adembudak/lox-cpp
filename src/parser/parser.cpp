@@ -3,9 +3,8 @@
 
 #include <initializer_list>
 #include <string_view>
+#include <string>
 #include <algorithm>
-#include <stdexcept>
-
 #include <iostream>
 
 namespace {

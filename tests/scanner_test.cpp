@@ -4,9 +4,11 @@
 #include <magic_enum.hpp>
 
 #include <fstream>
+#include <variant>
 #include <iterator>
 #include <string>
 #include <iostream>
+#include <vector>
 
 int main() {
   std::ifstream fin;

@@ -3,6 +3,7 @@
 #include <lox/prettyprint/prettyprint.h>
 
 #include <string>
+#include <iterator>
 #include <fstream>
 #include <cassert>
 

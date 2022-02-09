@@ -3,9 +3,11 @@
 
 #include <map>
 #include <string>
-#include <cassert>
 #include <string_view>
 #include <iostream>
+#include <cstddef>
+#include <variant>
+#include <vector>
 
 /*
  Lox lexical grammar

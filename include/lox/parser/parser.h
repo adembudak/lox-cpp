@@ -4,9 +4,11 @@
 #include "lox/ast/ast.h"
 
 #include <vector>
-#include <cstdint>
+#include <cstddef>
+#include <initializer_list>
 #include <string_view>
 #include <stdexcept>
+#include <optional>
 
 namespace lox {
 
