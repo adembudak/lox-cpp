@@ -6,8 +6,13 @@
 #include <vector>
 #include <cstdint>
 #include <string_view>
+#include <stdexcept>
 
 namespace lox {
+
+struct parse_error final : virtual public std::runtime_error {
+  using std::runtime_error::runtime_error;
+};
 
 class Parser {
 private:
@@ -29,6 +34,8 @@ private:
   Token consume(const TokenKind &token, const std::string_view err);
 
 private:
+  parse_error error(const Token &t, const std::string_view message) const;
+
   Expr expression();
   Expr equality();
   Expr comparison();

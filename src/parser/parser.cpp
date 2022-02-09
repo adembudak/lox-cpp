@@ -2,28 +2,21 @@
 #include "lox/token.h"
 
 #include <initializer_list>
-#include <iostream>
 #include <string_view>
 #include <algorithm>
 #include <stdexcept>
 
-using namespace lox;
+#include <iostream>
 
-class parse_error : public std::runtime_error {
-  std::string err;
-  Token t;
+namespace {
 
-public:
-  parse_error(const Token &t, const std::string_view err)
-      : std::runtime_error(err.data())
-      , err(err)
-      , t(t) {
-  }
+void report(std::size_t line, const std::string_view where, const std::string_view message) {
+  std::cerr << "[line " << line << "] Error" << where << ": " << message << '\n';
+}
 
-  std::string error_string() const {
-    return "Error: " + err + "\nAt: " + std::to_string(t.line);
-  }
-};
+}
+
+namespace lox {
 
 Token Parser::peek() const {
   return m_tokens[m_current];
@@ -51,7 +44,7 @@ bool Parser::check(const TokenKind &t) const {
 }
 
 bool Parser::match(std::initializer_list<TokenKind> tokens) {
-  bool isThereAnMatch = std::any_of(tokens.begin(), tokens.end(), [&](const auto token) { return check(token); });
+  bool isThereAnMatch = std::any_of(tokens.begin(), tokens.end(), [&](const auto &token) { return check(token); });
 
   if (isThereAnMatch) {
     advance();
@@ -64,10 +57,20 @@ Token Parser::consume(const TokenKind &token, const std::string_view err) {
     return advance();
   }
 
-  throw parse_error(peek(), err);
+  throw error(peek(), err);
 }
 
 /////////////////////////
+
+parse_error Parser::error(const Token &t, const std::string_view message) const {
+  if (t.kind == lox::TokenKind::END_OF_FILE) {
+    report(t.line, " at end", message);
+  } else {
+    report(t.line, " at " + lox::to_string(t.lexeme), message);
+  }
+
+  return parse_error{""};
+}
 
 // expression -> equality ;
 Expr Parser::expression() {
@@ -157,17 +160,11 @@ Expr Parser::primary() {
 
   if (match({TokenKind::LEFT_PAREN})) {
     Expr expr = expression();
-
-    try {
-      consume(TokenKind::RIGHT_PAREN, "Expected ')' after expression.");
-    } catch (const parse_error &p) {
-      std::cerr << p.error_string() << '\n';
-    }
-
+    consume(TokenKind::RIGHT_PAREN, "Expected ')' after expression.");
     return GroupingExpr(expr);
   }
 
-  throw(peek(), "Expected an expression");
+  throw error(peek(), "Expect expression");
 }
 
 Parser::Parser(const std::vector<Token> &tokens)
@@ -180,4 +177,6 @@ std::optional<Expr> Parser::parse() {
   } catch (const parse_error &e) {
     return std::nullopt;
   }
+}
+
 }
