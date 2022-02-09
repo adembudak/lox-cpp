@@ -70,6 +70,7 @@ struct ExprVisitor : public boost::static_visitor<std::string> {
   }
 
   std::string operator()(const boost::blank &s) const {
+    return std::string{};
   }
 };
 
