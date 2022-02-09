@@ -6,3 +6,8 @@ add_test(
   NAME scanner.test
   COMMAND scanner_test scanner.in
   WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/tests)
+
+add_executable(astprinter astprinter.cpp) 
+target_link_libraries(astprinter PRIVATE lox::lox)
+target_include_directories(astprinter PRIVATE ${PROJECT_SOURCE_DIR}/include)
+

@@ -14,7 +14,5 @@ endif()
 find_package(Boost QUIET REQUIRED CONFIG)
 
 add_subdirectory(src)
+add_subdirectory(interpreter)
 
-add_executable(lox-cli main.cpp)
-target_include_directories(lox-cli PRIVATE include)
-target_link_libraries(lox-cli PRIVATE lox::lox)
