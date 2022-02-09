@@ -29,4 +29,21 @@ struct Token {
   std::size_t line;
 };
 
+template <class... Ts>
+struct overload : Ts... {
+  using Ts::operator()...;
+};
+
+template <class... Ts>
+overload(Ts...) -> overload<Ts...>;
+
+inline std::string to_string(const lox::Literal &t) {
+  // clang-format off
+  return std::visit(overload {
+               [](const std::string &s) { return s; },
+               [](const double &d)      { return std::to_string(d); }
+             }, t.value());
+  // clang-format on
+}
+
 }
