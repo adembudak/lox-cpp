@@ -39,7 +39,7 @@ struct ExprVisitor : public boost::static_visitor<std::string> {
   }
 
   std::string operator()(const LiteralExpr &e) const {
-    if (e.literal.has_value())
+    if (e.literal.index() != 0)
       return to_string(e.literal);
     else
       return "nil";
@@ -92,7 +92,7 @@ struct StmtVisitor : public boost::static_visitor<std::string> {
     std::ostringstream sout;
     sout << "(class " << to_string(stmt.name.lexeme);
 
-    if (stmt.superClass.name.lexeme.has_value()) {
+    if (stmt.superClass.name.lexeme.index() != 0) {
       sout << " < " << to_string(stmt.superClass.name.lexeme);
     }
 
@@ -205,7 +205,7 @@ std::string parenthesize(const std::string &name, const std::initializer_list<co
     }
 
     else if (const auto *pT = std::get_if<Token>(&part)) {
-      sout << to_string(*pT->lexeme);
+      sout << to_string(pT->lexeme);
     }
 
     else if (const auto *pL = std::get_if<Literal>(&part)) {

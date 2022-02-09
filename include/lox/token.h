@@ -21,7 +21,8 @@ enum class TokenKind : std::uint8_t {
   // clang-format on
 };
 
-using Literal = std::optional<std::variant<std::string, double>>;
+using Literal = std::variant<std::monostate, std::string, double>;
+constexpr const std::monostate noopt;
 
 struct Token {
   TokenKind kind;
@@ -40,9 +41,10 @@ overload(Ts...) -> overload<Ts...>;
 inline std::string to_string(const lox::Literal &t) {
   // clang-format off
   return std::visit(overload {
+               [](const std::monostate) { return std::string{}; },
                [](const std::string &s) { return s; },
                [](const double &d)      { return std::to_string(d); }
-             }, t.value());
+             }, t);
   // clang-format on
 }
 

@@ -24,10 +24,10 @@ int main() {
     std::cout << token.line << '\t';
     std::cout << magic_enum::enum_name(token.kind) << ' ';
 
-    if (token.lexeme.has_value()) {
-      if (const std::string *ret = std::get_if<std::string>(&token.lexeme.value()))
+    if (token.lexeme.index() != 0) {
+      if (const std::string *ret = std::get_if<std::string>(&token.lexeme))
         std::cout << *ret << ' ';
-      else if (const double *ret = std::get_if<double>(&token.lexeme.value()))
+      else if (const double *ret = std::get_if<double>(&token.lexeme))
         std::cout << *ret << ' ';
     }
 
