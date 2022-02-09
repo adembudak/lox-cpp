@@ -4,6 +4,7 @@
 #include <map>
 #include <string>
 #include <cassert>
+#include <string_view>
 #include <iostream>
 
 /*
@@ -16,7 +17,19 @@
  DIGIT      -> "0" ... "9" ;
 */
 
-using namespace lox;
+namespace {
+
+void report(std::size_t line, const std::string_view where, const std::string_view message) {
+  std::cerr << "[line " << line << "] Error" << where << ": " << message << '\n';
+}
+
+void error(const std::size_t line, const std::string_view message) {
+  report(line, "", message);
+}
+
+}
+
+namespace lox {
 
 const std::map<std::string, TokenKind> keywords{
     {"and", TokenKind::AND},   {"class", TokenKind::CLASS}, {"else", TokenKind::ELSE},     {"false", TokenKind::FALSE},
@@ -115,8 +128,9 @@ std::vector<Token> Scanner::scan() {
           advance();
         }
 
-        if (isAtEnd())
-          assert(false && "unterminated string");
+        if (isAtEnd()) {
+          error(m_line, "unterminated string");
+        }
 
         advance();
         m_tokens.push_back(Token{TokenKind::STRING, m_source.substr(m_start + 1, m_current - m_start - 2), m_line});
@@ -143,7 +157,7 @@ std::vector<Token> Scanner::scan() {
           TokenKind type = keywords.at(identifier);
           m_tokens.push_back(Token{TokenKind::IDENTIFIER, identifier, m_line});
         } else {
-          assert(false && "unexpected character");
+          error(m_line, "unexpected character");
         }
         break;
     }
@@ -189,4 +203,6 @@ bool Scanner::isDigit(const char c) const {
 
 bool Scanner::isAlphaNumeric(const char c) const {
   return isAlpha(c) || isDigit(c);
+}
+
 }
