@@ -26,7 +26,8 @@ using boost::recursive_wrapper;
 using boost::variant;
 
 // clang-format off
-using Expr = variant<recursive_wrapper<AssignExpr>,   
+using Expr = variant<boost::blank, 
+                     recursive_wrapper<AssignExpr>,   
                      recursive_wrapper<BinaryExpr>, 
                      recursive_wrapper<CallExpr>,     
                      recursive_wrapper<GetExpr>,
@@ -136,7 +137,8 @@ struct VarStmt;
 struct WhileStmt;
 
 // clang-format off
-using Stmt = variant<recursive_wrapper<BlockStmt>, 
+using Stmt = variant<boost::blank, 
+                     recursive_wrapper<BlockStmt>, 
                      recursive_wrapper<ClassStmt>, 
                      recursive_wrapper<ExpressionStmt>, 
                      recursive_wrapper<FunctionStmt>,
