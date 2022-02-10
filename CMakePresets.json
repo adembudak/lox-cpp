@@ -9,12 +9,24 @@
         {
             "name": "iwyu",
             "displayName": "include what you use",
-            "description": "Applay include what you tool to source https://github.com/include-what-you-use/include-what-you-use",
+            "description": "Apply include what you tool to source: github.com/include-what-you-use/include-what-you-use",
             "binaryDir": "build",
             "cacheVariables": {
                 "CMAKE_CXX_STANDARD": "20",
                 "CMAKE_CXX_STANDARD_REQUIRED": true,
                 "CMAKE_CXX_INCLUDE_WHAT_YOU_USE": "include-what-you-use",
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "clang-tidy",
+            "displayName": "clang-tidy",
+            "description": "Apply clang-tidy linter tool to source: https://clang.llvm.org/extra/clang-tidy",
+            "binaryDir": "build",
+            "cacheVariables": {
+                "CMAKE_CXX_STANDARD": "20",
+                "CMAKE_CXX_STANDARD_REQUIRED": true,
+                "CMAKE_CXX_CLANG_TIDY": "clang-tidy-13;-checks=-*,bugprone-*,cppcoreguidelines-*,readability-*,portability-*,performance-*",
                 "CMAKE_BUILD_TYPE": "Debug"
             }
         }
