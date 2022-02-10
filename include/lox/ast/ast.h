@@ -22,11 +22,12 @@ struct ThisExpr;
 struct UnaryExpr;
 struct VariableExpr;
 
+using boost::blank;
 using boost::recursive_wrapper;
 using boost::variant;
 
 // clang-format off
-using Expr = variant<boost::blank, 
+using Expr = variant<blank,
                      recursive_wrapper<AssignExpr>,   
                      recursive_wrapper<BinaryExpr>, 
                      recursive_wrapper<CallExpr>,     
@@ -73,13 +74,13 @@ struct GetExpr {
 struct GroupingExpr {
   Expr expression;
 
-  GroupingExpr(const Expr &expression);
+  explicit GroupingExpr(const Expr &expression);
 };
 
 struct LiteralExpr {
   Literal literal;
 
-  LiteralExpr(const Literal &literal);
+  explicit LiteralExpr(const Literal &literal);
 };
 
 struct LogicalExpr {
@@ -108,7 +109,7 @@ struct SuperExpr {
 struct ThisExpr {
   Token keyword;
 
-  ThisExpr(const Token &keyword);
+  explicit ThisExpr(const Token &keyword);
 };
 
 struct UnaryExpr {
@@ -121,7 +122,7 @@ struct UnaryExpr {
 struct VariableExpr {
   Token name;
 
-  VariableExpr(const Token &name);
+  explicit VariableExpr(const Token &name);
 };
 
 /////////////////////////////////////
@@ -137,7 +138,7 @@ struct VarStmt;
 struct WhileStmt;
 
 // clang-format off
-using Stmt = variant<boost::blank, 
+using Stmt = variant<blank,
                      recursive_wrapper<BlockStmt>, 
                      recursive_wrapper<ClassStmt>, 
                      recursive_wrapper<ExpressionStmt>, 
@@ -152,7 +153,7 @@ using Stmt = variant<boost::blank,
 struct BlockStmt {
   std::vector<Stmt> statements;
 
-  BlockStmt(const std::vector<Stmt> &statements);
+  explicit BlockStmt(const std::vector<Stmt> &statements);
 };
 
 struct ClassStmt {
@@ -166,7 +167,7 @@ struct ClassStmt {
 struct ExpressionStmt {
   Expr expression;
 
-  ExpressionStmt(const Expr &expression);
+  explicit ExpressionStmt(const Expr &expression);
 };
 
 struct FunctionStmt {
@@ -188,7 +189,7 @@ struct IfStmt {
 struct PrintStmt {
   Expr expression;
 
-  PrintStmt(const Expr &expression);
+  explicit PrintStmt(const Expr &expression);
 };
 
 struct ReturnStmt {
