@@ -29,6 +29,19 @@
                 "CMAKE_CXX_CLANG_TIDY": "clang-tidy-13;-checks=-*,bugprone-*,cppcoreguidelines-*,readability-*,portability-*,performance-*",
                 "CMAKE_BUILD_TYPE": "Debug"
             }
+        },
+        {
+            "name": "cppcheck",
+            "displayName": "cppcheck",
+            "description": "static analysis of C/C++ code: https://github.com/danmar/cppcheck",
+            "binaryDir": "build",
+            "cacheVariables": {
+                "CMAKE_CXX_STANDARD": "20",
+                "CMAKE_CXX_STANDARD_REQUIRED": true,
+                "CMAKE_CXX_CPPCHECK": "cppcheck;--language=c++;--std=c++20;--enable=all;--inconclusive",
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
         }
+
     ]
 }
