@@ -3,9 +3,22 @@
     "cmakeMinimumRequired": {
         "major": 3,
         "minor": 22,
-        "patch": 0
+        "patch": 2
     },
     "configurePresets": [
+        {
+            "name": "develop-*nix",
+            "displayName": "Develop *nix",
+            "binaryDir": "build",
+            "cacheVariables": {
+                "CMAKE_CXX_STANDARD": "20",
+                "CMAKE_CXX_STANDARD_REQUIRED": true,
+                "CMAKE_EXPORT_COMPILE_COMMANDS" : true,
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_CXX_FLAGS": "-Wall -Wextra -Werror -Wfatal-errors -pedantic -pedantic-errors",
+                "WITH_TESTS": "ON"
+            }
+        },
         {
             "name": "iwyu",
             "displayName": "include what you use",
@@ -14,6 +27,7 @@
             "cacheVariables": {
                 "CMAKE_CXX_STANDARD": "20",
                 "CMAKE_CXX_STANDARD_REQUIRED": true,
+                "CMAKE_EXPORT_COMPILE_COMMANDS" : true,
                 "CMAKE_CXX_INCLUDE_WHAT_YOU_USE": "include-what-you-use",
                 "CMAKE_BUILD_TYPE": "Debug"
             }
@@ -26,6 +40,7 @@
             "cacheVariables": {
                 "CMAKE_CXX_STANDARD": "20",
                 "CMAKE_CXX_STANDARD_REQUIRED": true,
+                "CMAKE_EXPORT_COMPILE_COMMANDS" : true,
                 "CMAKE_CXX_CLANG_TIDY": "clang-tidy-13;-checks=-*,bugprone-*,cppcoreguidelines-*,readability-*,portability-*,performance-*",
                 "CMAKE_BUILD_TYPE": "Debug"
             }
@@ -38,6 +53,7 @@
             "cacheVariables": {
                 "CMAKE_CXX_STANDARD": "20",
                 "CMAKE_CXX_STANDARD_REQUIRED": true,
+                "CMAKE_EXPORT_COMPILE_COMMANDS" : true,
                 "CMAKE_CXX_CPPCHECK": "cppcheck;--language=c++;--std=c++20;--enable=all;--inconclusive",
                 "CMAKE_BUILD_TYPE": "Debug"
             }
