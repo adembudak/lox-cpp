@@ -3,7 +3,7 @@
 #### Build 
 
 ```bash
-vcpkg install magic-enum boost-variant
+vcpkg install boost-variant catch2
 cmake -DCMAKE_CXX_STANDARD=20 -S . -B build 
 cmake --build build 
 ```
