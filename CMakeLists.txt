@@ -10,7 +10,8 @@ cmake_dependent_option(WITH_TESTS "" ON BUILD_TESTING OFF)
 
 if(WITH_TESTS)
   enable_testing()
-  find_package(magic_enum QUIET REQUIRED CONFIG)
+  find_package(Catch2 QUIET REQUIRED CONFIG)
+
   add_subdirectory(tests)
 endif()
 

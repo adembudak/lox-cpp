@@ -1,40 +1,51 @@
+#define CATCH_CONFIG_MAIN
+#include <catch2/catch.hpp>
+
+#include <string>
+#include <vector>
+
 #include "lox/token.h"
 #include "lox/scanner/scanner.h"
 
-#include <magic_enum.hpp>
+TEST_CASE("Test individual elements") {
+  using namespace lox;
 
-#include <fstream>
-#include <variant>
-#include <iterator>
-#include <string>
-#include <iostream>
-#include <vector>
+  SECTION("Parenthesis") {
+    const std::string braces = R"((
+                                  ))";
 
-int main() {
-  std::ifstream fin;
+    Scanner scanner(braces);
+    const std::vector tokens = scanner.scan();
 
-  fin.open("scanner.in");
-  const auto source = std::string(std::istream_iterator<char>(fin >> std::noskipws), {});
+    REQUIRE(tokens.size() == 3);
 
-  lox::Scanner scanner(source);
-  const auto tokens = scanner.scan();
+    REQUIRE(tokens[0].kind == TokenKind::LEFT_PAREN);
+    REQUIRE(tokens[0].line == 1);
 
-  if (tokens.empty())
-    return 1;
+    REQUIRE(tokens[1].kind == TokenKind::RIGHT_PAREN);
+    REQUIRE(tokens[1].line == 2);
 
-  for (auto token : tokens) {
-    std::cout << token.line << '\t';
-    std::cout << magic_enum::enum_name(token.kind) << ' ';
-
-    if (token.lexeme.index() != 0) {
-      if (const std::string *ret = std::get_if<std::string>(&token.lexeme))
-        std::cout << *ret << ' ';
-      else if (const double *ret = std::get_if<double>(&token.lexeme))
-        std::cout << *ret << ' ';
-    }
-
-    std::cout << '\n';
+    REQUIRE(tokens[2].kind == TokenKind::END_OF_FILE);
   }
 
-  return 0;
+  SECTION("Braces") {
+    const std::string braces = R"({
+
+                                  })";
+
+    Scanner scanner(braces);
+    const std::vector tokens = scanner.scan();
+
+    REQUIRE(tokens.size() == 3);
+
+    REQUIRE(tokens[0].kind == TokenKind::LEFT_BRACE);
+    REQUIRE(tokens[0].line == 1);
+
+    REQUIRE(tokens[1].kind == TokenKind::RIGHT_BRACE);
+    REQUIRE(tokens[1].line == 3);
+
+    REQUIRE(tokens[2].kind == TokenKind::END_OF_FILE);
+  }
+
+  ///////////
 }
