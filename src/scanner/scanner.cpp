@@ -181,7 +181,7 @@ char Scanner::peekNext() const {
 }
 
 bool Scanner::isAtEnd() const {
-  return m_current + 1 >= m_source.size();
+  return m_current + 1 > m_source.size();
 }
 
 char Scanner::advance() {
