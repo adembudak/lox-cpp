@@ -153,11 +153,14 @@ std::vector<Token> Scanner::scan() {
         }
 
         else if (isAlpha(c)) {
-          while (isAlphaNumeric(peek()))
+          while (isAlphaNumeric(peek())) {
             advance();
-          const std::string identifier = m_source.substr(m_start, m_current - m_start);
-          TokenKind type = keywords.at(identifier);
-          m_tokens.push_back(Token{TokenKind::IDENTIFIER, identifier, m_line});
+          }
+
+          const std::string text = m_source.substr(m_start, m_current - m_start);
+          const TokenKind kind = keywords.contains(text) ? keywords.find(text)->second : TokenKind::IDENTIFIER;
+
+          m_tokens.push_back(Token{kind, text, m_line});
         } else {
           error(m_line, "unexpected character");
         }
