@@ -43,12 +43,12 @@ bool Parser::check(const TokenKind &t) const {
 }
 
 bool Parser::match(std::initializer_list<TokenKind> tokens) {
-  bool isThereAnMatch = std::any_of(tokens.begin(), tokens.end(), [&](const auto &token) { return check(token); });
+  bool is_there_a_match = std::any_of(tokens.begin(), tokens.end(), [&](const auto &token) { return check(token); });
 
-  if (isThereAnMatch) {
+  if (is_there_a_match) {
     advance();
   }
-  return isThereAnMatch;
+  return is_there_a_match;
 }
 
 Token Parser::consume(const TokenKind &token, const std::string_view err) {
