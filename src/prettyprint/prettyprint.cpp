@@ -69,7 +69,7 @@ struct ExprVisitor : public boost::static_visitor<std::string> {
     return to_string(e.name.lexeme);
   }
 
-  std::string operator()(const boost::blank &s) const {
+  std::string operator()([[maybe_unused]] const boost::blank &s) const {
     return std::string{};
   }
 };
@@ -160,7 +160,7 @@ struct StmtVisitor : public boost::static_visitor<std::string> {
     return parenthesize("while", {stmt.condition, stmt.body});
   }
 
-  std::string operator()(const boost::blank &s) const {
+  std::string operator()([[maybe_unused]] const boost::blank &s) const {
     return std::string{};
   }
 };
