@@ -161,7 +161,9 @@ std::vector<Token> Scanner::scan() {
           const TokenKind kind = keywords.contains(text) ? keywords.find(text)->second : TokenKind::IDENTIFIER;
 
           m_tokens.push_back(Token{kind, text, m_line});
-        } else {
+        }
+
+        else {
           error(m_line, "unexpected character");
         }
         break;
@@ -173,11 +175,11 @@ std::vector<Token> Scanner::scan() {
 }
 
 char Scanner::peek() const {
-  return m_source.at(m_current);
+  return m_source[m_current];
 }
 
 char Scanner::peekNext() const {
-  return m_current + 1 >= m_source.size() ? '\0' : m_source.at(m_current + 1);
+  return m_current + 1 >= m_source.size() ? '\0' : m_source[m_current + 1];
 }
 
 bool Scanner::isAtEnd() const {
@@ -185,13 +187,13 @@ bool Scanner::isAtEnd() const {
 }
 
 char Scanner::advance() {
-  return m_source.at(m_current++);
+  return m_source[m_current++];
 }
 
 bool Scanner::match(const char expected) {
   if (isAtEnd())
     return false;
-  if (m_source.at(m_current) != expected)
+  if (m_source[m_current] != expected)
     return false;
 
   ++m_current;
