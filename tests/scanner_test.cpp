@@ -339,4 +339,32 @@ TEST_CASE("Scanner", "Test individual elements") {
 
     REQUIRE(tokens[12].kind == TokenKind::END_OF_FILE);
   }
+
+  SECTION("if-else, true-false") {
+    const std::string input =
+        R"( if (p) { return true; }
+            else   { return false; })";
+
+    Scanner scanner(input);
+    const std::vector tokens = scanner.scan();
+
+    REQUIRE(tokens[0].kind == TokenKind::IF);
+    REQUIRE(tokens[1].kind == TokenKind::LEFT_PAREN);
+    REQUIRE(tokens[2].kind == TokenKind::IDENTIFIER);
+    REQUIRE(std::get<std::string>(tokens[2].lexeme) == "p");
+    REQUIRE(tokens[3].kind == TokenKind::RIGHT_PAREN);
+
+    REQUIRE(tokens[4].kind == TokenKind::LEFT_BRACE);
+    REQUIRE(tokens[5].kind == TokenKind::RETURN);
+    REQUIRE(tokens[6].kind == TokenKind::TRUE);
+    REQUIRE(tokens[7].kind == TokenKind::SEMICOLON);
+    REQUIRE(tokens[8].kind == TokenKind::RIGHT_BRACE);
+
+    REQUIRE(tokens[9].kind == TokenKind::ELSE);
+    REQUIRE(tokens[10].kind == TokenKind::LEFT_BRACE);
+    REQUIRE(tokens[11].kind == TokenKind::RETURN);
+    REQUIRE(tokens[12].kind == TokenKind::FALSE);
+    REQUIRE(tokens[13].kind == TokenKind::SEMICOLON);
+    REQUIRE(tokens[14].kind == TokenKind::RIGHT_BRACE);
+  }
 }
