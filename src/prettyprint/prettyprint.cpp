@@ -209,6 +209,7 @@ std::string parenthesize(const std::string &name, const std::initializer_list<co
     }
 
     else if (const auto *pL = std::get_if<Literal>(&part)) {
+      sout << to_string(*pL);
     }
   }
 
