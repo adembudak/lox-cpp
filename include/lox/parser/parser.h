@@ -8,7 +8,6 @@
 #include <initializer_list>
 #include <string_view>
 #include <stdexcept>
-#include <optional>
 
 namespace lox {
 
@@ -24,7 +23,7 @@ private:
 public:
   Parser(const std::vector<Token> &tokens);
 
-  std::optional<Expr> parse();
+  std::vector<Stmt> parse();
 
 private:
   Token peek() const;
@@ -38,6 +37,10 @@ private:
 private:
   parse_error error(const Token &t, const std::string_view message) const;
 
+  Stmt statement();
+  Stmt expressionStatement();
+  Stmt printStatement();
+
   Expr expression();
   Expr equality();
   Expr comparison();
@@ -46,5 +49,4 @@ private:
   Expr unary();
   Expr primary();
 };
-
 }

@@ -9,7 +9,7 @@
 
 namespace {
 
-void report(std::size_t line, const std::string_view where, const std::string_view message) {
+void report(const std::size_t line, const std::string_view where, const std::string_view message) {
   std::cerr << "[line " << line << "] Error" << where << ": " << message << '\n';
 }
 
@@ -62,13 +62,36 @@ Token Parser::consume(const TokenKind &token, const std::string_view err) {
 /////////////////////////
 
 parse_error Parser::error(const Token &t, const std::string_view message) const {
-  if (t.kind == lox::TokenKind::END_OF_FILE) {
+  if (t.kind == TokenKind::END_OF_FILE) {
     report(t.line, " at end", message);
   } else {
-    report(t.line, " at " + lox::to_string(t.lexeme), message);
+    report(t.line, " at " + to_string(t.lexeme), message);
   }
 
   return parse_error{""};
+}
+
+// statement -> exprStmt | printStmt;
+Stmt Parser::statement() {
+  if (match({TokenKind::PRINT})) {
+    return printStatement();
+  }
+
+  return expressionStatement();
+}
+
+// exprStmt -> expression ";";
+Stmt Parser::expressionStatement() {
+  Expr expr = expression();
+  consume(TokenKind::SEMICOLON, "Expect ';' after expression.");
+  return ExpressionStmt(expr);
+}
+
+// printStmt -> "print" expression ";";
+Stmt Parser::printStatement() {
+  Expr value = expression();
+  consume(TokenKind::SEMICOLON, "Expect ';' after value.");
+  return PrintStmt(value);
 }
 
 // expression -> equality ;
@@ -92,7 +115,9 @@ Expr Parser::equality() {
 // comparison -> term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
 Expr Parser::comparison() {
   Expr expr = term();
-  while (match({TokenKind::GREATER, TokenKind::GREATER_EQUAL, TokenKind::LESS, TokenKind::LESS_EQUAL})) {
+
+  using enum TokenKind;
+  while (match({GREATER, GREATER_EQUAL, LESS, LESS_EQUAL})) {
     Token op = previous();
     Expr right = term();
     expr = BinaryExpr(expr, op, right);
@@ -170,12 +195,14 @@ Parser::Parser(const std::vector<Token> &tokens)
     : m_tokens(tokens) {
 }
 
-std::optional<Expr> Parser::parse() {
-  try {
-    return expression();
-  } catch (const parse_error &e) {
-    return std::nullopt;
+std::vector<Stmt> Parser::parse() {
+  std::vector<Stmt> statements;
+
+  while (!isAtEnd()) {
+    statements.push_back(statement());
   }
+
+  return statements;
 }
 
 }
