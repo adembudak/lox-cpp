@@ -42,7 +42,7 @@ inline std::string to_string(const lox::Literal &t) {
   return std::visit(overload {
                [](const std::monostate) { return std::string{}; },
                [](const std::string &s) { return s; },
-               [](const double &d)      { return std::to_string(d); }
+               [](const double d)      { return std::to_string(d); }
              }, t);
   // clang-format on
 }
