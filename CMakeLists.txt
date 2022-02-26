@@ -18,4 +18,5 @@ endif()
 find_package(Boost QUIET REQUIRED CONFIG)
 
 add_subdirectory(src)
+add_subdirectory(cli)
 
