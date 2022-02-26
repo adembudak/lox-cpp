@@ -21,7 +21,7 @@
 
 namespace {
 
-void report(std::size_t line, const std::string_view where, const std::string_view message) {
+void report(const std::size_t line, const std::string_view where, const std::string_view message) {
   std::cerr << "[line " << line << "] Error" << where << ": " << message << '\n';
 }
 
