@@ -48,7 +48,10 @@ bool operator!=(const Values &left, const Values &right) {
 
 struct ExpressionVisitor : public boost::static_visitor<Values> {
   Values operator()(const LiteralExpr &expr) const {
-    return to_string(expr.literal);
+    if (std::holds_alternative<double>(expr.literal)) {
+      return std::get<double>(expr.literal);
+    }
+    return std::get<std::string>(expr.literal);
   }
 
   Values operator()(const GroupingExpr &expr) const {
