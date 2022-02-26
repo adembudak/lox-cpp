@@ -4,16 +4,14 @@
 
 namespace lox {
 
-using Values = std::variant<std::nullptr_t, bool, double, std::string>;
-
 class Interpreter {
 private:
-  Expr expr;
+  std::vector<Stmt> statements;
 
 public:
-  Interpreter(const Expr &expr);
+  Interpreter(const std::vector<Stmt> &statements);
 
-  Values interpret() const;
+  void interpret() const;
 };
 
 }

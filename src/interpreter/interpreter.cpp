@@ -4,8 +4,24 @@
 
 #include <boost/variant/static_visitor.hpp>
 #include <variant>
+#include <string>
+#include <iostream>
 
 namespace lox {
+
+using Values = std::variant<std::nullptr_t, bool, double, std::string>;
+
+std::string to_string(const Values &values) {
+  // clang-format off
+  using namespace std::string_literals;
+  return std::visit(overload {
+           [](const std::nullptr_t) { return "null"s; },
+           [](const bool b) { return b ? "true"s: "false"s; },
+           [](const double d) { return std::to_string(d); },
+           [](const std::string& s) { return s;}
+      }, values);
+  // clang-format on
+}
 
 bool isTruthy(const Values &values) {
   // clang-format off
@@ -30,17 +46,17 @@ bool operator!=(const Values &left, const Values &right) {
   return !(left == right);
 }
 
-struct InterpreterVisitor : public boost::static_visitor<Values> {
+struct ExpressionVisitor : public boost::static_visitor<Values> {
   Values operator()(const LiteralExpr &expr) const {
     return to_string(expr.literal);
   }
 
   Values operator()(const GroupingExpr &expr) const {
-    return boost::apply_visitor(InterpreterVisitor(), expr.expression);
+    return boost::apply_visitor(ExpressionVisitor(), expr.expression);
   }
 
   Values operator()(const UnaryExpr &expr) const {
-    Values right = boost::apply_visitor(InterpreterVisitor(), expr.right);
+    Values right = boost::apply_visitor(ExpressionVisitor(), expr.right);
 
     switch (expr.op.kind) {
       using enum TokenKind;
@@ -58,8 +74,8 @@ struct InterpreterVisitor : public boost::static_visitor<Values> {
   }
 
   Values operator()(const BinaryExpr &expr) const {
-    Values left = boost::apply_visitor(InterpreterVisitor(), expr.left);
-    Values right = boost::apply_visitor(InterpreterVisitor(), expr.right);
+    Values left = boost::apply_visitor(ExpressionVisitor(), expr.left);
+    Values right = boost::apply_visitor(ExpressionVisitor(), expr.right);
 
     switch (expr.op.kind) {
       using enum TokenKind;
@@ -111,12 +127,32 @@ struct InterpreterVisitor : public boost::static_visitor<Values> {
   }
 };
 
-Interpreter::Interpreter(const Expr &expr)
-    : expr(expr) {
+struct StatementVisitor : public boost::static_visitor<void> {
+  void operator()(const ExpressionStmt &stmt) const {
+    boost::apply_visitor(ExpressionVisitor(), stmt.expression);
+  }
+
+  void operator()(const PrintStmt &stmt) const {
+    Values val = boost::apply_visitor(ExpressionVisitor(), stmt.expression);
+    std::cout << to_string(val);
+  }
+
+  void operator()([[maybe_unused]] const auto & /*unused*/) const {
+  }
+};
+
+Interpreter::Interpreter(const std::vector<Stmt> &statements)
+    : statements(statements) {
 }
 
-Values Interpreter::interpret() const {
-  return boost::apply_visitor(InterpreterVisitor(), expr);
+void Interpreter::interpret() const {
+  try {
+    for (const auto &statement : statements) {
+      boost::apply_visitor(StatementVisitor(), statement);
+    }
+  } catch (const std::runtime_error &e) {
+    throw e.what();
+  }
 }
 
 }
