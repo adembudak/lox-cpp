@@ -20,13 +20,11 @@ struct ThisExpr;
 struct UnaryExpr;
 struct VariableExpr;
 
-using boost::blank;
 using boost::recursive_wrapper;
 using boost::variant;
 
 // clang-format off
-using Expr = variant<blank,
-                     recursive_wrapper<AssignExpr>,   
+using Expr = variant<recursive_wrapper<AssignExpr>,   
                      recursive_wrapper<BinaryExpr>, 
                      recursive_wrapper<CallExpr>,     
                      recursive_wrapper<GetExpr>,

@@ -18,13 +18,11 @@ struct ReturnStmt;
 struct VarStmt;
 struct WhileStmt;
 
-using boost::blank;
 using boost::recursive_wrapper;
 using boost::variant;
 
 // clang-format off
-using Stmt = variant<blank,
-                     recursive_wrapper<BlockStmt>, 
+using Stmt = variant<recursive_wrapper<BlockStmt>, 
                      recursive_wrapper<ClassStmt>, 
                      recursive_wrapper<ExpressionStmt>, 
                      recursive_wrapper<FunctionStmt>,
