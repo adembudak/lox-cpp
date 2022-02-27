@@ -1,5 +1,6 @@
 #include "lox/token.h"
-#include "lox/ast/ast.h"
+#include "lox/ast/expr.h"
+#include "lox/ast/stmt.h"
 #include "lox/prettyprint/prettyprint.h"
 
 #include <boost/variant/apply_visitor.hpp>

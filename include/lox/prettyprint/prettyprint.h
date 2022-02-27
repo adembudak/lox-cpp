@@ -1,6 +1,6 @@
 #pragma once
 
-#include "lox/ast/ast.h"
+#include "lox/ast/expr.h"
 #include <iosfwd>
 
 namespace lox {

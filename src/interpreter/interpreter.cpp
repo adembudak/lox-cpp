@@ -1,6 +1,7 @@
-#include "lox/interpreter/interpreter.h"
 #include "lox/token.h"
-#include "lox/ast/ast.h"
+#include "lox/ast/expr.h"
+#include "lox/ast/stmt.h"
+#include "lox/interpreter/interpreter.h"
 
 #include <boost/variant/static_visitor.hpp>
 #include <variant>

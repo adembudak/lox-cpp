@@ -1,7 +1,8 @@
 #pragma once
 
 #include "lox/token.h"
-#include "lox/ast/ast.h"
+#include "lox/ast/stmt.h"
+#include "lox/ast/expr.h"
 
 #include <vector>
 #include <cstddef>
