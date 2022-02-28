@@ -1,4 +1,5 @@
 #include "lox/token.h"
+#include "lox/literal.h"
 #include "lox/ast/expr.h"
 
 #include <vector>

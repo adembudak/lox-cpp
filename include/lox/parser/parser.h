@@ -38,6 +38,8 @@ private:
 private:
   parse_error error(const Token &t, const std::string_view message) const;
 
+  Stmt declaration();
+  Stmt variableDeclaration();
   Stmt statement();
   Stmt expressionStatement();
   Stmt printStatement();

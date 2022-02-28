@@ -1,5 +1,6 @@
 #include "lox/parser/parser.h"
 #include "lox/token.h"
+#include "lox/literal.h"
 
 #include <initializer_list>
 #include <string_view>
@@ -69,6 +70,33 @@ parse_error Parser::error(const Token &t, const std::string_view message) const 
   }
 
   return parse_error{""};
+}
+
+// declaration -> variableDeclaration | statement
+Stmt Parser::declaration() {
+  try {
+    if (match({TokenKind::VAR})) {
+      return variableDeclaration();
+    }
+    return statement();
+  } catch (const parse_error &e) {
+    std::cerr << e.what();
+    return {};
+  }
+}
+
+// varDecl -> "var" IDENTIFIER ( "=" expression )? ";" ;
+Stmt Parser::variableDeclaration() {
+  Token name = consume(TokenKind::IDENTIFIER, "Expect variable name.");
+
+  Expr initializer;
+  if (match({TokenKind::EQUAL})) {
+    initializer = expression();
+  }
+
+  consume(TokenKind::SEMICOLON, "Expr ';' after variable declaration.");
+
+  return VarStmt(name, initializer);
 }
 
 // statement -> exprStmt | printStmt;
@@ -160,7 +188,7 @@ Expr Parser::unary() {
   return primary();
 }
 
-// primary -> NUMBER | STRING | "true" | "false" | "nil" | "(" expression ")" ;
+// primary -> NUMBER | STRING | "true" | "false" | "nil" | "(" expression ")" | IDENTIFIER ;
 Expr Parser::primary() {
   if (match({TokenKind::NUMBER, TokenKind::STRING})) {
     Literal literal = previous().lexeme;
@@ -182,6 +210,10 @@ Expr Parser::primary() {
     return LiteralExpr(nilLiteral);
   }
 
+  if (match({TokenKind::IDENTIFIER})) {
+    return VariableExpr(previous());
+  }
+
   if (match({TokenKind::LEFT_PAREN})) {
     Expr expr = expression();
     consume(TokenKind::RIGHT_PAREN, "Expected ')' after expression.");
@@ -199,7 +231,7 @@ std::vector<Stmt> Parser::parse() {
   std::vector<Stmt> statements;
 
   while (!isAtEnd()) {
-    statements.push_back(statement());
+    statements.push_back(declaration());
   }
 
   return statements;

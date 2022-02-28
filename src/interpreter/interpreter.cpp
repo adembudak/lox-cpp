@@ -1,4 +1,5 @@
 #include "lox/token.h"
+#include "lox/values.h"
 #include "lox/ast/expr.h"
 #include "lox/ast/stmt.h"
 #include "lox/interpreter/interpreter.h"
@@ -9,20 +10,6 @@
 #include <iostream>
 
 namespace lox {
-
-using Values = std::variant<std::nullptr_t, bool, double, std::string>;
-
-std::string to_string(const Values &values) {
-  // clang-format off
-  using namespace std::string_literals;
-  return std::visit(overload {
-           [](const std::nullptr_t) { return "null"s; },
-           [](const bool b) { return b ? "true"s: "false"s; },
-           [](const double d) { return std::to_string(d); },
-           [](const std::string& s) { return s;}
-      }, values);
-  // clang-format on
-}
 
 bool isTruthy(const Values &values) {
   // clang-format off

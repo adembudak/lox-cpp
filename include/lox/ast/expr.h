@@ -1,6 +1,7 @@
 #pragma once
 
 #include "lox/token.h"
+#include "lox/literal.h"
 
 #include <boost/variant/variant.hpp>
 #include <boost/variant/recursive_wrapper.hpp>
@@ -20,11 +21,13 @@ struct ThisExpr;
 struct UnaryExpr;
 struct VariableExpr;
 
+using boost::blank;
 using boost::recursive_wrapper;
 using boost::variant;
 
 // clang-format off
-using Expr = variant<recursive_wrapper<AssignExpr>,   
+using Expr = variant<blank,
+                     recursive_wrapper<AssignExpr>,   
                      recursive_wrapper<BinaryExpr>, 
                      recursive_wrapper<CallExpr>,     
                      recursive_wrapper<GetExpr>,
