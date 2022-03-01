@@ -3,6 +3,7 @@
 #include "lox/ast/expr.h"
 #include "lox/ast/stmt.h"
 #include "lox/interpreter/interpreter.h"
+#include "lox/environment/environment.h"
 
 #include <boost/variant/static_visitor.hpp>
 #include <variant>
@@ -33,6 +34,8 @@ bool operator==(const Values &left, const Values &right) {
 bool operator!=(const Values &left, const Values &right) {
   return !(left == right);
 }
+
+Environment environment;
 
 struct ExpressionVisitor : public boost::static_visitor<Values> {
   Values operator()(const LiteralExpr &expr) const {
@@ -113,12 +116,23 @@ struct ExpressionVisitor : public boost::static_visitor<Values> {
     return nullptr;
   }
 
+  Values operator()(const VariableExpr &expr) const {
+    return environment.get(expr.name);
+  }
+
+  Values operator()(const AssignExpr &expr) const {
+    Values value = boost::apply_visitor(ExpressionVisitor(), expr.value);
+    environment.assign(expr.name, value);
+    return value;
+  }
+
   Values operator()([[maybe_unused]] const auto & /*unused*/) const {
     return {};
   }
 };
 
 struct StatementVisitor : public boost::static_visitor<void> {
+
   void operator()(const ExpressionStmt &stmt) const {
     boost::apply_visitor(ExpressionVisitor(), stmt.expression);
   }
@@ -126,6 +140,16 @@ struct StatementVisitor : public boost::static_visitor<void> {
   void operator()(const PrintStmt &stmt) const {
     Values val = boost::apply_visitor(ExpressionVisitor(), stmt.expression);
     std::cout << to_string(val);
+  }
+
+  void operator()(const VarStmt &stmt) const {
+    Values val;
+
+    if (!stmt.initializer.empty()) {
+      val = boost::apply_visitor(ExpressionVisitor(), stmt.initializer);
+    }
+
+    environment.define(to_string(stmt.name.lexeme), val);
   }
 
   void operator()([[maybe_unused]] const auto & /*unused*/) const {

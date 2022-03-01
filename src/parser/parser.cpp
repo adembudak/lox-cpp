@@ -2,6 +2,8 @@
 #include "lox/token.h"
 #include "lox/literal.h"
 
+#include <boost/variant/get.hpp>
+
 #include <initializer_list>
 #include <string_view>
 #include <string>
@@ -59,6 +61,39 @@ Token Parser::consume(const TokenKind &token, const std::string_view err) {
 
   throw error(peek(), err);
 }
+void Parser::synchronize() {
+  advance();
+
+  while (!isAtEnd()) {
+    using enum TokenKind;
+
+    if (previous().kind == SEMICOLON) {
+      return;
+    }
+
+    switch (peek().kind) {
+      case CLASS:
+        [[fallthrough]];
+      case FUN:
+        [[fallthrough]];
+      case VAR:
+        [[fallthrough]];
+      case FOR:
+        [[fallthrough]];
+      case IF:
+        [[fallthrough]];
+      case WHILE:
+        [[fallthrough]];
+      case PRINT:
+        [[fallthrough]];
+      case RETURN:
+        return;
+      default:
+        break;
+    }
+    advance();
+  }
+}
 
 /////////////////////////
 
@@ -66,7 +101,7 @@ parse_error Parser::error(const Token &t, const std::string_view message) const 
   if (t.kind == TokenKind::END_OF_FILE) {
     report(t.line, " at end", message);
   } else {
-    report(t.line, " at " + to_string(t.lexeme), message);
+    report(t.line, " at '" + to_string(t.lexeme) + "'", message);
   }
 
   return parse_error{""};
@@ -80,8 +115,8 @@ Stmt Parser::declaration() {
     }
     return statement();
   } catch (const parse_error &e) {
-    std::cerr << e.what();
-    return {};
+    synchronize();
+    return boost::blank{};
   }
 }
 
@@ -122,9 +157,26 @@ Stmt Parser::printStatement() {
   return PrintStmt(value);
 }
 
-// expression -> equality ;
+// expression -> assignment;
 Expr Parser::expression() {
-  return equality();
+  return assignment();
+}
+
+Expr Parser::assignment() {
+  Expr expr = equality();
+
+  if (match({TokenKind::EQUAL})) {
+    Token equals = previous();
+    Expr value = assignment();
+
+    if (auto *pVariableExpr = boost::get<VariableExpr>(&expr)) {
+      Token name = pVariableExpr->name;
+      return AssignExpr(name, value);
+    }
+    error(equals, "Invalid assignment target.");
+  }
+
+  return expr;
 }
 
 // equality -> comparison ( ( "!=" | "==" ) comparison )* ;
@@ -220,7 +272,7 @@ Expr Parser::primary() {
     return GroupingExpr(expr);
   }
 
-  throw error(peek(), "Expect expression");
+  throw error(peek(), "Expect expression.");
 }
 
 Parser::Parser(const std::vector<Token> &tokens)
@@ -236,5 +288,4 @@ std::vector<Stmt> Parser::parse() {
 
   return statements;
 }
-
 }

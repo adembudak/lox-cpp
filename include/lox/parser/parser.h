@@ -34,6 +34,7 @@ private:
   Token advance();
   bool match(std::initializer_list<TokenKind> tokens);
   Token consume(const TokenKind &token, const std::string_view err);
+  void synchronize();
 
 private:
   parse_error error(const Token &t, const std::string_view message) const;
@@ -45,6 +46,7 @@ private:
   Stmt printStatement();
 
   Expr expression();
+  Expr assignment();
   Expr equality();
   Expr comparison();
   Expr term();
