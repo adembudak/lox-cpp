@@ -14,6 +14,7 @@ private:
 public:
   void define(const std::string &name, const Values &val);
   Values get(const Token &t);
+  void assign(const Token &name, const Values &value);
 };
 
 }

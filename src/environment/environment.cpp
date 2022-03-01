@@ -19,7 +19,16 @@ Values Environment::get(const Token &t) {
     return m_values[lexeme];
   }
 
-  throw std::runtime_error(" Undefined variable '" + lexeme + '\'');
+  throw std::runtime_error("Undefined variable '" + lexeme + "'.");
+}
+
+void Environment::assign(const Token &name, const Values &value) {
+  const std::string lexeme = to_string(name.lexeme);
+  if (m_values.contains(lexeme)) {
+    m_values[lexeme] = value;
+    return;
+  }
+  throw new std::runtime_error("Undefined variable '" + lexeme + "'.");
 }
 
 }
