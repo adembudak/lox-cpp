@@ -35,10 +35,11 @@ void runFile(const std::string &sourceFile) {
 
 void runPrompt() {
   for (;;) {
-    std::cout << "> ";
+    std::cout << ">>> ";
     std::string input;
     std::getline(std::cin, input);
     if (!input.empty()) {
+      std::cout << ">>> ";
       run(input);
     }
   }
@@ -48,7 +49,7 @@ void runPrompt() {
 
 int main(int argc, const char *const argv[]) {
   if (argc < 2) {
-    std::cout << "Usage: jlox [script]\n";
+    std::cout << "Usage: lox-cli [script]\n";
     return 1;
   } else if (argc == 2) { // execute file
     runFile(argv[1]);
