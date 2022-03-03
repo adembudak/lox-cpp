@@ -43,6 +43,7 @@ private:
   Stmt variableDeclaration();
   Stmt statement();
   Stmt expressionStatement();
+  std::vector<Stmt> block();
   Stmt printStatement();
 
   Expr expression();

@@ -4,9 +4,14 @@
 #include "lox/token.h"
 
 #include <string>
+#include <memory>
 #include <stdexcept>
 
 namespace lox {
+
+Environment::Environment(std::shared_ptr<Environment> enclosing)
+    : m_enclosing(enclosing) {
+}
 
 void Environment::define(const std::string &name, const Values &val) {
   m_values[name] = val;
@@ -19,6 +24,10 @@ Values Environment::get(const Token &t) const {
     return m_values.find(lexeme)->second;
   }
 
+  if (m_enclosing) {
+    return m_enclosing->get(t);
+  }
+
   throw std::runtime_error("Undefined variable '" + lexeme + "'.");
 }
 
@@ -28,7 +37,25 @@ void Environment::assign(const Token &name, const Values &value) {
     m_values[lexeme] = value;
     return;
   }
-  throw new std::runtime_error("Undefined variable '" + lexeme + "'.");
+
+  if (m_enclosing) {
+    m_enclosing->assign(name, value);
+    return;
+  }
+
+  throw std::runtime_error("Undefined variable '" + lexeme + "'.");
+}
+
+void Environment::assignAt(const int distance, const Token &t, const Values &value) {
+  ancestor(distance)->m_values[to_string(t.lexeme)] = value;
+}
+
+std::shared_ptr<Environment> Environment::ancestor(const int distance) {
+  auto environment = shared_from_this();
+  for (int i = 0; i < distance; i++) {
+    environment = environment->m_enclosing;
+  }
+  return environment;
 }
 
 }

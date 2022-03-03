@@ -35,7 +35,8 @@ bool operator!=(const Values &left, const Values &right) {
   return !(left == right);
 }
 
-Environment environment;
+Environment env;
+std::shared_ptr<Environment> environment = std::make_shared<Environment>(env);
 
 struct ExpressionVisitor : public boost::static_visitor<Values> {
   Values operator()(const LiteralExpr &expr) const {
@@ -117,12 +118,12 @@ struct ExpressionVisitor : public boost::static_visitor<Values> {
   }
 
   Values operator()(const VariableExpr &expr) const {
-    return environment.get(expr.name);
+    return environment->get(expr.name);
   }
 
   Values operator()(const AssignExpr &expr) const {
     Values value = boost::apply_visitor(ExpressionVisitor(), expr.value);
-    environment.assign(expr.name, value);
+    environment->assign(expr.name, value);
     return value;
   }
 
@@ -131,6 +132,7 @@ struct ExpressionVisitor : public boost::static_visitor<Values> {
   }
 };
 
+void executeBlock(const std::vector<Stmt> &statements, std::shared_ptr<Environment> env);
 struct StatementVisitor : public boost::static_visitor<void> {
 
   void operator()(const ExpressionStmt &stmt) const {
@@ -149,12 +151,26 @@ struct StatementVisitor : public boost::static_visitor<void> {
       val = boost::apply_visitor(ExpressionVisitor(), stmt.initializer);
     }
 
-    environment.define(to_string(stmt.name.lexeme), val);
+    environment->define(to_string(stmt.name.lexeme), val);
+  }
+
+  void operator()(const BlockStmt &stmt) const {
+    executeBlock(stmt.statements, std::make_shared<Environment>(environment));
   }
 
   void operator()([[maybe_unused]] const auto & /*unused*/) const {
   }
 };
+
+void executeBlock(const std::vector<Stmt> &statements, std::shared_ptr<Environment> env) {
+  std::shared_ptr<Environment> previous = environment;
+  environment = env;
+
+  for (auto statement : statements) {
+    boost::apply_visitor(StatementVisitor(), statement);
+  }
+  environment = previous;
+}
 
 Interpreter::Interpreter(const std::vector<Stmt> &statements)
     : statements(statements) {
@@ -169,5 +185,4 @@ void Interpreter::interpret() const {
     throw e.what();
   }
 }
-
 }

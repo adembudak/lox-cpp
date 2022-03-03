@@ -134,10 +134,14 @@ Stmt Parser::variableDeclaration() {
   return VarStmt(name, initializer);
 }
 
-// statement -> exprStmt | printStmt;
+// statement -> exprStmt | printStmt | block;
 Stmt Parser::statement() {
   if (match({TokenKind::PRINT})) {
     return printStatement();
+  }
+
+  if (match({TokenKind::LEFT_BRACE})) {
+    return BlockStmt(block());
   }
 
   return expressionStatement();
@@ -148,6 +152,17 @@ Stmt Parser::expressionStatement() {
   Expr expr = expression();
   consume(TokenKind::SEMICOLON, "Expect ';' after expression.");
   return ExpressionStmt(expr);
+}
+
+// block -> "{" declaration "}";
+std::vector<Stmt> Parser::block() {
+  std::vector<Stmt> statements;
+  while (!check(TokenKind::RIGHT_BRACE) && !isAtEnd()) {
+    statements.push_back(declaration());
+  }
+
+  consume(TokenKind::RIGHT_BRACE, "Expect '}' after block.");
+  return statements;
 }
 
 // printStmt -> "print" expression ";";
