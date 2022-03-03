@@ -13,7 +13,7 @@ private:
 
 public:
   void define(const std::string &name, const Values &val);
-  Values get(const Token &t);
+  Values get(const Token &t) const;
   void assign(const Token &name, const Values &value);
 };
 
