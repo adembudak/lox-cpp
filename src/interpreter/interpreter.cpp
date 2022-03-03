@@ -23,22 +23,11 @@ bool isTruthy(const Values &values) {
   // clang-format on
 }
 
-bool operator==(const Values &left, const Values &right) {
-  if (left.index() == 0 && right.index() == 0)
-    return true;
-  if (left.index() == 0 && right.index() != 0)
-    return false;
-  return left == right;
-}
-
-bool operator!=(const Values &left, const Values &right) {
-  return !(left == right);
-}
-
 Environment env;
 std::shared_ptr<Environment> environment = std::make_shared<Environment>(env);
 
 struct ExpressionVisitor : public boost::static_visitor<Values> {
+
   Values operator()(const LiteralExpr &expr) const {
     if (std::holds_alternative<double>(expr.literal)) {
       return std::get<double>(expr.literal);
@@ -185,4 +174,5 @@ void Interpreter::interpret() const {
     throw e.what();
   }
 }
+
 }

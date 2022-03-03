@@ -27,4 +27,16 @@ inline std::string to_string(const Values &values) {
   // clang-format on
 }
 
+inline bool operator==(const Values &left, const Values &right) {
+  if (left.index() == 0 && right.index() == 0)
+    return true;
+  if (left.index() == 0 && right.index() != 0)
+    return false;
+  return left == right;
+}
+
+inline bool operator!=(const Values &left, const Values &right) {
+  return !(left == right);
+}
+
 }
