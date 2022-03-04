@@ -10,7 +10,6 @@ private:
 
 public:
   Interpreter(const std::vector<Stmt> &statements);
-
   void interpret() const;
 };
 

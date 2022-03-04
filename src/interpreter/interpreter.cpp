@@ -23,8 +23,7 @@ bool isTruthy(const Values &values) {
   // clang-format on
 }
 
-Environment env;
-std::shared_ptr<Environment> environment = std::make_shared<Environment>(env);
+std::shared_ptr<Environment> environment(new Environment);
 
 struct ExpressionVisitor : public boost::static_visitor<Values> {
 
@@ -121,7 +120,7 @@ struct ExpressionVisitor : public boost::static_visitor<Values> {
   }
 };
 
-void executeBlock(const std::vector<Stmt> &statements, std::shared_ptr<Environment> env);
+void executeBlock(const std::vector<Stmt> &statements, const std::shared_ptr<Environment> &env);
 struct StatementVisitor : public boost::static_visitor<void> {
 
   void operator()(const ExpressionStmt &stmt) const {
@@ -151,7 +150,7 @@ struct StatementVisitor : public boost::static_visitor<void> {
   }
 };
 
-void executeBlock(const std::vector<Stmt> &statements, std::shared_ptr<Environment> env) {
+void executeBlock(const std::vector<Stmt> &statements, const std::shared_ptr<Environment> &env) {
   std::shared_ptr<Environment> previous = environment;
   environment = env;
 

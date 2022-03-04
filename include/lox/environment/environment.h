@@ -11,12 +11,11 @@ namespace lox {
 class Environment : public std::enable_shared_from_this<Environment> {
 private:
   std::unordered_map<std::string, Values> m_values;
-
-public:
   std::shared_ptr<Environment> m_enclosing;
 
+public:
   Environment() = default;
-  explicit Environment(std::shared_ptr<Environment> enclosing);
+  explicit Environment(const std::shared_ptr<Environment> &enclosing);
 
   void define(const std::string &name, const Values &val);
   Values get(const Token &t) const;

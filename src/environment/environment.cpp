@@ -9,7 +9,7 @@
 
 namespace lox {
 
-Environment::Environment(std::shared_ptr<Environment> enclosing)
+Environment::Environment(const std::shared_ptr<Environment> &enclosing)
     : m_enclosing(enclosing) {
 }
 
