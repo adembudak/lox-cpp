@@ -37,11 +37,10 @@ private:
   void synchronize();
 
 private:
-  parse_error error(const Token &t, const std::string_view message) const;
-
   Stmt declaration();
   Stmt variableDeclaration();
   Stmt statement();
+  Stmt ifStatement();
   Stmt expressionStatement();
   std::vector<Stmt> block();
   Stmt printStatement();

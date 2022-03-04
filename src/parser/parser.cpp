@@ -10,15 +10,21 @@
 #include <algorithm>
 #include <iostream>
 
-namespace {
+namespace lox {
 
-void report(const std::size_t line, const std::string_view where, const std::string_view message) {
+static void report(const std::size_t line, const std::string_view where, const std::string_view message) {
   std::cerr << "[line " << line << "] Error" << where << ": " << message << '\n';
 }
 
-}
+static parse_error error(const Token &t, const std::string_view message) {
+  if (t.kind == TokenKind::END_OF_FILE) {
+    report(t.line, " at end", message);
+  } else {
+    report(t.line, " at '" + to_string(t.lexeme) + "'", message);
+  }
 
-namespace lox {
+  return parse_error{""};
+}
 
 Token Parser::peek() const {
   return m_tokens[m_current];
@@ -46,7 +52,7 @@ bool Parser::check(const TokenKind &t) const {
 }
 
 bool Parser::match(std::initializer_list<TokenKind> tokens) {
-  bool is_there_a_match = std::any_of(tokens.begin(), tokens.end(), [&](const auto &token) { return check(token); });
+  bool is_there_a_match = std::any_of(cbegin(tokens), cend(tokens), [&](const auto &token) { return check(token); });
 
   if (is_there_a_match) {
     advance();
@@ -97,16 +103,6 @@ void Parser::synchronize() {
 
 /////////////////////////
 
-parse_error Parser::error(const Token &t, const std::string_view message) const {
-  if (t.kind == TokenKind::END_OF_FILE) {
-    report(t.line, " at end", message);
-  } else {
-    report(t.line, " at '" + to_string(t.lexeme) + "'", message);
-  }
-
-  return parse_error{""};
-}
-
 // declaration -> variableDeclaration | statement
 Stmt Parser::declaration() {
   try {
@@ -134,8 +130,12 @@ Stmt Parser::variableDeclaration() {
   return VarStmt(name, initializer);
 }
 
-// statement -> exprStmt | printStmt | block;
+// statement -> exprStmt | ifStmt | printStmt | block;
 Stmt Parser::statement() {
+  if (match({TokenKind::IF})) {
+    return ifStatement();
+  }
+
   if (match({TokenKind::PRINT})) {
     return printStatement();
   }
@@ -145,6 +145,23 @@ Stmt Parser::statement() {
   }
 
   return expressionStatement();
+}
+
+// ifStmt -> "if" "(" expression ")" statement ( "else" statement )? ;
+Stmt Parser::ifStatement() {
+
+  consume(TokenKind::LEFT_PAREN, "Expect '(' after 'if'.");
+  Expr condition = expression();
+  consume(TokenKind::RIGHT_PAREN, "Expect ')' after if condition.");
+
+  Stmt thenBranch = statement();
+
+  Stmt elseBranch;
+  if (match({TokenKind::ELSE})) {
+    elseBranch = statement();
+  }
+
+  return IfStmt(condition, thenBranch, elseBranch);
 }
 
 // exprStmt -> expression ";";
