@@ -47,6 +47,8 @@ private:
 
   Expr expression();
   Expr assignment();
+  Expr or_();
+  Expr and_(); // revisit: better naming, get rid of _
   Expr equality();
   Expr comparison();
   Expr term();

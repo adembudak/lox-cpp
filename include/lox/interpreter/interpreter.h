@@ -20,6 +20,7 @@ private:
     Values evaluate(const Expr &expr) const;
 
     Values operator()(const LiteralExpr &expr) const;
+    Values operator()(const LogicalExpr &expr) const;
     Values operator()(const GroupingExpr &expr) const;
     Values operator()(const UnaryExpr &expr) const;
     Values operator()(const BinaryExpr &expr) const;

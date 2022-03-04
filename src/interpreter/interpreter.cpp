@@ -38,6 +38,19 @@ Values Interpreter::ExpressionVisitor::operator()(const LiteralExpr &expr) const
   return std::get<std::string>(expr.literal);
 }
 
+Values Interpreter::ExpressionVisitor::operator()(const LogicalExpr &expr) const {
+  Values left = evaluate(expr.left);
+  if (expr.op.kind == TokenKind::OR) {
+    if (isTruthy(left))
+      return left;
+  } else {
+    if (!isTruthy(left))
+      return left;
+  }
+
+  return evaluate(expr.right);
+}
+
 Values Interpreter::ExpressionVisitor::operator()(const GroupingExpr &expr) const {
   return evaluate(expr.expression);
 }

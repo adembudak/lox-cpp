@@ -194,8 +194,9 @@ Expr Parser::expression() {
   return assignment();
 }
 
+// assignment -> IDENTIFIER "=" assignment | logic_or;
 Expr Parser::assignment() {
-  Expr expr = equality();
+  Expr expr = or_();
 
   if (match({TokenKind::EQUAL})) {
     Token equals = previous();
@@ -206,6 +207,32 @@ Expr Parser::assignment() {
       return AssignExpr(name, value);
     }
     error(equals, "Invalid assignment target.");
+  }
+
+  return expr;
+}
+
+// logic_or -> logic_and ( "or" logic_and )* ;
+Expr Parser::or_() {
+  Expr expr = and_();
+
+  while (match({TokenKind::OR})) {
+    Token op = previous();
+    Expr right = and_();
+    expr = LogicalExpr(expr, op, right);
+  }
+
+  return expr;
+}
+
+// logic_and -> equality ( "and" equality )* ;
+Expr Parser::and_() {
+  Expr expr = equality();
+
+  while (match({TokenKind::AND})) {
+    Token op = previous();
+    Expr right = equality();
+    expr = LogicalExpr(expr, op, right);
   }
 
   return expr;
