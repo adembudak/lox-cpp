@@ -17,6 +17,8 @@ private:
   struct ExpressionVisitor : public boost::static_visitor<Values> {
     ExpressionVisitor(Interpreter &interpreter);
 
+    Values evaluate(const Expr &expr) const;
+
     Values operator()(const LiteralExpr &expr) const;
     Values operator()(const GroupingExpr &expr) const;
     Values operator()(const UnaryExpr &expr) const;
@@ -26,19 +28,19 @@ private:
     Values operator()([[maybe_unused]] const auto & /*unused*/) const;
 
   private:
-    bool isTruthy(const Values &values) const;
-
-  private:
     Interpreter &m_interpreter;
   };
 
   struct StatementVisitor : public boost::static_visitor<void> {
     StatementVisitor(Interpreter &interpreter);
 
+    void execute(const Stmt &stmt) const;
+
     void operator()(const ExpressionStmt &stmt) const;
     void operator()(const PrintStmt &stmt) const;
     void operator()(const VarStmt &stmt) const;
     void operator()(const BlockStmt &stmt) const;
+    void operator()(const IfStmt &stmt) const;
     void operator()([[maybe_unused]] const auto & /*unused*/) const;
 
   private:

@@ -12,7 +12,7 @@
 
 namespace lox {
 
-bool Interpreter::ExpressionVisitor::isTruthy(const Values &values) const {
+bool isTruthy(const Values &values) {
   // clang-format off
   return std::visit(overload {
            [](const std::nullptr_t) { return false; },
@@ -27,6 +27,10 @@ Interpreter::ExpressionVisitor::ExpressionVisitor(Interpreter &interpreter)
     : m_interpreter(interpreter) {
 }
 
+Values Interpreter::ExpressionVisitor::evaluate(const Expr &expr) const {
+  return boost::apply_visitor(m_interpreter.m_expressionVisitor, expr);
+}
+
 Values Interpreter::ExpressionVisitor::operator()(const LiteralExpr &expr) const {
   if (std::holds_alternative<double>(expr.literal)) {
     return std::get<double>(expr.literal);
@@ -35,11 +39,11 @@ Values Interpreter::ExpressionVisitor::operator()(const LiteralExpr &expr) const
 }
 
 Values Interpreter::ExpressionVisitor::operator()(const GroupingExpr &expr) const {
-  return boost::apply_visitor(m_interpreter.m_expressionVisitor, expr.expression);
+  return evaluate(expr.expression);
 }
 
 Values Interpreter::ExpressionVisitor::operator()(const UnaryExpr &expr) const {
-  Values right = boost::apply_visitor(m_interpreter.m_expressionVisitor, expr.right);
+  Values right = evaluate(expr.right);
 
   switch (expr.op.kind) {
     using enum TokenKind;
@@ -57,8 +61,8 @@ Values Interpreter::ExpressionVisitor::operator()(const UnaryExpr &expr) const {
 }
 
 Values Interpreter::ExpressionVisitor::operator()(const BinaryExpr &expr) const {
-  Values left = boost::apply_visitor(m_interpreter.m_expressionVisitor, expr.left);
-  Values right = boost::apply_visitor(m_interpreter.m_expressionVisitor, expr.right);
+  Values left = evaluate(expr.left);
+  Values right = evaluate(expr.right);
 
   switch (expr.op.kind) {
     using enum TokenKind;
@@ -110,7 +114,7 @@ Values Interpreter::ExpressionVisitor::operator()(const VariableExpr &expr) cons
 }
 
 Values Interpreter::ExpressionVisitor::operator()(const AssignExpr &expr) const {
-  Values value = boost::apply_visitor(m_interpreter.m_expressionVisitor, expr.value);
+  Values value = evaluate(expr.value);
   m_interpreter.m_environment->assign(expr.name, value);
   return value;
 }
@@ -125,12 +129,16 @@ Interpreter::StatementVisitor::StatementVisitor(Interpreter &interpreter)
     : m_interpreter(interpreter) {
 }
 
+void Interpreter::StatementVisitor::execute(const Stmt &stmt) const {
+  boost::apply_visitor(m_interpreter.m_statementVisitor, stmt);
+}
+
 void Interpreter::StatementVisitor::operator()(const ExpressionStmt &stmt) const {
-  boost::apply_visitor(m_interpreter.m_expressionVisitor, stmt.expression);
+  m_interpreter.m_expressionVisitor.evaluate(stmt.expression);
 }
 
 void Interpreter::StatementVisitor::operator()(const PrintStmt &stmt) const {
-  Values val = boost::apply_visitor(m_interpreter.m_expressionVisitor, stmt.expression);
+  Values val = m_interpreter.m_expressionVisitor.evaluate(stmt.expression);
   std::cout << to_string(val);
 }
 
@@ -138,7 +146,7 @@ void Interpreter::StatementVisitor::operator()(const VarStmt &stmt) const {
   Values val;
 
   if (!stmt.initializer.empty()) {
-    val = boost::apply_visitor(m_interpreter.m_expressionVisitor, stmt.initializer);
+    val = m_interpreter.m_expressionVisitor.evaluate(stmt.initializer);
   }
 
   m_interpreter.m_environment->define(to_string(stmt.name.lexeme), val);
@@ -148,15 +156,23 @@ void Interpreter::StatementVisitor::operator()(const BlockStmt &stmt) const {
   executeBlock(stmt.statements, std::make_shared<Environment>(m_interpreter.m_environment));
 }
 
+void Interpreter::StatementVisitor::operator()(const IfStmt &stmt) const {
+  if (isTruthy(m_interpreter.m_expressionVisitor.evaluate(stmt.condition))) {
+    execute(stmt.thenBranch);
+  } else if (!stmt.elseBranch.empty()) {
+    execute(stmt.elseBranch);
+  }
+}
+
 void Interpreter::StatementVisitor::operator()([[maybe_unused]] const auto & /*unused*/) const {
 }
 
 void Interpreter::StatementVisitor::executeBlock(const std::vector<Stmt> &statements, const std::shared_ptr<Environment> &env) const {
-  std::shared_ptr<Environment> previous = m_interpreter.m_environment;
+  const auto previous = m_interpreter.m_environment;
   m_interpreter.m_environment = env;
 
-  for (auto statement : statements) {
-    boost::apply_visitor(m_interpreter.m_statementVisitor, statement);
+  for (const auto &statement : statements) {
+    execute(statement);
   }
   m_interpreter.m_environment = previous;
 }
@@ -171,7 +187,7 @@ Interpreter::Interpreter(const std::vector<Stmt> &statements)
 void Interpreter::interpret() const {
   try {
     for (const auto &statement : m_statements) {
-      boost::apply_visitor(m_statementVisitor, statement);
+      m_statementVisitor.execute(statement);
     }
   } catch (const std::runtime_error &e) {
     throw e.what();
