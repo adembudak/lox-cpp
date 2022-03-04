@@ -123,8 +123,6 @@ Values Interpreter::ExpressionVisitor::operator()([[maybe_unused]] const auto & 
   return {};
 }
 
-void executeBlock(const std::vector<Stmt> &statements, const std::shared_ptr<Environment> &env);
-
 Interpreter::StatementVisitor::StatementVisitor(Interpreter &interpreter)
     : m_interpreter(interpreter) {
 }
