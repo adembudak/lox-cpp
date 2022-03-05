@@ -49,59 +49,59 @@ std::vector<Token> Scanner::scan() {
 
     switch (const char c = advance(); c) {
       case '(':
-        m_tokens.push_back(Token{TokenKind::LEFT_PAREN, noopt, m_line});
+        m_tokens.push_back(Token{TokenKind::LEFT_PAREN, nullptr, m_line});
         break;
 
       case ')':
-        m_tokens.push_back(Token{TokenKind::RIGHT_PAREN, noopt, m_line});
+        m_tokens.push_back(Token{TokenKind::RIGHT_PAREN, nullptr, m_line});
         break;
 
       case '{':
-        m_tokens.push_back(Token{TokenKind::LEFT_BRACE, noopt, m_line});
+        m_tokens.push_back(Token{TokenKind::LEFT_BRACE, nullptr, m_line});
         break;
 
       case '}':
-        m_tokens.push_back(Token{TokenKind::RIGHT_BRACE, noopt, m_line});
+        m_tokens.push_back(Token{TokenKind::RIGHT_BRACE, nullptr, m_line});
         break;
 
       case '.':
-        m_tokens.push_back(Token{TokenKind::DOT, noopt, m_line});
+        m_tokens.push_back(Token{TokenKind::DOT, nullptr, m_line});
         break;
 
       case ',':
-        m_tokens.push_back(Token{TokenKind::COMMA, noopt, m_line});
+        m_tokens.push_back(Token{TokenKind::COMMA, nullptr, m_line});
         break;
 
       case '-':
-        m_tokens.push_back(Token{TokenKind::MINUS, noopt, m_line});
+        m_tokens.push_back(Token{TokenKind::MINUS, nullptr, m_line});
         break;
 
       case '+':
-        m_tokens.push_back(Token{TokenKind::PLUS, noopt, m_line});
+        m_tokens.push_back(Token{TokenKind::PLUS, nullptr, m_line});
         break;
 
       case ';':
-        m_tokens.push_back(Token{TokenKind::SEMICOLON, noopt, m_line});
+        m_tokens.push_back(Token{TokenKind::SEMICOLON, nullptr, m_line});
         break;
 
       case '*':
-        m_tokens.push_back(Token{TokenKind::STAR, noopt, m_line});
+        m_tokens.push_back(Token{TokenKind::STAR, nullptr, m_line});
         break;
 
       case '!':
-        m_tokens.push_back(Token{match('=') ? TokenKind::BANG_EQUAL : TokenKind::BANG, noopt, m_line});
+        m_tokens.push_back(Token{match('=') ? TokenKind::BANG_EQUAL : TokenKind::BANG, nullptr, m_line});
         break;
 
       case '=':
-        m_tokens.push_back(Token{match('=') ? TokenKind::EQUAL_EQUAL : TokenKind::EQUAL, noopt, m_line});
+        m_tokens.push_back(Token{match('=') ? TokenKind::EQUAL_EQUAL : TokenKind::EQUAL, nullptr, m_line});
         break;
 
       case '<':
-        m_tokens.push_back(Token{match('=') ? TokenKind::LESS_EQUAL : TokenKind::LESS, noopt, m_line});
+        m_tokens.push_back(Token{match('=') ? TokenKind::LESS_EQUAL : TokenKind::LESS, nullptr, m_line});
         break;
 
       case '>':
-        m_tokens.push_back(Token{match('=') ? TokenKind::GREATER_EQUAL : TokenKind::GREATER, noopt, m_line});
+        m_tokens.push_back(Token{match('=') ? TokenKind::GREATER_EQUAL : TokenKind::GREATER, nullptr, m_line});
         break;
 
       case '/':
@@ -109,7 +109,7 @@ std::vector<Token> Scanner::scan() {
           while (peek() != '\n' && !isAtEnd())
             advance();
         else
-          m_tokens.push_back(Token{TokenKind::SLASH, noopt, m_line});
+          m_tokens.push_back(Token{TokenKind::SLASH, nullptr, m_line});
         break;
 
       case ' ':
@@ -170,7 +170,7 @@ std::vector<Token> Scanner::scan() {
     }
   }
 
-  m_tokens.push_back(Token{TokenKind::END_OF_FILE, noopt, m_line});
+  m_tokens.push_back(Token{TokenKind::END_OF_FILE, nullptr, m_line});
   return m_tokens;
 }
 
