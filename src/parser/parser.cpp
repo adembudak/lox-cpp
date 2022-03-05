@@ -130,8 +130,12 @@ Stmt Parser::variableDeclaration() {
   return VarStmt(name, initializer);
 }
 
-// statement -> exprStmt | ifStmt | printStmt | block;
+// statement -> exprStmt | forStmt | ifStmt | printStmt | whileStmt | block ;
 Stmt Parser::statement() {
+  if (match({TokenKind::FOR})) {
+    return forStatement();
+  }
+
   if (match({TokenKind::IF})) {
     return ifStatement();
   }
@@ -149,6 +153,54 @@ Stmt Parser::statement() {
   }
 
   return expressionStatement();
+}
+
+// forStmt -> "for" "(" ( varDecl | exprStmt | ";" ) expression? ";" expression? ")" statement ;
+Stmt Parser::forStatement() {
+  consume(TokenKind::LEFT_PAREN, "Expect '(' after 'for'.");
+
+  Stmt initializer = [&]() -> Stmt {
+    if (match({TokenKind::SEMICOLON}))
+      return boost::blank{};
+
+    if (match({TokenKind::VAR}))
+      return variableDeclaration();
+
+    return expressionStatement();
+  }();
+
+  Expr condition = [&]() -> Expr {
+    if (!check({TokenKind::SEMICOLON}))
+      return expression();
+    return boost::blank{};
+  }();
+
+  consume(TokenKind::SEMICOLON, "Expect ';' after loop condition.");
+
+  Expr increment = [&]() -> Expr {
+    if (!check(TokenKind::RIGHT_PAREN))
+      return expression();
+    return boost::blank{};
+  }();
+
+  consume(TokenKind::RIGHT_PAREN, "Expect ')' after for clauses.");
+
+  Stmt body = statement();
+
+  if (increment.which() != 0) {
+    body = BlockStmt({body, ExpressionStmt(increment)});
+  }
+
+  if (condition.which() == 0) { // is its value boost::blank?
+    condition = LiteralExpr(true);
+  }
+  body = WhileStmt(condition, body);
+
+  if (initializer.which() != 0) {
+    body = BlockStmt({initializer, body});
+  }
+
+  return body;
 }
 
 // ifStmt -> "if" "(" expression ")" statement ( "else" statement )? ;

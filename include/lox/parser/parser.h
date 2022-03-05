@@ -40,6 +40,7 @@ private:
   Stmt declaration();
   Stmt variableDeclaration();
   Stmt statement();
+  Stmt forStatement();
   Stmt ifStatement();
   Stmt whileStatement();
   Stmt expressionStatement();
