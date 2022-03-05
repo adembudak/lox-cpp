@@ -173,7 +173,13 @@ void Interpreter::StatementVisitor::operator()(const IfStmt &stmt) const {
   }
 }
 
+void Interpreter::StatementVisitor::operator()(const WhileStmt &stmt) const {
+  while (isTruthy(m_interpreter.m_expressionVisitor.evaluate(stmt.condition)))
+    execute(stmt.body);
+}
+
 void Interpreter::StatementVisitor::operator()([[maybe_unused]] const auto & /*unused*/) const {
+  /* sink */
 }
 
 void Interpreter::StatementVisitor::executeBlock(const std::vector<Stmt> &statements, const std::shared_ptr<Environment> &env) const {

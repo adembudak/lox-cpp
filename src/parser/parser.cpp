@@ -136,6 +136,10 @@ Stmt Parser::statement() {
     return ifStatement();
   }
 
+  if (match({TokenKind::WHILE})) {
+    return whileStatement();
+  }
+
   if (match({TokenKind::PRINT})) {
     return printStatement();
   }
@@ -149,7 +153,6 @@ Stmt Parser::statement() {
 
 // ifStmt -> "if" "(" expression ")" statement ( "else" statement )? ;
 Stmt Parser::ifStatement() {
-
   consume(TokenKind::LEFT_PAREN, "Expect '(' after 'if'.");
   Expr condition = expression();
   consume(TokenKind::RIGHT_PAREN, "Expect ')' after if condition.");
@@ -162,6 +165,16 @@ Stmt Parser::ifStatement() {
   }
 
   return IfStmt(condition, thenBranch, elseBranch);
+}
+
+Stmt Parser::whileStatement() {
+  consume(TokenKind::LEFT_PAREN, "Expect '(' after 'while'.");
+  Expr condition = expression();
+  consume(TokenKind::RIGHT_PAREN, "Expect ')' after condition.");
+
+  Stmt body = statement();
+
+  return WhileStmt(condition, body);
 }
 
 // exprStmt -> expression ";";
