@@ -1,7 +1,7 @@
 #pragma once
 
 #include "lox/ast/stmt.h"
-#include "lox/values.h"
+#include "lox/literal.h"
 
 #include <memory>
 
@@ -14,19 +14,19 @@ private:
   std::vector<Stmt> m_statements;
   std::shared_ptr<Environment> m_environment;
 
-  struct ExpressionVisitor : public boost::static_visitor<Values> {
+  struct ExpressionVisitor : public boost::static_visitor<Literal> {
     ExpressionVisitor(Interpreter &interpreter);
 
-    Values evaluate(const Expr &expr) const;
+    Literal evaluate(const Expr &expr) const;
 
-    Values operator()(const LiteralExpr &expr) const;
-    Values operator()(const LogicalExpr &expr) const;
-    Values operator()(const GroupingExpr &expr) const;
-    Values operator()(const UnaryExpr &expr) const;
-    Values operator()(const BinaryExpr &expr) const;
-    Values operator()(const VariableExpr &expr) const;
-    Values operator()(const AssignExpr &expr) const;
-    Values operator()([[maybe_unused]] const auto & /*unused*/) const;
+    Literal operator()(const LiteralExpr &expr) const;
+    Literal operator()(const LogicalExpr &expr) const;
+    Literal operator()(const GroupingExpr &expr) const;
+    Literal operator()(const UnaryExpr &expr) const;
+    Literal operator()(const BinaryExpr &expr) const;
+    Literal operator()(const VariableExpr &expr) const;
+    Literal operator()(const AssignExpr &expr) const;
+    Literal operator()([[maybe_unused]] const auto & /*unused*/) const;
 
   private:
     Interpreter &m_interpreter;

@@ -307,17 +307,17 @@ Expr Parser::primary() {
   }
 
   if (match({TokenKind::TRUE})) {
-    Literal trueLiteral = "true";
+    Literal trueLiteral = true;
     return LiteralExpr(trueLiteral);
   }
 
   if (match({TokenKind::FALSE})) {
-    Literal falseLiteral = "false";
+    Literal falseLiteral = false;
     return LiteralExpr(falseLiteral);
   }
 
   if (match({TokenKind::NIL})) {
-    Literal nilLiteral = "nil";
+    Literal nilLiteral = nullptr;
     return LiteralExpr(nilLiteral);
   }
 

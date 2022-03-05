@@ -5,21 +5,21 @@
 
 namespace lox {
 
-using Values = std::variant<std::nullptr_t, bool, double, std::string>;
+using Literal = std::variant<std::nullptr_t, bool, double, std::string>;
 
 template <class... Ts>
-struct overload_ : Ts... {
+struct overload : Ts... {
   using Ts::operator()...;
 };
 
 template <class... Ts>
-overload_(Ts...) -> overload_<Ts...>;
+overload(Ts...) -> overload<Ts...>;
 
-inline std::string to_string(const Values &values) {
+inline std::string to_string(const Literal &values) {
   // clang-format off
   using namespace std::string_literals;
-  return std::visit(overload_ {
-           [](const std::nullptr_t) { return "null"s; },
+  return std::visit(overload {
+           [](const std::nullptr_t) { return "nil"s; },
            [](const bool b) { return b ? "true"s: "false"s; },
            [](const double d) { return std::to_string(d); },
            [](const std::string& s) { return s;}
@@ -27,7 +27,7 @@ inline std::string to_string(const Values &values) {
   // clang-format on
 }
 
-inline bool operator==(const Values &left, const Values &right) {
+inline bool operator==(const Literal &left, const Literal &right) {
   if (left.index() == 0 && right.index() == 0)
     return true;
   if (left.index() == 0 && right.index() != 0)
@@ -35,7 +35,7 @@ inline bool operator==(const Values &left, const Values &right) {
   return left == right;
 }
 
-inline bool operator!=(const Values &left, const Values &right) {
+inline bool operator!=(const Literal &left, const Literal &right) {
   return !(left == right);
 }
 

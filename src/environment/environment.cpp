@@ -1,7 +1,7 @@
 #include "lox/environment/environment.h"
 
-#include "lox/values.h"
 #include "lox/token.h"
+#include "lox/literal.h"
 
 #include <string>
 #include <memory>
@@ -13,11 +13,11 @@ Environment::Environment(const std::shared_ptr<Environment> &enclosing)
     : m_enclosing(enclosing) {
 }
 
-void Environment::define(const std::string &name, const Values &val) {
+void Environment::define(const std::string &name, const Literal &val) {
   m_values[name] = val;
 }
 
-Values Environment::get(const Token &t) const {
+Literal Environment::get(const Token &t) const {
   const std::string lexeme = to_string(t.lexeme);
 
   if (m_values.contains(lexeme)) {
@@ -31,7 +31,7 @@ Values Environment::get(const Token &t) const {
   throw std::runtime_error("Undefined variable '" + lexeme + "'.");
 }
 
-void Environment::assign(const Token &name, const Values &value) {
+void Environment::assign(const Token &name, const Literal &value) {
   const std::string lexeme = to_string(name.lexeme);
   if (m_values.contains(lexeme)) {
     m_values[lexeme] = value;
@@ -46,7 +46,7 @@ void Environment::assign(const Token &name, const Values &value) {
   throw std::runtime_error("Undefined variable '" + lexeme + "'.");
 }
 
-void Environment::assignAt(const int distance, const Token &t, const Values &value) {
+void Environment::assignAt(const int distance, const Token &t, const Literal &value) {
   ancestor(distance)->m_values[to_string(t.lexeme)] = value;
 }
 
