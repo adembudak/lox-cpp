@@ -1,7 +1,6 @@
 #include <lox/interpreter/interpreter.h>
 #include <lox/scanner/scanner.h>
 #include <lox/parser/parser.h>
-#include <lox/prettyprint/prettyprint.h>
 
 #include <string>
 #include <iterator>
