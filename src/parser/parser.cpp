@@ -45,22 +45,30 @@ Token Parser::advance() {
   return previous();
 }
 
-bool Parser::check(const TokenKind &t) const {
+bool Parser::check(const TokenKind t) const {
   if (isAtEnd())
     return false;
   return peek().kind == t;
 }
 
-bool Parser::match(std::initializer_list<TokenKind> tokens) {
-  bool is_there_a_match = std::any_of(cbegin(tokens), cend(tokens), [&](const auto &token) { return check(token); });
-
-  if (is_there_a_match) {
+bool Parser::match(const TokenKind token) {
+  bool isMatched = check(token);
+  if (isMatched) {
     advance();
   }
-  return is_there_a_match;
+  return isMatched;
 }
 
-Token Parser::consume(const TokenKind &token, const std::string_view err) {
+bool Parser::match(std::initializer_list<TokenKind> tokens) {
+  bool isMatched = std::any_of(cbegin(tokens), cend(tokens), [&](const auto &token) { return check(token); });
+
+  if (isMatched) {
+    advance();
+  }
+  return isMatched;
+}
+
+Token Parser::consume(const TokenKind token, const std::string_view err) {
   if (check(token)) {
     return advance();
   }
@@ -106,7 +114,7 @@ void Parser::synchronize() {
 // declaration -> variableDeclaration | statement
 Stmt Parser::declaration() {
   try {
-    if (match({TokenKind::VAR})) {
+    if (match(TokenKind::VAR)) {
       return variableDeclaration();
     }
     return statement();
@@ -121,7 +129,7 @@ Stmt Parser::variableDeclaration() {
   Token name = consume(TokenKind::IDENTIFIER, "Expect variable name.");
 
   Expr initializer;
-  if (match({TokenKind::EQUAL})) {
+  if (match(TokenKind::EQUAL)) {
     initializer = expression();
   }
 
@@ -132,23 +140,23 @@ Stmt Parser::variableDeclaration() {
 
 // statement -> exprStmt | forStmt | ifStmt | printStmt | whileStmt | block ;
 Stmt Parser::statement() {
-  if (match({TokenKind::FOR})) {
+  if (match(TokenKind::FOR)) {
     return forStatement();
   }
 
-  if (match({TokenKind::IF})) {
+  if (match(TokenKind::IF)) {
     return ifStatement();
   }
 
-  if (match({TokenKind::WHILE})) {
+  if (match(TokenKind::WHILE)) {
     return whileStatement();
   }
 
-  if (match({TokenKind::PRINT})) {
+  if (match(TokenKind::PRINT)) {
     return printStatement();
   }
 
-  if (match({TokenKind::LEFT_BRACE})) {
+  if (match(TokenKind::LEFT_BRACE)) {
     return BlockStmt(block());
   }
 
@@ -160,17 +168,17 @@ Stmt Parser::forStatement() {
   consume(TokenKind::LEFT_PAREN, "Expect '(' after 'for'.");
 
   Stmt initializer = [&]() -> Stmt {
-    if (match({TokenKind::SEMICOLON}))
+    if (match(TokenKind::SEMICOLON))
       return boost::blank{};
 
-    if (match({TokenKind::VAR}))
+    if (match(TokenKind::VAR))
       return variableDeclaration();
 
     return expressionStatement();
   }();
 
   Expr condition = [&]() -> Expr {
-    if (!check({TokenKind::SEMICOLON}))
+    if (!check(TokenKind::SEMICOLON))
       return expression();
     return boost::blank{};
   }();
@@ -212,7 +220,7 @@ Stmt Parser::ifStatement() {
   Stmt thenBranch = statement();
 
   Stmt elseBranch;
-  if (match({TokenKind::ELSE})) {
+  if (match(TokenKind::ELSE)) {
     elseBranch = statement();
   }
 
@@ -263,7 +271,7 @@ Expr Parser::expression() {
 Expr Parser::assignment() {
   Expr expr = or_();
 
-  if (match({TokenKind::EQUAL})) {
+  if (match(TokenKind::EQUAL)) {
     Token equals = previous();
     Expr value = assignment();
 
@@ -281,7 +289,7 @@ Expr Parser::assignment() {
 Expr Parser::or_() {
   Expr expr = and_();
 
-  while (match({TokenKind::OR})) {
+  while (match(TokenKind::OR)) {
     Token op = previous();
     Expr right = and_();
     expr = LogicalExpr(expr, op, right);
@@ -294,7 +302,7 @@ Expr Parser::or_() {
 Expr Parser::and_() {
   Expr expr = equality();
 
-  while (match({TokenKind::AND})) {
+  while (match(TokenKind::AND)) {
     Token op = previous();
     Expr right = equality();
     expr = LogicalExpr(expr, op, right);
@@ -371,26 +379,26 @@ Expr Parser::primary() {
     return LiteralExpr(literal);
   }
 
-  if (match({TokenKind::TRUE})) {
+  if (match(TokenKind::TRUE)) {
     Literal trueLiteral = true;
     return LiteralExpr(trueLiteral);
   }
 
-  if (match({TokenKind::FALSE})) {
+  if (match(TokenKind::FALSE)) {
     Literal falseLiteral = false;
     return LiteralExpr(falseLiteral);
   }
 
-  if (match({TokenKind::NIL})) {
+  if (match(TokenKind::NIL)) {
     Literal nilLiteral = nullptr;
     return LiteralExpr(nilLiteral);
   }
 
-  if (match({TokenKind::IDENTIFIER})) {
+  if (match(TokenKind::IDENTIFIER)) {
     return VariableExpr(previous());
   }
 
-  if (match({TokenKind::LEFT_PAREN})) {
+  if (match(TokenKind::LEFT_PAREN)) {
     Expr expr = expression();
     consume(TokenKind::RIGHT_PAREN, "Expected ')' after expression.");
     return GroupingExpr(expr);

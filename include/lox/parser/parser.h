@@ -30,10 +30,11 @@ private:
   Token peek() const;
   bool isAtEnd() const;
   Token previous() const;
-  bool check(const TokenKind &t) const;
+  bool check(const TokenKind t) const;
   Token advance();
+  bool match(const TokenKind token);
   bool match(std::initializer_list<TokenKind> tokens);
-  Token consume(const TokenKind &token, const std::string_view err);
+  Token consume(const TokenKind token, const std::string_view err);
   void synchronize();
 
 private:
