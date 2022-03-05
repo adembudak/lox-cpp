@@ -28,7 +28,7 @@ void runFile(const std::string &sourceFile) {
   fin.open(sourceFile);
   // assert(fin.is_open());
 
-  const auto source = std::string(std::istream_iterator<char>(fin >> std::noskipws), {});
+  const auto source = std::string(std::istream_iterator<char>(fin >> std::noskipws >> std::boolalpha), {});
 
   run(source);
 }
