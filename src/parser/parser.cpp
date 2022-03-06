@@ -78,12 +78,11 @@ Token Parser::consume(const TokenKind token, const std::string_view err) {
 void Parser::synchronize() {
   advance();
 
+  using enum TokenKind;
   while (!isAtEnd()) {
-    using enum TokenKind;
 
-    if (previous().kind == SEMICOLON) {
+    if (previous().kind == SEMICOLON)
       return;
-    }
 
     switch (peek().kind) {
       case CLASS:
@@ -105,6 +104,7 @@ void Parser::synchronize() {
       default:
         break;
     }
+
     advance();
   }
 }
