@@ -183,7 +183,7 @@ void Interpreter::StatementVisitor::executeBlock(const std::vector<Stmt> &statem
 
 Interpreter::Interpreter(const std::vector<Stmt> &statements)
     : m_statements(statements)
-    , m_environment(new Environment)
+    , m_environment(std::make_shared<Environment>())
     , m_expressionVisitor(*this)
     , m_statementVisitor(*this) {
 }
