@@ -27,12 +27,25 @@ inline std::string to_string(const Literal &values) {
   // clang-format on
 }
 
+inline bool isTruthy(const Literal &value) {
+  // clang-format off
+  return std::visit(overload {
+           [](const std::nullptr_t) { return false; },
+           [](const bool b) { return b; },
+           [](const double ) { return true; },
+           [](const std::string &) { return true; }
+      }, value);
+  // clang-format on
+}
+
 inline bool operator==(const Literal &left, const Literal &right) {
-  if (left.index() == 0 && right.index() == 0)
+  if (left.index() == 0 && right.index() == 0) // nullptr == nullptr
     return true;
-  if (left.index() == 0 && right.index() != 0)
+  if (left.index() == 0 && right.index() != 0) // nullptr == bool, double, string
     return false;
-  return left == right;
+  if (left.index() != right.index())
+    return false;
+  return isTruthy(left) == isTruthy(right);
 }
 
 inline bool operator!=(const Literal &left, const Literal &right) {

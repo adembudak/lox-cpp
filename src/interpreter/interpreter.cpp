@@ -13,17 +13,6 @@
 
 namespace lox {
 
-bool isTruthy(const Literal &value) {
-  // clang-format off
-  return std::visit(overload {
-           [](const std::nullptr_t) { return false; },
-           [](const bool b) { return b; },
-           [](const double ) { return true; },
-           [](const std::string &) { return true; }
-      }, value);
-  // clang-format on
-}
-
 Interpreter::ExpressionVisitor::ExpressionVisitor(Interpreter &interpreter)
     : m_interpreter(interpreter) {
 }
@@ -63,7 +52,7 @@ Literal Interpreter::ExpressionVisitor::operator()(const UnaryExpr &expr) const 
       return -std::get<double>(right);
 
     case BANG:
-      return isTruthy(right);
+      return !isTruthy(right);
 
     default:;
   }
@@ -148,7 +137,7 @@ void Interpreter::StatementVisitor::operator()(const ExpressionStmt &stmt) const
 
 void Interpreter::StatementVisitor::operator()(const PrintStmt &stmt) const {
   Literal val = m_interpreter.m_expressionVisitor.evaluate(stmt.expression);
-  std::cout << to_string(val);
+  std::cout << to_string(val) << '\n';
 }
 
 void Interpreter::StatementVisitor::operator()(const VarStmt &stmt) const {
