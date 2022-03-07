@@ -21,7 +21,8 @@ enum class TokenKind : std::uint8_t {
 
 struct Token {
   TokenKind kind;
-  Literal lexeme;
+  std::string lexeme;
+  Literal literal;
   std::size_t line;
 };
 

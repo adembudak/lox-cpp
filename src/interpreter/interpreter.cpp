@@ -147,7 +147,7 @@ void Interpreter::StatementVisitor::operator()(const VarStmt &stmt) const {
     val = m_interpreter.m_expressionVisitor.evaluate(stmt.initializer);
   }
 
-  m_interpreter.m_environment->define(to_string(stmt.name.lexeme), val);
+  m_interpreter.m_environment->define(to_string(stmt.name.literal), val);
 }
 
 void Interpreter::StatementVisitor::operator()(const BlockStmt &stmt) const {

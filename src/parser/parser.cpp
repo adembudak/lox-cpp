@@ -20,7 +20,7 @@ static parse_error error(const Token &t, const std::string_view message) {
   if (t.kind == TokenKind::END_OF_FILE) {
     report(t.line, " at end", message);
   } else {
-    report(t.line, " at '" + to_string(t.lexeme) + "'", message);
+    report(t.line, " at '" + t.lexeme + "'", message);
   }
 
   return parse_error{""};
@@ -375,7 +375,7 @@ Expr Parser::unary() {
 // primary -> NUMBER | STRING | "true" | "false" | "nil" | "(" expression ")" | IDENTIFIER ;
 Expr Parser::primary() {
   if (match({TokenKind::NUMBER, TokenKind::STRING})) {
-    Literal literal = previous().lexeme;
+    Literal literal = previous().literal;
     return LiteralExpr(literal);
   }
 

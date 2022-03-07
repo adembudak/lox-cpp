@@ -18,7 +18,7 @@ void Environment::define(const std::string &name, const Literal &val) {
 }
 
 Literal Environment::get(const Token &t) const {
-  const std::string lexeme = to_string(t.lexeme);
+  const std::string lexeme = to_string(t.literal);
 
   if (m_values.contains(lexeme)) {
     return m_values.find(lexeme)->second;
@@ -32,7 +32,7 @@ Literal Environment::get(const Token &t) const {
 }
 
 void Environment::assign(const Token &name, const Literal &value) {
-  const std::string lexeme = to_string(name.lexeme);
+  const std::string lexeme = to_string(name.literal);
   if (m_values.contains(lexeme)) {
     m_values[lexeme] = value;
     return;
@@ -47,7 +47,7 @@ void Environment::assign(const Token &name, const Literal &value) {
 }
 
 void Environment::assignAt(const int distance, const Token &t, const Literal &value) {
-  ancestor(distance)->m_values[to_string(t.lexeme)] = value;
+  ancestor(distance)->m_values[to_string(t.literal)] = value;
 }
 
 std::shared_ptr<Environment> Environment::ancestor(const int distance) {

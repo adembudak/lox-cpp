@@ -221,7 +221,7 @@ TEST_CASE("Scanner", "Test individual elements") {
     REQUIRE(tokens.size() == 2);
 
     REQUIRE(tokens[0].kind == TokenKind::STRING);
-    REQUIRE(std::get<std::string>(tokens[0].lexeme) == std::string(" this is a string "));
+    REQUIRE(std::get<std::string>(tokens[0].literal) == std::string(" this is a string "));
     REQUIRE(tokens[0].line == 1);
 
     REQUIRE(tokens[1].kind == TokenKind::END_OF_FILE);
@@ -237,7 +237,7 @@ TEST_CASE("Scanner", "Test individual elements") {
     REQUIRE(tokens.size() == 2);
 
     REQUIRE(tokens[0].kind == TokenKind::NUMBER);
-    REQUIRE(std::get<double>(tokens[0].lexeme) == 3.14159_a);
+    REQUIRE(std::get<double>(tokens[0].literal) == 3.14159_a);
     REQUIRE(tokens[0].line == 1);
 
     REQUIRE(tokens[1].kind == TokenKind::END_OF_FILE);
@@ -256,7 +256,7 @@ TEST_CASE("Scanner", "Test individual elements") {
     REQUIRE(tokens[3].kind == TokenKind::IDENTIFIER);
     REQUIRE(tokens[4].kind == TokenKind::EQUAL);
     REQUIRE(tokens[5].kind == TokenKind::NUMBER);
-    REQUIRE(std::get<double>(tokens[5].lexeme) == Approx(0));
+    REQUIRE(std::get<double>(tokens[5].literal) == Approx(0));
     REQUIRE(tokens[6].kind == TokenKind::SEMICOLON);
 
     REQUIRE(tokens[7].kind == TokenKind::TRUE);
@@ -326,13 +326,13 @@ TEST_CASE("Scanner", "Test individual elements") {
 
     REQUIRE(tokens[5].kind == TokenKind::PRINT);
     REQUIRE(tokens[6].kind == TokenKind::STRING);
-    REQUIRE(std::get<std::string>(tokens[6].lexeme) == "Alors on danse x 9");
+    REQUIRE(std::get<std::string>(tokens[6].literal) == "Alors on danse x 9");
 
     REQUIRE(tokens[7].kind == TokenKind::SEMICOLON);
 
     REQUIRE(tokens[8].kind == TokenKind::RETURN);
     REQUIRE(tokens[9].kind == TokenKind::NUMBER);
-    REQUIRE(std::get<double>(tokens[9].lexeme) == 0);
+    REQUIRE(std::get<double>(tokens[9].literal) == 0);
     REQUIRE(tokens[10].kind == TokenKind::SEMICOLON);
 
     REQUIRE(tokens[11].kind == TokenKind::RIGHT_BRACE);
@@ -351,7 +351,7 @@ TEST_CASE("Scanner", "Test individual elements") {
     REQUIRE(tokens[0].kind == TokenKind::IF);
     REQUIRE(tokens[1].kind == TokenKind::LEFT_PAREN);
     REQUIRE(tokens[2].kind == TokenKind::IDENTIFIER);
-    REQUIRE(std::get<std::string>(tokens[2].lexeme) == "p");
+    REQUIRE(tokens[2].lexeme == "p");
     REQUIRE(tokens[3].kind == TokenKind::RIGHT_PAREN);
 
     REQUIRE(tokens[4].kind == TokenKind::LEFT_BRACE);
