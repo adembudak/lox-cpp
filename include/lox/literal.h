@@ -39,12 +39,10 @@ inline bool isTruthy(const Literal &value) {
 }
 
 inline bool operator==(const Literal &left, const Literal &right) {
-  if (left.index() == 0 && right.index() == 0) // nullptr == nullptr
-    return true;
-  if (left.index() == 0 && right.index() != 0) // nullptr == bool, double, string
+  if (left.index() != right.index()) // not the same type
     return false;
-  if (left.index() != right.index())
-    return false;
+  if (left.index() == 2 && right.index() == 2) // double comparison is tricky, NaN etc.
+    return std::get<double>(left) == std::get<double>(right);
   return isTruthy(left) == isTruthy(right);
 }
 
