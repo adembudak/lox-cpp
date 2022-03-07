@@ -12,5 +12,6 @@ endmacro()
 
 run_cli_for(comments)
 run_cli_for(print)
+run_cli_for(nil)
 run_cli_for(if)
 
