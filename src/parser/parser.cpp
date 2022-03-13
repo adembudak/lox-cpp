@@ -68,7 +68,7 @@ bool Parser::match(std::initializer_list<TokenKind> tokens) {
   return isMatched;
 }
 
-Token Parser::consume(const TokenKind token, const std::string_view err) {
+[[maybe_unused]] Token Parser::consume(const TokenKind token, const std::string_view err) {
   if (check(token)) {
     return advance();
   }
@@ -114,6 +114,9 @@ void Parser::synchronize() {
 // declaration -> variableDeclaration | statement
 Stmt Parser::declaration() {
   try {
+    if (match(TokenKind::FUN)) {
+      return functionStatment("function");
+    }
     if (match(TokenKind::VAR)) {
       return variableDeclaration();
     }
@@ -148,12 +151,16 @@ Stmt Parser::statement() {
     return ifStatement();
   }
 
-  if (match(TokenKind::WHILE)) {
-    return whileStatement();
-  }
-
   if (match(TokenKind::PRINT)) {
     return printStatement();
+  }
+
+  if (match(TokenKind::RETURN)) {
+    return returnStatement();
+  }
+
+  if (match(TokenKind::WHILE)) {
+    return whileStatement();
   }
 
   if (match(TokenKind::LEFT_BRACE)) {
@@ -244,6 +251,26 @@ Stmt Parser::expressionStatement() {
   return ExpressionStmt(expr);
 }
 
+Stmt Parser::functionStatment(const std::string &kind) {
+  const Token name = consume(TokenKind::IDENTIFIER, "Expect " + kind + " name.");
+  consume(TokenKind::LEFT_PAREN, "Expect '(' after " + kind + " name.");
+
+  std::vector<Token> parameters;
+  if (!check(TokenKind::RIGHT_PAREN)) {
+    do {
+      if (const std::size_t max_param = 255; parameters.size() >= max_param)
+        error(peek(), "Can't have more than 255 parameters.");
+
+      parameters.push_back(consume(TokenKind::IDENTIFIER, "Expect parameter name."));
+    } while (match(TokenKind::COMMA));
+  }
+  consume(TokenKind::RIGHT_PAREN, "Expect ')' after parameters.");
+
+  consume(TokenKind::LEFT_BRACE, "Expect '{' before " + kind + " body.");
+  std::vector<Stmt> body = block();
+  return FunctionStmt(name, parameters, body);
+}
+
 // block -> "{" declaration "}";
 std::vector<Stmt> Parser::block() {
   std::vector<Stmt> statements;
@@ -260,6 +287,18 @@ Stmt Parser::printStatement() {
   Expr value = expression();
   consume(TokenKind::SEMICOLON, "Expect ';' after value.");
   return PrintStmt(value);
+}
+
+Stmt Parser::returnStatement() {
+  Token keyword = previous();
+
+  Expr value;
+  if (!check(TokenKind::SEMICOLON)) {
+    value = expression();
+  }
+
+  consume(TokenKind::SEMICOLON, "Expect ';' after return value.");
+  return ReturnStmt(keyword, value);
 }
 
 // expression -> assignment;
@@ -361,7 +400,7 @@ Expr Parser::factor() {
   return expr;
 }
 
-// unary -> ( "!" | "-" ) unary | primary ;
+// unary -> ( "!" | "-" ) unary | call ;
 Expr Parser::unary() {
   if (match({TokenKind::BANG, TokenKind::MINUS})) {
     Token op = previous();
@@ -369,7 +408,22 @@ Expr Parser::unary() {
     return UnaryExpr(op, right);
   }
 
-  return primary();
+  return call();
+}
+
+// call -> primary ( "(" arguments? ")" )* ;
+Expr Parser::call() {
+  Expr expr = primary();
+
+  while (true) {
+    if (match(TokenKind::LEFT_PAREN)) {
+      expr = finishCall(expr);
+    } else {
+      break;
+    }
+  }
+
+  return expr;
 }
 
 // primary -> NUMBER | STRING | "true" | "false" | "nil" | "(" expression ")" | IDENTIFIER ;
@@ -420,4 +474,21 @@ std::vector<Stmt> Parser::parse() {
 
   return statements;
 }
+
+Expr Parser::finishCall(const Expr &callee) {
+  std::vector<Expr> arguments;
+  if (!check(TokenKind::RIGHT_PAREN)) {
+    do {
+      if (const std::size_t max_arg = 255; arguments.size() >= max_arg)
+        error(peek(), "Can't have more than 255 arguments.");
+
+      arguments.push_back(expression());
+    } while (match(TokenKind::COMMA));
+  }
+
+  Token paren = consume(TokenKind::RIGHT_PAREN, "Expect ')' after arguments.");
+
+  return CallExpr(callee, paren, arguments);
+}
+
 }

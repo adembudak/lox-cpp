@@ -6,6 +6,7 @@
 #include <string>
 #include <memory>
 #include <stdexcept>
+#include <any>
 
 namespace lox {
 
@@ -13,14 +14,12 @@ Environment::Environment(const std::shared_ptr<Environment> &enclosing)
     : m_enclosing(enclosing) {
 }
 
-void Environment::define(const std::string &name, const Literal &val) {
+void Environment::define(const std::string &name, const std::any &val) {
   m_values[name] = val;
 }
 
-Literal Environment::get(const Token &t) const {
-  const std::string lexeme = to_string(t.literal);
-
-  if (m_values.contains(lexeme)) {
+std::any Environment::get(const Token &t) const {
+  if (const auto lexeme = t.lexeme; m_values.contains(lexeme)) {
     return m_values.find(lexeme)->second;
   }
 
@@ -28,26 +27,21 @@ Literal Environment::get(const Token &t) const {
     return m_enclosing->get(t);
   }
 
-  throw std::runtime_error("Undefined variable '" + lexeme + "'.");
+  throw std::runtime_error("Undefined variable '" + t.lexeme + "'.");
 }
 
-void Environment::assign(const Token &name, const Literal &value) {
-  const std::string lexeme = to_string(name.literal);
-  if (m_values.contains(lexeme)) {
+void Environment::assign(const Token &t, const std::any &value) {
+  if (const auto lexeme = t.lexeme; m_values.contains(lexeme)) {
     m_values[lexeme] = value;
     return;
   }
 
   if (m_enclosing) {
-    m_enclosing->assign(name, value);
+    m_enclosing->assign(t, value);
     return;
   }
 
-  throw std::runtime_error("Undefined variable '" + lexeme + "'.");
-}
-
-void Environment::assignAt(const int distance, const Token &t, const Literal &value) {
-  ancestor(distance)->m_values[to_string(t.literal)] = value;
+  throw std::runtime_error("Undefined variable '" + t.lexeme + "'.");
 }
 
 std::shared_ptr<Environment> Environment::ancestor(const int distance) {
@@ -56,6 +50,10 @@ std::shared_ptr<Environment> Environment::ancestor(const int distance) {
     environment = environment->m_enclosing;
   }
   return environment;
+}
+
+void Environment::assignAt(const int distance, const Token &t, const std::any &value) {
+  ancestor(distance)->m_values[to_string(t.literal)] = value;
 }
 
 }

@@ -13,7 +13,9 @@
 namespace lox {
 
 struct parse_error final : virtual public std::runtime_error {
-  using std::runtime_error::runtime_error;
+  explicit parse_error(const std::string &what)
+      : std::runtime_error(what) {
+  }
 };
 
 class Parser {
@@ -45,8 +47,10 @@ private:
   Stmt ifStatement();
   Stmt whileStatement();
   Stmt expressionStatement();
+  Stmt functionStatment(const std::string &kind);
   std::vector<Stmt> block();
   Stmt printStatement();
+  Stmt returnStatement();
 
   Expr expression();
   Expr assignment();
@@ -57,6 +61,9 @@ private:
   Expr term();
   Expr factor();
   Expr unary();
+  Expr call();
   Expr primary();
+
+  Expr finishCall(const Expr &callee);
 };
 }
