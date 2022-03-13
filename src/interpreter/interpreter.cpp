@@ -122,7 +122,11 @@ Literal Interpreter::ExpressionVisitor::operator()(const CallExpr &expr) const {
     Function function = std::get<Function>(callee);
 
     if (function.arity() != arguments.size()) {
-      throw std::runtime_error("Expected [" + std::to_string(function.arity()) + "] arguments but got " + std::to_string(arguments.size()) + '.');
+      throw std::runtime_error(std::string("Expected [")
+                                   .append(std::to_string(function.arity()))
+                                   .append("] arguments but got ")
+                                   .append(std::to_string(arguments.size()))
+                                   .append(".\n"));
     }
 
     return function.call(m_interpreter, arguments);
