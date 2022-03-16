@@ -1,15 +1,19 @@
 #include <lox/interpreter/interpreter.h>
 #include <lox/scanner/scanner.h>
 #include <lox/parser/parser.h>
+#include <lox/astprinter/astprinter.h>
 
 #include <string>
 #include <iterator>
 #include <fstream>
 #include <cassert>
 #include <iostream>
+#include <algorithm>
 #include <vector>
 
 namespace {
+
+bool prettyprint = false;
 
 void run(const std::string &source) {
   lox::Scanner scanner(source);
@@ -18,8 +22,13 @@ void run(const std::string &source) {
   lox::Parser parser(tokens);
   std::vector statements = parser.parse();
 
-  lox::Interpreter interpreter(statements);
-  interpreter.interpret();
+  if (prettyprint) {
+    lox::ASTPrinter astprinter(statements);
+    astprinter.print(std::cout);
+  } else {
+    lox::Interpreter interpreter(statements);
+    interpreter.interpret();
+  }
 }
 
 void runFile(const std::string &sourceFile) {
@@ -28,32 +37,55 @@ void runFile(const std::string &sourceFile) {
   // assert(fin.is_open());
 
   const auto source = std::string(std::istream_iterator<char>(fin >> std::noskipws >> std::boolalpha), {});
-
   run(source);
 }
 
-void runPrompt() {
+void runREPL() {
+  const std::string prompt = ">>> ";
+  const std::vector<std::string> exit_words{"exit", "quit", "wq"};
+
+  std::cout << prompt;
   for (;;) {
-    std::cout << ">>> ";
     std::string input;
     std::getline(std::cin, input);
     if (!input.empty()) {
-      std::cout << ">>> ";
-      run(input);
+      if (std::find(cbegin(exit_words), cend(exit_words), input) != end(exit_words)) {
+        break;
+      } else {
+        run(input);
+        std::cout << prompt;
+      }
     }
   }
 }
-
 }
 
 int main(int argc, const char *const argv[]) {
-  if (argc < 2) {
-    std::cout << "Usage: lox-cli [script]\n";
-    return 1;
-  } else if (argc == 2) { // execute file
-    runFile(argv[1]);
-  } else { // REPL
-    runPrompt();
+  const std::vector<std::string> arguments(argv + 1, argv + argc);
+
+  if (arguments.empty()) {
+    runREPL();
+  }
+
+  else {
+    const std::string menu = R"(usage: lox-cli [option] [file]
+Options:
+-p     : pretty print and exit
+)";
+
+    const bool prinMenuAndExit =
+        std::any_of(cbegin(arguments), cend(arguments), [](const std::string &arg) { return arg == "--help" || arg == "-h"; });
+
+    if (prinMenuAndExit) {
+      std::cout << menu;
+      return 0;
+    }
+
+    if (std::find(cbegin(arguments), cend(arguments), "-p") != cend(arguments)) {
+      prettyprint = true;
+    }
+
+    runFile(arguments.back());
   }
 
   return 0;
