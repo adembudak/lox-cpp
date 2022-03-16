@@ -138,7 +138,7 @@ Stmt Parser::variableDeclaration() {
 
   consume(TokenKind::SEMICOLON, "Expr ';' after variable declaration.");
 
-  return VarStmt(name, initializer);
+  return VarStmt{name, initializer};
 }
 
 // statement -> exprStmt | forStmt | ifStmt | printStmt | whileStmt | block ;
@@ -164,7 +164,7 @@ Stmt Parser::statement() {
   }
 
   if (match(TokenKind::LEFT_BRACE)) {
-    return BlockStmt(block());
+    return BlockStmt{block()};
   }
 
   return expressionStatement();
@@ -203,16 +203,16 @@ Stmt Parser::forStatement() {
   Stmt body = statement();
 
   if (increment.which() != 0) {
-    body = BlockStmt({body, ExpressionStmt(increment)});
+    body = BlockStmt{{body, ExpressionStmt{increment}}};
   }
 
   if (condition.which() == 0) { // is its value boost::blank?
-    condition = LiteralExpr(true);
+    condition = LiteralExpr{true};
   }
-  body = WhileStmt(condition, body);
+  body = WhileStmt{condition, body};
 
   if (initializer.which() != 0) {
-    body = BlockStmt({initializer, body});
+    body = BlockStmt{{initializer, body}};
   }
 
   return body;
@@ -231,7 +231,7 @@ Stmt Parser::ifStatement() {
     elseBranch = statement();
   }
 
-  return IfStmt(condition, thenBranch, elseBranch);
+  return IfStmt{condition, thenBranch, elseBranch};
 }
 
 Stmt Parser::whileStatement() {
@@ -241,14 +241,14 @@ Stmt Parser::whileStatement() {
 
   Stmt body = statement();
 
-  return WhileStmt(condition, body);
+  return WhileStmt{condition, body};
 }
 
 // exprStmt -> expression ";";
 Stmt Parser::expressionStatement() {
   Expr expr = expression();
   consume(TokenKind::SEMICOLON, "Expect ';' after expression.");
-  return ExpressionStmt(expr);
+  return ExpressionStmt{expr};
 }
 
 Stmt Parser::functionStatment(const std::string &kind) {
@@ -268,7 +268,7 @@ Stmt Parser::functionStatment(const std::string &kind) {
 
   consume(TokenKind::LEFT_BRACE, "Expect '{' before " + kind + " body.");
   std::vector<Stmt> body = block();
-  return FunctionStmt(name, parameters, body);
+  return FunctionStmt{name, parameters, body};
 }
 
 // block -> "{" declaration "}";
@@ -286,7 +286,7 @@ std::vector<Stmt> Parser::block() {
 Stmt Parser::printStatement() {
   Expr value = expression();
   consume(TokenKind::SEMICOLON, "Expect ';' after value.");
-  return PrintStmt(value);
+  return PrintStmt{value};
 }
 
 Stmt Parser::returnStatement() {
@@ -298,7 +298,7 @@ Stmt Parser::returnStatement() {
   }
 
   consume(TokenKind::SEMICOLON, "Expect ';' after return value.");
-  return ReturnStmt(keyword, value);
+  return ReturnStmt{keyword, value};
 }
 
 // expression -> assignment;
@@ -316,7 +316,7 @@ Expr Parser::assignment() {
 
     if (auto *pVariableExpr = boost::get<VariableExpr>(&expr)) {
       Token name = pVariableExpr->name;
-      return AssignExpr(name, value);
+      return AssignExpr{name, value};
     }
     error(equals, "Invalid assignment target.");
   }
@@ -331,7 +331,7 @@ Expr Parser::or_() {
   while (match(TokenKind::OR)) {
     Token op = previous();
     Expr right = and_();
-    expr = LogicalExpr(expr, op, right);
+    expr = LogicalExpr{expr, op, right};
   }
 
   return expr;
@@ -344,7 +344,7 @@ Expr Parser::and_() {
   while (match(TokenKind::AND)) {
     Token op = previous();
     Expr right = equality();
-    expr = LogicalExpr(expr, op, right);
+    expr = LogicalExpr{expr, op, right};
   }
 
   return expr;
@@ -357,7 +357,7 @@ Expr Parser::equality() {
   while (match({TokenKind::BANG_EQUAL, TokenKind::EQUAL_EQUAL})) {
     Token op = previous();
     Expr right = comparison();
-    expr = BinaryExpr(expr, op, right);
+    expr = BinaryExpr{expr, op, right};
   }
 
   return expr;
@@ -371,7 +371,7 @@ Expr Parser::comparison() {
   while (match({GREATER, GREATER_EQUAL, LESS, LESS_EQUAL})) {
     Token op = previous();
     Expr right = term();
-    expr = BinaryExpr(expr, op, right);
+    expr = BinaryExpr{expr, op, right};
   }
   return expr;
 }
@@ -383,7 +383,7 @@ Expr Parser::term() {
   while (match({TokenKind::MINUS, TokenKind::PLUS})) {
     Token op = previous();
     Expr right = factor();
-    expr = BinaryExpr(expr, op, right);
+    expr = BinaryExpr{expr, op, right};
   }
   return expr;
 }
@@ -395,7 +395,7 @@ Expr Parser::factor() {
   while (match({TokenKind::SLASH, TokenKind::STAR})) {
     Token op = previous();
     Expr right = unary();
-    expr = BinaryExpr(expr, op, right);
+    expr = BinaryExpr{expr, op, right};
   }
   return expr;
 }
@@ -405,7 +405,7 @@ Expr Parser::unary() {
   if (match({TokenKind::BANG, TokenKind::MINUS})) {
     Token op = previous();
     Expr right = unary();
-    return UnaryExpr(op, right);
+    return UnaryExpr{op, right};
   }
 
   return call();
@@ -430,32 +430,32 @@ Expr Parser::call() {
 Expr Parser::primary() {
   if (match({TokenKind::NUMBER, TokenKind::STRING})) {
     Literal literal = previous().literal;
-    return LiteralExpr(literal);
+    return LiteralExpr{literal};
   }
 
   if (match(TokenKind::TRUE)) {
     Literal trueLiteral = true;
-    return LiteralExpr(trueLiteral);
+    return LiteralExpr{trueLiteral};
   }
 
   if (match(TokenKind::FALSE)) {
     Literal falseLiteral = false;
-    return LiteralExpr(falseLiteral);
+    return LiteralExpr{falseLiteral};
   }
 
   if (match(TokenKind::NIL)) {
     Literal nilLiteral = nullptr;
-    return LiteralExpr(nilLiteral);
+    return LiteralExpr{nilLiteral};
   }
 
   if (match(TokenKind::IDENTIFIER)) {
-    return VariableExpr(previous());
+    return VariableExpr{previous()};
   }
 
   if (match(TokenKind::LEFT_PAREN)) {
     Expr expr = expression();
     consume(TokenKind::RIGHT_PAREN, "Expected ')' after expression.");
-    return GroupingExpr(expr);
+    return GroupingExpr{expr};
   }
 
   throw error(peek(), "Expect expression.");
@@ -488,7 +488,7 @@ Expr Parser::finishCall(const Expr &callee) {
 
   Token paren = consume(TokenKind::RIGHT_PAREN, "Expect ')' after arguments.");
 
-  return CallExpr(callee, paren, arguments);
+  return CallExpr{callee, paren, arguments};
 }
 
 }

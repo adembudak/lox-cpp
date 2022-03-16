@@ -55,10 +55,7 @@ private:
     std::string operator()(const ThisExpr &expr) const;
     std::string operator()(const UnaryExpr &expr) const;
     std::string operator()(const VariableExpr &expr) const;
-
-    std::string operator()(const auto & /*unused*/) const {
-      return {};
-    }
+    std::string operator()(const auto & /*unused*/) const;
 
   private:
     ASTPrinter &m_astprinter;

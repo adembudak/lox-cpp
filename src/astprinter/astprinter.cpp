@@ -206,4 +206,11 @@ std::string ASTPrinter::ASTVisitor::operator()(const VariableExpr &expr) const {
   return expr.name.lexeme;
 }
 
+std::string ASTPrinter::ASTVisitor::operator()(const auto & /*unused*/) const {
+  // "sink" function. First member of the Stmt and Expr variants is boost::blank, this makes good default when
+  // declared and assigned later. Visitors must be exhaustive and operator()() must be implemented for
+  // every variant member. This member is for completeness.
+  return {};
+}
+
 }
