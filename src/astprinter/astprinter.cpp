@@ -10,15 +10,15 @@ namespace lox {
 
 void ASTPrinter::print(std::ostream &os) {
   for (const auto &stmt : m_statements)
-    os << m_astvisitor.visit(stmt);
+    os << visit(stmt);
   os << '\n';
 }
 
-std::string ASTPrinter::ASTVisitor::visit(const Stmt &stmt) const {
-  return boost::apply_visitor(ASTVisitor(m_astprinter.m_astvisitor), stmt);
+std::string ASTPrinter::visit(const Stmt &stmt) const {
+  return boost::apply_visitor(ASTPrinter(), stmt);
 }
 
-std::string ASTPrinter::ASTVisitor::operator()(const BlockStmt &stmt) const {
+std::string ASTPrinter::operator()(const BlockStmt &stmt) const {
   std::ostringstream sout;
   sout << '(';
 
@@ -30,7 +30,7 @@ std::string ASTPrinter::ASTVisitor::operator()(const BlockStmt &stmt) const {
   return sout.str();
 }
 
-std::string ASTPrinter::ASTVisitor::operator()(const VarStmt &stmt) const {
+std::string ASTPrinter::operator()(const VarStmt &stmt) const {
   std::ostringstream sout;
   sout << '(';
 
@@ -43,11 +43,11 @@ std::string ASTPrinter::ASTVisitor::operator()(const VarStmt &stmt) const {
   return sout.str();
 }
 
-std::string ASTPrinter::ASTVisitor::visit(const Expr &expr) const {
-  return boost::apply_visitor(ASTVisitor(m_astprinter.m_astvisitor), expr);
+std::string ASTPrinter::visit(const Expr &expr) const {
+  return boost::apply_visitor(ASTPrinter(), expr);
 }
 
-std::string ASTPrinter::ASTVisitor::operator()(const ClassStmt &stmt) const {
+std::string ASTPrinter::operator()(const ClassStmt &stmt) const {
   std::ostringstream sout;
   sout << '(';
   sout << "class ";
@@ -62,13 +62,13 @@ std::string ASTPrinter::ASTVisitor::operator()(const ClassStmt &stmt) const {
   return sout.str();
 }
 
-std::string ASTPrinter::ASTVisitor::operator()(const ExpressionStmt &stmt) const {
+std::string ASTPrinter::operator()(const ExpressionStmt &stmt) const {
   std::ostringstream sout;
   sout << '(' << "; " << visit(stmt.expression) << ')';
   return sout.str();
 }
 
-std::string ASTPrinter::ASTVisitor::operator()(const FunctionStmt &stmt) const {
+std::string ASTPrinter::operator()(const FunctionStmt &stmt) const {
   std::ostringstream sout;
   sout << '(';
   sout << "fun " << stmt.name.lexeme;
@@ -85,7 +85,7 @@ std::string ASTPrinter::ASTVisitor::operator()(const FunctionStmt &stmt) const {
   return sout.str();
 }
 
-std::string ASTPrinter::ASTVisitor::operator()(const IfStmt &stmt) const {
+std::string ASTPrinter::operator()(const IfStmt &stmt) const {
   std::ostringstream sout;
   sout << '(';
 
@@ -98,7 +98,7 @@ std::string ASTPrinter::ASTVisitor::operator()(const IfStmt &stmt) const {
   return sout.str();
 }
 
-std::string ASTPrinter::ASTVisitor::operator()(const PrintStmt &stmt) const {
+std::string ASTPrinter::operator()(const PrintStmt &stmt) const {
   std::ostringstream sout;
   sout << '(';
   sout << "print " << visit(stmt.expression);
@@ -106,7 +106,7 @@ std::string ASTPrinter::ASTVisitor::operator()(const PrintStmt &stmt) const {
   return sout.str();
 }
 
-std::string ASTPrinter::ASTVisitor::operator()(const ReturnStmt &stmt) const {
+std::string ASTPrinter::operator()(const ReturnStmt &stmt) const {
   if (stmt.value.which() == 0)
     return "(return)";
 
@@ -117,7 +117,7 @@ std::string ASTPrinter::ASTVisitor::operator()(const ReturnStmt &stmt) const {
   return sout.str();
 }
 
-std::string ASTPrinter::ASTVisitor::operator()(const WhileStmt &stmt) const {
+std::string ASTPrinter::operator()(const WhileStmt &stmt) const {
   std::ostringstream sout;
   sout << '(';
   sout << "while " << visit(stmt.condition) << ' ' << visit(stmt.body);
@@ -125,7 +125,7 @@ std::string ASTPrinter::ASTVisitor::operator()(const WhileStmt &stmt) const {
   return sout.str();
 }
 
-std::string ASTPrinter::ASTVisitor::operator()(const AssignExpr &expr) const {
+std::string ASTPrinter::operator()(const AssignExpr &expr) const {
   std::ostringstream sout;
   sout << '(';
   sout << "= " << expr.name.lexeme << ' ' << visit(expr.value);
@@ -133,7 +133,7 @@ std::string ASTPrinter::ASTVisitor::operator()(const AssignExpr &expr) const {
   return sout.str();
 }
 
-std::string ASTPrinter::ASTVisitor::operator()(const BinaryExpr &expr) const {
+std::string ASTPrinter::operator()(const BinaryExpr &expr) const {
   std::ostringstream sout;
   sout << '(';
   sout << expr.op.lexeme << ' ' << visit(expr.left) << ' ' << visit(expr.right);
@@ -141,7 +141,7 @@ std::string ASTPrinter::ASTVisitor::operator()(const BinaryExpr &expr) const {
   return sout.str();
 }
 
-std::string ASTPrinter::ASTVisitor::operator()(const CallExpr &expr) const {
+std::string ASTPrinter::operator()(const CallExpr &expr) const {
   std::ostringstream sout;
   sout << '(';
   sout << "call " << visit(expr.callee);
@@ -153,23 +153,23 @@ std::string ASTPrinter::ASTVisitor::operator()(const CallExpr &expr) const {
   return sout.str();
 }
 
-std::string ASTPrinter::ASTVisitor::operator()(const GetExpr &expr) const {
+std::string ASTPrinter::operator()(const GetExpr &expr) const {
   std::ostringstream sout;
   sout << '(' << ". " << visit(expr.object) << ' ' << expr.name.lexeme << ')';
   return sout.str();
 }
 
-std::string ASTPrinter::ASTVisitor::operator()(const GroupingExpr &expr) const {
+std::string ASTPrinter::operator()(const GroupingExpr &expr) const {
   std::ostringstream sout;
   sout << '(' << "group " << visit(expr.expression) << ')';
   return sout.str();
 }
 
-std::string ASTPrinter::ASTVisitor::operator()(const LiteralExpr &expr) const {
+std::string ASTPrinter::operator()(const LiteralExpr &expr) const {
   return to_string(expr.literal);
 }
 
-std::string ASTPrinter::ASTVisitor::operator()(const LogicalExpr &expr) const {
+std::string ASTPrinter::operator()(const LogicalExpr &expr) const {
   std::ostringstream sout;
   sout << '(';
   sout << expr.op.lexeme << ' ' << visit(expr.left) << ' ' << visit(expr.right);
@@ -177,24 +177,24 @@ std::string ASTPrinter::ASTVisitor::operator()(const LogicalExpr &expr) const {
   return sout.str();
 }
 
-std::string ASTPrinter::ASTVisitor::operator()(const SetExpr &expr) const {
+std::string ASTPrinter::operator()(const SetExpr &expr) const {
   std::ostringstream sout;
   sout << '(' << "= " << visit(expr.obj) << ' ' << expr.name.lexeme << ' ' << visit(expr.val) << ')';
   return sout.str();
 }
 
-std::string ASTPrinter::ASTVisitor::operator()(const SuperExpr &expr) const {
+std::string ASTPrinter::operator()(const SuperExpr &expr) const {
   std::ostringstream sout;
   sout << '(' << "super " << expr.method.lexeme << ')';
   return sout.str();
 }
 
-std::string ASTPrinter::ASTVisitor::operator()(const ThisExpr &expr) const {
+std::string ASTPrinter::operator()(const ThisExpr &expr) const {
   std::ignore = expr;
   return "this";
 }
 
-std::string ASTPrinter::ASTVisitor::operator()(const UnaryExpr &expr) const {
+std::string ASTPrinter::operator()(const UnaryExpr &expr) const {
   std::ostringstream sout;
   sout << '(';
   sout << expr.op.lexeme << ' ' << visit(expr.right);
@@ -202,11 +202,11 @@ std::string ASTPrinter::ASTVisitor::operator()(const UnaryExpr &expr) const {
   return sout.str();
 }
 
-std::string ASTPrinter::ASTVisitor::operator()(const VariableExpr &expr) const {
+std::string ASTPrinter::operator()(const VariableExpr &expr) const {
   return expr.name.lexeme;
 }
 
-std::string ASTPrinter::ASTVisitor::operator()(const auto & /*unused*/) const {
+std::string ASTPrinter::operator()(const auto & /*unused*/) const {
   // "sink" function. First member of the Stmt and Expr variants is boost::blank, this makes good default when
   // declared and assigned later. Visitors must be exhaustive and operator()() must be implemented for
   // every variant member. This member is for completeness.
