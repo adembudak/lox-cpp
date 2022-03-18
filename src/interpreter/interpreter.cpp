@@ -121,22 +121,20 @@ Literal Interpreter::ExpressionVisitor::operator()(const CallExpr &expr) const {
 
     Function function = std::get<Function>(callee);
 
-    if (function.arity() != arguments.size()) {
+    if (function.arity() != arguments.size())
       throw std::runtime_error(std::string("Expected [")
                                    .append(std::to_string(function.arity()))
                                    .append("] arguments but got ")
                                    .append(std::to_string(arguments.size()))
                                    .append(".\n"));
-    }
 
     return function.call(m_interpreter, arguments);
-
   } catch (const std::bad_any_cast &e) {
     std::cerr << "Can only call functions and classes.\n" << e.what();
-    return {};
+    return nullptr;
   } catch (const std::runtime_error &e) {
     std::cout << e.what();
-    return {};
+    return nullptr;
   }
 }
 
@@ -235,7 +233,7 @@ Interpreter::Interpreter(const std::vector<Stmt> &statements)
 
 void Interpreter::interpret() const {
   try {
-    for (const auto &statement : m_statements) {
+    for (const Stmt &statement : m_statements) {
       m_statementVisitor.execute(statement);
     }
   } catch (const std::runtime_error &e) {
