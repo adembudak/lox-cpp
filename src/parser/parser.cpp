@@ -252,8 +252,8 @@ Stmt Parser::expressionStatement() {
 }
 
 Stmt Parser::functionStatment(const std::string &kind) {
-  const Token name = consume(TokenKind::IDENTIFIER, "Expect " + kind + " name.");
-  consume(TokenKind::LEFT_PAREN, "Expect '(' after " + kind + " name.");
+  const Token name = consume(TokenKind::IDENTIFIER, std::string("Expect ").append(kind).append(" name."));
+  consume(TokenKind::LEFT_PAREN, std::string("Expect '(' after ").append(kind).append(" name."));
 
   std::vector<Token> parameters;
   if (!check(TokenKind::RIGHT_PAREN)) {
@@ -266,7 +266,7 @@ Stmt Parser::functionStatment(const std::string &kind) {
   }
   consume(TokenKind::RIGHT_PAREN, "Expect ')' after parameters.");
 
-  consume(TokenKind::LEFT_BRACE, "Expect '{' before " + kind + " body.");
+  consume(TokenKind::LEFT_BRACE, std::string("Expect '{' before ").append(kind).append(" body."));
   std::vector<Stmt> body = block();
   return FunctionStmt{name, parameters, body};
 }
