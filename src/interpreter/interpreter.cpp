@@ -75,6 +75,8 @@ Literal Interpreter::ExpressionVisitor::operator()(const BinaryExpr &expr) const
 
       if (std::holds_alternative<std::string>(left) && std::holds_alternative<std::string>(right))
         return std::get<std::string>(left) + std::get<std::string>(right);
+
+      throw std::runtime_error("Operands must be two numbers or two strings.");
     }
 
     case MINUS:
@@ -185,7 +187,7 @@ void Interpreter::StatementVisitor::operator()(const ReturnStmt &stmt) const {
 void Interpreter::StatementVisitor::operator()(const VarStmt &stmt) const {
   Literal val;
 
-  if (!stmt.initializer.empty()) {
+  if (stmt.initializer.which() != 0) {
     val = std::any_cast<Literal>(m_interpreter.m_expressionVisitor.evaluate(stmt.initializer));
   }
 
@@ -199,7 +201,7 @@ void Interpreter::StatementVisitor::operator()(const BlockStmt &stmt) const {
 void Interpreter::StatementVisitor::operator()(const IfStmt &stmt) const {
   if (isTruthy(std::any_cast<Literal>(m_interpreter.m_expressionVisitor.evaluate(stmt.condition)))) {
     execute(stmt.thenBranch);
-  } else if (!stmt.elseBranch.empty()) {
+  } else if (stmt.elseBranch.which() != 0) {
     execute(stmt.elseBranch);
   }
 }
@@ -264,4 +266,5 @@ std::shared_ptr<Environment> Interpreter::globals() {
 const std::shared_ptr<Environment> Interpreter::globals() const {
   return m_globals;
 }
+
 }
