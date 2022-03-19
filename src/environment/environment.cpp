@@ -27,7 +27,7 @@ std::any Environment::get(const Token &t) const {
     return m_enclosing->get(t);
   }
 
-  throw std::runtime_error("Undefined variable '" + t.lexeme + "'.");
+  throw std::runtime_error(std::string("Undefined variable '").append(t.lexeme).append("'."));
 }
 
 void Environment::assign(const Token &t, const std::any &value) {
@@ -41,11 +41,11 @@ void Environment::assign(const Token &t, const std::any &value) {
     return;
   }
 
-  throw std::runtime_error("Undefined variable '" + t.lexeme + "'.");
+  throw std::runtime_error(std::string("Undefined variable '").append(t.lexeme).append("'."));
 }
 
 std::shared_ptr<Environment> Environment::ancestor(const int distance) {
-  auto environment = shared_from_this();
+  auto environment = this->shared_from_this();
   for (int i = 0; i < distance; i++) {
     environment = environment->m_enclosing;
   }
