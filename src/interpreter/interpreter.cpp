@@ -6,6 +6,7 @@
 #include "lox/interpreter/interpreter.h"
 #include "lox/environment/environment.h"
 #include "lox/callable/function.h"
+#include "lox/error/error.h"
 
 #include <boost/variant/static_visitor.hpp>
 
@@ -76,7 +77,7 @@ Literal Interpreter::ExpressionVisitor::operator()(const BinaryExpr &expr) const
       if (std::holds_alternative<std::string>(left) && std::holds_alternative<std::string>(right))
         return std::get<std::string>(left) + std::get<std::string>(right);
 
-      throw std::runtime_error("Operands must be two numbers or two strings.");
+      throw RuntimeError(expr.op, "Operands must be two numbers or two strings.");
     }
 
     case MINUS:
@@ -124,18 +125,15 @@ Literal Interpreter::ExpressionVisitor::operator()(const CallExpr &expr) const {
     Function function = std::get<Function>(callee);
 
     if (function.arity() != arguments.size())
-      throw std::runtime_error(std::string("Expected [")
-                                   .append(std::to_string(function.arity()))
-                                   .append("] arguments but got ")
-                                   .append(std::to_string(arguments.size()))
-                                   .append(".\n"));
+      throw RuntimeError(expr.paren, std::string("Expected [")
+                                         .append(std::to_string(function.arity()))
+                                         .append("] arguments but got ")
+                                         .append(std::to_string(arguments.size()))
+                                         .append(".\n"));
 
     return function.call(m_interpreter, arguments);
   } catch (const std::bad_any_cast &e) {
     std::cerr << "Can only call functions and classes.\n" << e.what();
-    return nullptr;
-  } catch (const std::runtime_error &e) {
-    std::cout << e.what();
     return nullptr;
   }
 }
@@ -238,8 +236,8 @@ void Interpreter::interpret() const {
     for (const Stmt &statement : m_statements) {
       m_statementVisitor.execute(statement);
     }
-  } catch (const std::runtime_error &e) {
-    throw e.what();
+  } catch (const RuntimeError &e) {
+    runtimeError(e);
   }
 }
 

@@ -5,8 +5,9 @@ add_subdirectory(interpreter)
 add_subdirectory(environment)
 add_subdirectory(callable)
 add_subdirectory(astprinter)
+add_subdirectory(error)
 
 add_library(lox INTERFACE)
-target_link_libraries(lox INTERFACE scanner parser ast interpreter environment function astprinter)
+target_link_libraries(lox INTERFACE scanner parser ast interpreter environment function astprinter error)
 add_library(lox::lox ALIAS lox)
 

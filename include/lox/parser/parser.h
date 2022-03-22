@@ -8,15 +8,8 @@
 #include <cstddef>
 #include <initializer_list>
 #include <string_view>
-#include <stdexcept>
 
 namespace lox {
-
-struct parse_error final : virtual public std::runtime_error {
-  explicit parse_error(const std::string &what)
-      : std::runtime_error(what) {
-  }
-};
 
 class Parser {
 private:

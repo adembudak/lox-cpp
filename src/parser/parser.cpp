@@ -1,6 +1,7 @@
 #include "lox/parser/parser.h"
 #include "lox/token.h"
 #include "lox/literal.h"
+#include "lox/error/error.h"
 
 #include <boost/variant/get.hpp>
 
@@ -11,20 +12,6 @@
 #include <iostream>
 
 namespace lox {
-
-static void report(const std::size_t line, const std::string_view where, const std::string_view message) {
-  std::cerr << "[line " << line << "] Error" << where << ": " << message << '\n';
-}
-
-static parse_error error(const Token &t, const std::string_view message) {
-  if (t.kind == TokenKind::END_OF_FILE) {
-    report(t.line, " at end", message);
-  } else {
-    report(t.line, " at '" + t.lexeme + "'", message);
-  }
-
-  return parse_error{""};
-}
 
 Token Parser::peek() const {
   return m_tokens[m_current];
@@ -121,7 +108,7 @@ Stmt Parser::declaration() {
       return variableDeclaration();
     }
     return statement();
-  } catch (const parse_error &e) {
+  } catch (const ParseError &e) {
     synchronize();
     return boost::blank{};
   }
