@@ -9,6 +9,7 @@ class ParseError;
 class RuntimeError;
 
 void report(const std::size_t line, const std::string_view where, const std::string_view message);
+void error(const std::size_t line, const std::string_view message);
 ParseError error(const Token &token, const std::string_view message);
 void runtimeError(const RuntimeError &error);
 
@@ -24,5 +25,4 @@ public:
 };
 
 class ParseError : public std::exception {};
-
 }

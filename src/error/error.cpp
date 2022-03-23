@@ -8,7 +8,14 @@
 namespace lox {
 
 void report(const std::size_t line, const std::string_view where, const std::string_view message) {
-  std::cerr << "[line " << line << "] Error" << where << ": " << message << '\n';
+  if (!where.empty())
+    std::cerr << "[line " << line << "] Error" << where << ": " << message << '\n';
+  else
+    std::cerr << "[line " << line << "] Error: " << message << '\n';
+}
+
+void error(const std::size_t line, const std::string_view message) {
+  report(line, std::string{}, message);
 }
 
 ParseError error(const Token &token, const std::string_view message) {

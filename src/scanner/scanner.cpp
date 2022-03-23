@@ -1,5 +1,6 @@
 #include "lox/token.h"
 #include "lox/scanner/scanner.h"
+#include "lox/error/error.h"
 
 #include <map>
 #include <string>
@@ -18,18 +19,6 @@
  ALPHA      -> "a" ... "z" | "A" ... "Z" | "_" ;
  DIGIT      -> "0" ... "9" ;
 */
-
-namespace {
-
-void report(const std::size_t line, const std::string_view where, const std::string_view message) {
-  std::cerr << "[line " << line << "] Error" << where << ": " << message << '\n';
-}
-
-void error(const std::size_t line, const std::string_view message) {
-  report(line, "", message);
-}
-
-}
 
 namespace lox {
 
