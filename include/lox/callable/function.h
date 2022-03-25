@@ -8,13 +8,15 @@
 
 namespace lox {
 class Interpreter;
+class Environment;
 
 class Function {
 private:
-  FunctionStmt m_declaration;
+  const FunctionStmt &m_declaration;
+  const Environment &m_closure;
 
 public:
-  explicit Function(const FunctionStmt &declaration);
+  Function(const FunctionStmt &declaration, const Environment &closure);
 
   Literal call(const Interpreter &interpreter, const std::vector<Literal> &arguments) const;
   std::size_t arity() const;

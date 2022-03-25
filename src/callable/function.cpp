@@ -9,18 +9,19 @@
 
 namespace lox {
 
-Function::Function(const FunctionStmt &declaration)
-    : m_declaration(declaration) {
+Function::Function(const FunctionStmt &declaration, const Environment &closure)
+    : m_declaration(declaration)
+    , m_closure(closure) {
 }
 
 Literal Function::call(const Interpreter &interpreter, const std::vector<Literal> &arguments) const {
-  auto pEnvironment = interpreter.globals();
+  auto environment = m_closure;
 
   for (std::size_t i = 0; i < m_declaration.params.size(); i++) {
-    pEnvironment->define(m_declaration.params[i].lexeme, arguments[i]);
+    environment.define(m_declaration.params[i], arguments[i]);
   }
   try {
-    interpreter.statementVisitor().executeBlock(m_declaration.body, pEnvironment);
+    interpreter.statementVisitor().executeBlock(m_declaration.body, environment);
   } catch (const Return &ret) {
     return std::any_cast<Literal>(ret.value());
   }

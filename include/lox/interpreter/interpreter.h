@@ -2,19 +2,22 @@
 
 #include "lox/ast/stmt.h"
 #include "lox/callable/function.h"
+#include "lox/environment/environment.h"
 #include "lox/literal.h"
 
+#include <boost/variant/static_visitor.hpp>
+
 #include <memory>
+#include <vector>
 #include <any>
 
 namespace lox {
-class Environment;
 
 class Interpreter {
 private:
   std::vector<Stmt> m_statements;
-  const std::shared_ptr<Environment> m_globals;
-  std::shared_ptr<Environment> m_environment;
+  const Environment m_globals;
+  Environment m_environment;
 
   struct ExpressionVisitor : public boost::static_visitor<std::any> {
     ExpressionVisitor(Interpreter &interpreter);
@@ -50,7 +53,7 @@ private:
     void operator()(const WhileStmt &stmt) const;
     void operator()([[maybe_unused]] const auto & /*unused*/) const;
 
-    void executeBlock(const std::vector<Stmt> &statements, const std::shared_ptr<Environment> &env) const;
+    void executeBlock(const std::vector<Stmt> &statements, const Environment &env) const;
 
   private:
     Interpreter &m_interpreter;
@@ -68,9 +71,6 @@ public:
 
   StatementVisitor &statementVisitor();
   const StatementVisitor &statementVisitor() const;
-
-  std::shared_ptr<Environment> globals();
-  const std::shared_ptr<Environment> globals() const;
 };
 
 }

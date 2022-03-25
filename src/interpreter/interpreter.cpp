@@ -139,12 +139,12 @@ Literal Interpreter::ExpressionVisitor::operator()(const CallExpr &expr) const {
 }
 
 std::any Interpreter::ExpressionVisitor::operator()(const VariableExpr &expr) const {
-  return m_interpreter.m_environment->get(expr.name);
+  return m_interpreter.m_environment.get(expr.name);
 }
 
 Literal Interpreter::ExpressionVisitor::operator()(const AssignExpr &expr) const {
   Literal value = std::any_cast<Literal>(evaluate(expr.value));
-  m_interpreter.m_environment->assign(expr.name, value);
+  m_interpreter.m_environment.assign(expr.name, value);
   return value;
 }
 
@@ -165,8 +165,8 @@ void Interpreter::StatementVisitor::operator()(const ExpressionStmt &stmt) const
 }
 
 void Interpreter::StatementVisitor::operator()(const FunctionStmt &stmt) const {
-  Function function{stmt};
-  m_interpreter.m_environment->define(stmt.name.lexeme, function);
+  Function function{stmt, m_interpreter.m_environment};
+  m_interpreter.m_environment.define(stmt.name, function);
 }
 
 void Interpreter::StatementVisitor::operator()(const PrintStmt &stmt) const {
@@ -183,17 +183,18 @@ void Interpreter::StatementVisitor::operator()(const ReturnStmt &stmt) const {
 }
 
 void Interpreter::StatementVisitor::operator()(const VarStmt &stmt) const {
-  Literal val;
+  std::any val;
 
   if (stmt.initializer.which() != 0) {
-    val = std::any_cast<Literal>(m_interpreter.m_expressionVisitor.evaluate(stmt.initializer));
+    val = m_interpreter.m_expressionVisitor.evaluate(stmt.initializer);
   }
 
-  m_interpreter.m_environment->define(to_string(stmt.name.literal), val);
+  m_interpreter.m_environment.define(stmt.name, val);
 }
 
 void Interpreter::StatementVisitor::operator()(const BlockStmt &stmt) const {
-  executeBlock(stmt.statements, std::make_shared<Environment>(m_interpreter.m_environment));
+  const auto newEnvironment = m_interpreter.m_environment;
+  executeBlock(stmt.statements, newEnvironment);
 }
 
 void Interpreter::StatementVisitor::operator()(const IfStmt &stmt) const {
@@ -213,19 +214,20 @@ void Interpreter::StatementVisitor::operator()([[maybe_unused]] const auto & /*u
   /* sink */
 }
 
-void Interpreter::StatementVisitor::executeBlock(const std::vector<Stmt> &statements, const std::shared_ptr<Environment> &env) const {
+void Interpreter::StatementVisitor::executeBlock(const std::vector<Stmt> &statements, const Environment &env) const {
   const auto previous = m_interpreter.m_environment;
+
   m_interpreter.m_environment = env;
 
   for (const auto &statement : statements) {
     execute(statement);
   }
+
   m_interpreter.m_environment = previous;
 }
 
 Interpreter::Interpreter(const std::vector<Stmt> &statements)
     : m_statements(statements)
-    , m_globals(std::make_shared<Environment>())
     , m_environment(m_globals)
     , m_expressionVisitor(*this)
     , m_statementVisitor(*this) {
@@ -255,14 +257,6 @@ Interpreter::StatementVisitor &Interpreter::statementVisitor() {
 
 const Interpreter::StatementVisitor &Interpreter::statementVisitor() const {
   return m_statementVisitor;
-}
-
-std::shared_ptr<Environment> Interpreter::globals() {
-  return m_globals;
-}
-
-const std::shared_ptr<Environment> Interpreter::globals() const {
-  return m_globals;
 }
 
 }
