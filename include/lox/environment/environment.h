@@ -24,7 +24,7 @@ public:
     return m_enclosing == nullptr;
   }
 
-  void define(const std::string &name, const std::any &val);
+  void define(const Token &token, const std::any &val);
   std::any get(const Token &token) const;
   void assign(const Token &token, const std::any &value);
 

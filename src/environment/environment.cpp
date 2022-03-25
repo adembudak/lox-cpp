@@ -14,8 +14,8 @@ Environment::Environment(const std::shared_ptr<Environment> &enclosing)
     : m_enclosing(enclosing) {
 }
 
-void Environment::define(const std::string &name, const std::any &val) {
-  m_values[name] = val;
+void Environment::define(const Token &token, const std::any &val) {
+  m_values[token.lexeme] = val;
 }
 
 std::any Environment::get(const Token &token) const {
