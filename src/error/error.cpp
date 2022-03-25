@@ -1,17 +1,19 @@
 #include "lox/error/error.h"
 #include "lox/token.h"
 
+#include <fmt/core.h>
+#include <fmt/color.h>
+
 #include <exception>
 #include <string_view>
-#include <iostream>
 
 namespace lox {
 
 void report(const std::size_t line, const std::string_view where, const std::string_view message) {
   if (!where.empty())
-    std::cerr << "[line " << line << "] Error" << where << ": " << message << '\n';
+    fmt::print(stderr, fg(fmt::color::red), "[line {0}] Error{1}: {2}\n", line, where, message);
   else
-    std::cerr << "[line " << line << "] Error: " << message << '\n';
+    fmt::print(stderr, fg(fmt::color::red), "[line {0}] Error: {1}\n", line, message);
 }
 
 void error(const std::size_t line, const std::string_view message) {
@@ -29,7 +31,7 @@ ParseError error(const Token &token, const std::string_view message) {
 }
 
 void runtimeError(const RuntimeError &error) {
-  std::cerr << error.what() << "\n[line " << error.token().line << "]\n";
+  fmt::print(stderr, fg(fmt::color::red), "{0}\n[line {1}]\n", error.what(), error.token().line);
 }
 
 const char *RuntimeError::what() const noexcept {

@@ -9,10 +9,10 @@
 #include "lox/error/error.h"
 
 #include <boost/variant/static_visitor.hpp>
+#include <fmt/core.h>
 
 #include <variant>
 #include <string>
-#include <iostream>
 
 namespace lox {
 
@@ -133,7 +133,7 @@ Literal Interpreter::ExpressionVisitor::operator()(const CallExpr &expr) const {
 
     return function.call(m_interpreter, arguments);
   } catch (const std::bad_any_cast &e) {
-    std::cerr << "Can only call functions and classes.\n" << e.what();
+    fmt::print(stderr, "Can only call functions and classes.\n, {}\n", e.what());
     return nullptr;
   }
 }
@@ -171,7 +171,7 @@ void Interpreter::StatementVisitor::operator()(const FunctionStmt &stmt) const {
 
 void Interpreter::StatementVisitor::operator()(const PrintStmt &stmt) const {
   Literal val = std::any_cast<Literal>(m_interpreter.m_expressionVisitor.evaluate(stmt.expression));
-  std::cout << to_string(val) << '\n';
+  fmt::print("{}\n", to_string(val));
 }
 
 void Interpreter::StatementVisitor::operator()(const ReturnStmt &stmt) const {
