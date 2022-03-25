@@ -133,8 +133,7 @@ Literal Interpreter::ExpressionVisitor::operator()(const CallExpr &expr) const {
 
     return function.call(m_interpreter, arguments);
   } catch (const std::bad_any_cast &e) {
-    fmt::print(stderr, "Can only call functions and classes.\n, {}\n", e.what());
-    return nullptr;
+    throw RuntimeError(expr.paren, "Can only call functions and classes.");
   }
 }
 
