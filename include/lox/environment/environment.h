@@ -20,13 +20,11 @@ public:
   Environment() = default;
   explicit Environment(const std::shared_ptr<Environment> &enclosing);
 
-  bool isGlobalEnvironment() const {
-    return m_enclosing == nullptr;
-  }
-
-  void define(const Token &token, const std::any &val);
+  void define(const Token &token, const std::any &value);
   std::any get(const Token &token) const;
   void assign(const Token &token, const std::any &value);
+
+  bool isGlobalEnvironment() const;
 
 private:
   std::shared_ptr<Environment> ancestor(const int distance);

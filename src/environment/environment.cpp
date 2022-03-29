@@ -14,8 +14,8 @@ Environment::Environment(const std::shared_ptr<Environment> &enclosing)
     : m_enclosing(enclosing) {
 }
 
-void Environment::define(const Token &token, const std::any &val) {
-  m_values[token.lexeme] = val;
+void Environment::define(const Token &token, const std::any &value) {
+  m_values[token.lexeme] = value;
 }
 
 std::any Environment::get(const Token &token) const {
@@ -42,6 +42,10 @@ void Environment::assign(const Token &token, const std::any &value) {
   }
 
   throw RuntimeError{token, std::string("Undefined variable '").append(token.lexeme).append("'.")};
+}
+
+bool Environment::isGlobalEnvironment() const {
+  return m_enclosing == nullptr;
 }
 
 std::shared_ptr<Environment> Environment::ancestor(const int distance) {
