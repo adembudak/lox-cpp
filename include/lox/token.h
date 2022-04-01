@@ -24,6 +24,9 @@ struct Token {
   std::string lexeme;
   Literal literal;
   std::size_t line;
+
+  bool operator==(const Token &) const = default;
+  bool operator!=(const Token &) const = default;
 };
 
 }

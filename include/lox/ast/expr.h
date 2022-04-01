@@ -45,6 +45,9 @@ struct AssignExpr {
   Expr value;
 
   AssignExpr(const Token &name, const Expr &val);
+
+  bool operator==(const AssignExpr &) const = default;
+  bool operator!=(const AssignExpr &) const = default;
 };
 
 struct BinaryExpr {
@@ -53,6 +56,9 @@ struct BinaryExpr {
   Expr right;
 
   BinaryExpr(const Expr &left, const Token &op, const Expr &right);
+
+  bool operator==(const BinaryExpr &) const = default;
+  bool operator!=(const BinaryExpr &) const = default;
 };
 
 struct CallExpr {
@@ -61,6 +67,9 @@ struct CallExpr {
   std::vector<Expr> arguments;
 
   CallExpr(const Expr &callee, const Token &paren, const std::vector<Expr> &arguments);
+
+  bool operator==(const CallExpr &) const = default;
+  bool operator!=(const CallExpr &) const = default;
 };
 
 struct GetExpr {
@@ -68,18 +77,27 @@ struct GetExpr {
   Token name;
 
   GetExpr(const Expr &object, const Token &name);
+
+  bool operator==(const GetExpr &) const = default;
+  bool operator!=(const GetExpr &) const = default;
 };
 
 struct GroupingExpr {
   Expr expression;
 
   explicit GroupingExpr(const Expr &expression);
+
+  bool operator==(const GroupingExpr &) const = default;
+  bool operator!=(const GroupingExpr &) const = default;
 };
 
 struct LiteralExpr {
   Literal literal;
 
   explicit LiteralExpr(const Literal &literal);
+
+  bool operator==(const LiteralExpr &) const = default;
+  bool operator!=(const LiteralExpr &) const = default;
 };
 
 struct LogicalExpr {
@@ -88,6 +106,9 @@ struct LogicalExpr {
   Expr right;
 
   LogicalExpr(const Expr &left, const Token &op, const Expr &right);
+
+  bool operator==(const LogicalExpr &) const = default;
+  bool operator!=(const LogicalExpr &) const = default;
 };
 
 struct SetExpr {
@@ -96,6 +117,9 @@ struct SetExpr {
   Expr val;
 
   SetExpr(const Expr &obj, const Token &name, const Expr &val);
+
+  bool operator==(const SetExpr &) const = default;
+  bool operator!=(const SetExpr &) const = default;
 };
 
 struct SuperExpr {
@@ -103,12 +127,18 @@ struct SuperExpr {
   Token method;
 
   SuperExpr(const Token &keyword, const Token &method);
+
+  bool operator==(const SuperExpr &) const = default;
+  bool operator!=(const SuperExpr &) const = default;
 };
 
 struct ThisExpr {
   Token keyword;
 
   explicit ThisExpr(const Token &keyword);
+
+  bool operator==(const ThisExpr &) const = default;
+  bool operator!=(const ThisExpr &) const = default;
 };
 
 struct UnaryExpr {
@@ -116,12 +146,22 @@ struct UnaryExpr {
   Expr right;
 
   UnaryExpr(const Token &op, const Expr &right);
+
+  bool operator==(const UnaryExpr &) const = default;
+  bool operator!=(const UnaryExpr &) const = default;
 };
 
 struct VariableExpr {
   Token name;
 
   explicit VariableExpr(const Token &name);
+
+  bool operator==(const VariableExpr &) const = default;
+  bool operator!=(const VariableExpr &) const = default;
 };
+
+inline bool operator==(const boost::blank &, const boost::blank &) {
+  return true;
+}
 
 }
