@@ -30,6 +30,10 @@ std::any Environment::get(const Token &token) const {
   throw RuntimeError{token, std::string("Undefined variable '").append(token.lexeme).append("'.")};
 }
 
+std::any Environment::getAt(const Token &token, const std::size_t distance) const {
+  return ancestor(distance)->get(token);
+}
+
 void Environment::assign(const Token &token, const std::any &value) {
   if (const auto lexeme = token.lexeme; m_values.contains(lexeme)) {
     m_values[lexeme] = value;
@@ -44,20 +48,28 @@ void Environment::assign(const Token &token, const std::any &value) {
   throw RuntimeError{token, std::string("Undefined variable '").append(token.lexeme).append("'.")};
 }
 
+void Environment::assignAt(const Token &token, const std::size_t distance, const std::any &value) {
+  ancestor(distance)->m_values[to_string(token.literal)] = value;
+}
+
 bool Environment::isGlobalEnvironment() const {
   return m_enclosing == nullptr;
 }
 
-std::shared_ptr<Environment> Environment::ancestor(const int distance) {
+std::shared_ptr<Environment> Environment::ancestor(const std::size_t distance) {
   auto environment = this->shared_from_this();
-  for (int i = 0; i < distance; i++) {
+  for (std::size_t i = 0; i < distance; i++) {
     environment = environment->m_enclosing;
   }
   return environment;
 }
 
-void Environment::assignAt(const int distance, const Token &token, const std::any &value) {
-  ancestor(distance)->m_values[to_string(token.literal)] = value;
+std::shared_ptr<const Environment> Environment::ancestor(const std::size_t distance) const {
+  auto environment = this->shared_from_this();
+  for (std::size_t i = 0; i < distance; i++) {
+    environment = environment->m_enclosing;
+  }
+  return environment;
 }
 
 }
