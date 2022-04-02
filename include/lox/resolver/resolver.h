@@ -55,11 +55,11 @@ private:
   void beginScope();
   void endScope();
 
-  void declare(const Token &token);
-  void define(const Token &token);
+  void declare(const Token &name);
+  void define(const Token &name);
 
   void resolveLocal(const Expr &expr, const Token &name);
-  void resolveFunction(const FunctionStmt &function);
+  void resolveFunction(const FunctionStmt &function, const FunctionKind kind);
 };
 
 }

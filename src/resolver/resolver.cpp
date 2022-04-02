@@ -32,7 +32,7 @@ void Resolver::operator()(const ExpressionStmt &stmt) {
 void Resolver::operator()(const FunctionStmt &stmt) {
   declare(stmt.name);
   define(stmt.name);
-  resolveFunction(stmt);
+  resolveFunction(stmt, FunctionKind::Function);
 }
 
 void Resolver::operator()(const IfStmt &stmt) {
@@ -48,6 +48,9 @@ void Resolver::operator()(const PrintStmt &stmt) {
 }
 
 void Resolver::operator()(const ReturnStmt &stmt) {
+  if (m_currentFunction == FunctionKind::None)
+    error(stmt.keyword, "Can't return from top-level code.");
+
   if (stmt.value.which() != 0)
     resolve(stmt.value);
 }
@@ -126,18 +129,23 @@ void Resolver::endScope() {
   m_scopes.pop_back();
 }
 
-void Resolver::declare(const Token &token) {
+void Resolver::declare(const Token &name) {
   if (m_scopes.empty())
     return;
 
-  m_scopes.back()[token.lexeme] = false;
+  auto &scope = m_scopes.back();
+  if (scope.contains(name.lexeme)) {
+    error(name, "Already a variable with this name in this scope.");
+  }
+
+  scope[name.lexeme] = false;
 }
 
-void Resolver::define(const Token &token) {
+void Resolver::define(const Token &name) {
   if (m_scopes.empty())
     return;
 
-  m_scopes.back()[token.lexeme] = true;
+  m_scopes.back()[name.lexeme] = true;
 }
 
 void Resolver::resolveLocal(const Expr &expr, const Token &name) {
@@ -146,17 +154,19 @@ void Resolver::resolveLocal(const Expr &expr, const Token &name) {
       m_interpreter.resolve(expr, i++);
 }
 
-void Resolver::resolveFunction(const FunctionStmt &function) {
-  beginScope();
+void Resolver::resolveFunction(const FunctionStmt &function, const FunctionKind kind) {
+  FunctionKind enclosingFunction = m_currentFunction;
+  m_currentFunction = kind;
 
+  beginScope();
   for (const Token &param : function.params) {
     declare(param);
     define(param);
   }
-
   resolve(function.body);
-
   endScope();
+
+  m_currentFunction = enclosingFunction;
 }
 
 }
