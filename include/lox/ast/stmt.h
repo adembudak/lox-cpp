@@ -15,7 +15,7 @@ struct FunctionStmt;
 struct IfStmt;
 struct PrintStmt;
 struct ReturnStmt;
-struct VarStmt;
+struct VariableStmt;
 struct WhileStmt;
 
 using boost::blank;
@@ -31,7 +31,7 @@ using Stmt = variant<blank,
                      recursive_wrapper<IfStmt>, 
                      recursive_wrapper<PrintStmt>, 
                      recursive_wrapper<ReturnStmt>, 
-                     recursive_wrapper<VarStmt>,
+                     recursive_wrapper<VariableStmt>,
                      recursive_wrapper<WhileStmt>>;
 // clang-format on
 
@@ -84,11 +84,11 @@ struct ReturnStmt {
   ReturnStmt(const Token &keyword, const Expr &value);
 };
 
-struct VarStmt {
+struct VariableStmt {
   Token name;
   Expr initializer;
 
-  VarStmt(const Token &name, const Expr &initializer);
+  VariableStmt(const Token &name, const Expr &initializer);
 };
 
 struct WhileStmt {

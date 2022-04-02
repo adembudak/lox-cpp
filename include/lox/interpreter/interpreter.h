@@ -52,7 +52,7 @@ private:
     void operator()(const FunctionStmt &stmt) const;
     void operator()(const PrintStmt &stmt) const;
     void operator()(const ReturnStmt &stmt) const;
-    void operator()(const VarStmt &stmt) const;
+    void operator()(const VariableStmt &stmt) const;
     void operator()(const BlockStmt &stmt) const;
     void operator()(const IfStmt &stmt) const;
     void operator()(const WhileStmt &stmt) const;

@@ -33,7 +33,7 @@ public:
   std::string operator()(const IfStmt &stmt) const;
   std::string operator()(const PrintStmt &stmt) const;
   std::string operator()(const ReturnStmt &stmt) const;
-  std::string operator()(const VarStmt &stmt) const;
+  std::string operator()(const VariableStmt &stmt) const;
   std::string operator()(const WhileStmt &stmt) const;
 
   std::string visit(const Expr &expr) const;

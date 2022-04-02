@@ -188,7 +188,7 @@ void Interpreter::StatementVisitor::operator()(const ReturnStmt &stmt) const {
   throw Return{value};
 }
 
-void Interpreter::StatementVisitor::operator()(const VarStmt &stmt) const {
+void Interpreter::StatementVisitor::operator()(const VariableStmt &stmt) const {
   std::any val;
 
   if (stmt.initializer.which() != 0) {

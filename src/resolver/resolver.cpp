@@ -52,7 +52,7 @@ void Resolver::operator()(const ReturnStmt &stmt) {
     resolve(stmt.value);
 }
 
-void Resolver::operator()(const VarStmt &stmt) {
+void Resolver::operator()(const VariableStmt &stmt) {
   declare(stmt.name);
 
   if (stmt.initializer.which() != 0) {

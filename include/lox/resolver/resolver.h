@@ -35,7 +35,7 @@ public:
   void operator()(const IfStmt &stmt);
   void operator()(const PrintStmt &stmt);
   void operator()(const ReturnStmt &stmt);
-  void operator()(const VarStmt &stmt);
+  void operator()(const VariableStmt &stmt);
   void operator()(const WhileStmt &stmt);
 
   void resolve(const Expr &expr);

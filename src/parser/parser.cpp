@@ -124,7 +124,7 @@ Stmt Parser::variableDeclaration() {
 
   consume(TokenKind::SEMICOLON, "Expr ';' after variable declaration.");
 
-  return VarStmt{name, initializer};
+  return VariableStmt{name, initializer};
 }
 
 // statement -> exprStmt | forStmt | ifStmt | printStmt | whileStmt | block ;

@@ -118,11 +118,11 @@ struct LogicalExpr {
 };
 
 struct SetExpr {
-  Expr obj;
+  Expr object;
   Token name;
   Expr val;
 
-  SetExpr(const Expr &obj, const Token &name, const Expr &val);
+  SetExpr(const Expr &object, const Token &name, const Expr &val);
 
   bool operator==(const SetExpr &) const = default;
   bool operator!=(const SetExpr &) const = default;

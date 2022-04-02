@@ -38,7 +38,7 @@ ReturnStmt::ReturnStmt(const Token &keyword, const Expr &value)
     , value(value) {
 }
 
-VarStmt::VarStmt(const Token &name, const Expr &initializer)
+VariableStmt::VariableStmt(const Token &name, const Expr &initializer)
     : name(name)
     , initializer(initializer) {
 }

@@ -30,7 +30,7 @@ std::string ASTPrinter::operator()(const BlockStmt &stmt) const {
   return sout.str();
 }
 
-std::string ASTPrinter::operator()(const VarStmt &stmt) const {
+std::string ASTPrinter::operator()(const VariableStmt &stmt) const {
   std::ostringstream sout;
   sout << '(';
 
@@ -179,7 +179,7 @@ std::string ASTPrinter::operator()(const LogicalExpr &expr) const {
 
 std::string ASTPrinter::operator()(const SetExpr &expr) const {
   std::ostringstream sout;
-  sout << '(' << "= " << visit(expr.obj) << ' ' << expr.name.lexeme << ' ' << visit(expr.val) << ')';
+  sout << '(' << "= " << visit(expr.object) << ' ' << expr.name.lexeme << ' ' << visit(expr.val) << ')';
   return sout.str();
 }
 
