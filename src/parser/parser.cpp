@@ -101,7 +101,7 @@ void Parser::synchronize() {
 Stmt Parser::declaration() {
   try {
     if (match(TokenKind::FUN)) {
-      return functionStatment("function");
+      return functionStatement("function");
     }
     if (match(TokenKind::VAR)) {
       return variableDeclaration();
@@ -237,7 +237,7 @@ Stmt Parser::expressionStatement() {
   return ExpressionStmt{expr};
 }
 
-Stmt Parser::functionStatment(const std::string &kind) {
+Stmt Parser::functionStatement(const std::string &kind) {
   const Token name = consume(TokenKind::IDENTIFIER, std::string("Expect ").append(kind).append(" name."));
   consume(TokenKind::LEFT_PAREN, std::string("Expect '(' after ").append(kind).append(" name."));
 

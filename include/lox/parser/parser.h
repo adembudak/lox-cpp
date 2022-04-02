@@ -40,7 +40,7 @@ private:
   Stmt ifStatement();
   Stmt whileStatement();
   Stmt expressionStatement();
-  Stmt functionStatment(const std::string &kind);
+  Stmt functionStatement(const std::string &kind);
   std::vector<Stmt> block();
   Stmt printStatement();
   Stmt returnStatement();
