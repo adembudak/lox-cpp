@@ -143,7 +143,14 @@ std::any Interpreter::ExpressionVisitor::operator()(const VariableExpr &expr) co
 
 Literal Interpreter::ExpressionVisitor::operator()(const AssignExpr &expr) const {
   Literal value = std::any_cast<Literal>(evaluate(expr.value));
-  m_interpreter.m_environment.assign(expr.name, value);
+
+  if (const auto &locals = m_interpreter.m_locals; locals.contains(expr)) {
+    const std::size_t distance = locals.find(expr)->second;
+    m_interpreter.m_environment.assignAt(expr.name, distance, value);
+  } else {
+    m_interpreter.m_globals.assign(expr.name, value);
+  }
+
   return value;
 }
 
@@ -242,6 +249,10 @@ void Interpreter::interpret() const {
   }
 }
 
+void Interpreter::resolve(const Expr &expr, const std::size_t depth) {
+  m_locals[expr] = depth;
+}
+
 Interpreter::ExpressionVisitor &Interpreter::expressionVisitor() {
   return m_expressionVisitor;
 }
@@ -256,6 +267,12 @@ Interpreter::StatementVisitor &Interpreter::statementVisitor() {
 
 const Interpreter::StatementVisitor &Interpreter::statementVisitor() const {
   return m_statementVisitor;
+}
+
+std::any Interpreter::lookUpVariable(const Token &name, const Expr &expr) const {
+  if (m_locals.contains(expr))
+    return m_environment.getAt(name, m_locals.find(expr)->second);
+  return m_globals.get(name);
 }
 
 }

@@ -1,6 +1,7 @@
-#include <lox/interpreter/interpreter.h>
 #include <lox/scanner/scanner.h>
 #include <lox/parser/parser.h>
+#include <lox/resolver/resolver.h>
+#include <lox/interpreter/interpreter.h>
 #include <lox/astprinter/astprinter.h>
 
 #include <string>
@@ -16,17 +17,19 @@ namespace {
 bool prettyprint = false;
 
 void run(const std::string &source) {
-  lox::Scanner scanner(source);
+  lox::Scanner scanner{source};
   std::vector tokens = scanner.scan();
 
-  lox::Parser parser(tokens);
+  lox::Parser parser{tokens};
   std::vector statements = parser.parse();
 
   if (prettyprint) {
-    lox::ASTPrinter astprinter(statements);
+    lox::ASTPrinter astprinter{statements};
     astprinter.print(std::cout);
   } else {
-    lox::Interpreter interpreter(statements);
+    lox::Interpreter interpreter{statements};
+    lox::Resolver resolver{interpreter};
+    resolver.resolve(statements);
     interpreter.interpret();
   }
 }
