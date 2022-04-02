@@ -119,7 +119,7 @@ Literal Interpreter::ExpressionVisitor::operator()(const CallExpr &expr) const {
     Callable callee = std::any_cast<Function>(evaluate(expr.callee));
 
     std::vector<Literal> arguments;
-    std::transform(begin(expr.arguments), end(expr.arguments), std::back_inserter(arguments), //
+    std::transform(begin(expr.arguments), end(expr.arguments), back_inserter(arguments), //
                    [this](const Expr &expr) { return std::any_cast<Literal>(evaluate(expr)); });
 
     Function function = std::get<Function>(callee);
