@@ -141,9 +141,9 @@ void Resolver::define(const Token &token) {
 }
 
 void Resolver::resolveLocal(const Expr &expr, const Token &name) {
-  for (const auto &scope : m_scopes | std::views::reverse)
+  for (std::size_t i = 0; const auto &scope : m_scopes | std::views::reverse)
     if (scope.contains(name.lexeme))
-      m_interpreter.resolve(expr, m_scopes.size());
+      m_interpreter.resolve(expr, i++);
 }
 
 void Resolver::resolveFunction(const FunctionStmt &function) {
