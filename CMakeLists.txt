@@ -49,7 +49,10 @@ include(CTest)
 include(CMakeDependentOption)
 
 option(WITH_TESTS "Build tests" ON)
+option(WITH_UNIT_TESTS "" OFF)
+
 cmake_dependent_option(WITH_TESTS "" ON BUILD_TESTING OFF)
+cmake_dependent_option(WITH_UNIT_TESTS "" ON WITH_TESTS OFF)
 
 set(LOX_CPP_SRC_DIR ${PROJECT_SOURCE_DIR}/src)
 set(LOX_CPP_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
@@ -73,11 +76,13 @@ add_lox_library(lox ALIAS ALIAS_NAME lox::lox)
 
 if(WITH_TESTS)
   enable_testing()
-
-  find_package(Catch2 QUIET REQUIRED CONFIG)
-  add_lox_executable(scanner_test PRIVATE SOURCES ${LOX_CPP_TEST_DIR}/unit/scanner_test.cpp 
-          LINK lox::lox Catch2::Catch2 Catch2::Catch2WithMain)
-  add_test(scanner.test scanner_test)
+  
+  if(WITH_UNIT_TESTS)
+    find_package(Catch2 QUIET REQUIRED CONFIG)
+    add_lox_executable(scanner_test PRIVATE SOURCES ${LOX_CPP_TEST_DIR}/unit/scanner_test.cpp 
+            LINK lox::lox Catch2::Catch2 Catch2::Catch2WithMain)
+    add_test(scanner.test scanner_test)
+  endif()
 
   add_lox_executable(lox-cli PRIVATE SOURCES ${LOX_CPP_TEST_DIR}/cli/main.cpp LINK lox::lox)
   macro(run_cli_for folder)
