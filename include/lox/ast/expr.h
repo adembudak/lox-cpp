@@ -6,6 +6,12 @@
 #include <boost/variant/variant.hpp>
 #include <boost/variant/recursive_wrapper.hpp>
 
+namespace boost {
+inline std::size_t hash_value(const blank /*unused*/) {
+  return 0;
+}
+}
+
 namespace lox {
 
 struct AssignExpr;
@@ -163,5 +169,18 @@ struct VariableExpr {
 inline bool operator==(const boost::blank &, const boost::blank &) {
   return true;
 }
+
+std::size_t hash_value(const AssignExpr &expr);
+std::size_t hash_value(const BinaryExpr &expr);
+std::size_t hash_value(const CallExpr &expr);
+std::size_t hash_value(const GetExpr &expr);
+std::size_t hash_value(const GroupingExpr &expr);
+std::size_t hash_value(const LiteralExpr &expr);
+std::size_t hash_value(const LogicalExpr &expr);
+std::size_t hash_value(const SetExpr &expr);
+std::size_t hash_value(const SuperExpr &expr);
+std::size_t hash_value(const ThisExpr &expr);
+std::size_t hash_value(const UnaryExpr &expr);
+std::size_t hash_value(const VariableExpr &expr);
 
 }

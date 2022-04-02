@@ -50,4 +50,8 @@ inline bool operator!=(const Literal &left, const Literal &right) {
   return !(left == right);
 }
 
+inline std::size_t hash_value(const Literal &value) {
+  return std::hash<Literal>{}(value);
+}
+
 }
