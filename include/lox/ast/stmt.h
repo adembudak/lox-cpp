@@ -43,10 +43,10 @@ struct BlockStmt {
 
 struct ClassStmt {
   Token name;
-  VariableExpr superClass;
+  //  VariableExpr superClass;
   std::vector<FunctionStmt> methods;
 
-  ClassStmt(const Token &name, const VariableExpr &superClass, const std::vector<FunctionStmt> &methods);
+  ClassStmt(const Token &name, /*const VariableExpr &superClass,*/ const std::vector<FunctionStmt> &methods);
 };
 
 struct ExpressionStmt {

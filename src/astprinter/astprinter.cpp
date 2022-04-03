@@ -52,8 +52,8 @@ std::string ASTPrinter::operator()(const ClassStmt &stmt) const {
   sout << '(';
   sout << "class ";
 
-  if (stmt.superClass.name.literal != nullptr)
-    sout << " < " + visit(stmt.superClass);
+  //  if (stmt.superClass.name.literal != nullptr)
+  //    sout << " < " + visit(stmt.superClass);
 
   for (const FunctionStmt &method : stmt.methods)
     sout << ' ' << visit(method);

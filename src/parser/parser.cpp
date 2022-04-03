@@ -100,17 +100,37 @@ void Parser::synchronize() {
 // declaration -> variableDeclaration | statement
 Stmt Parser::declaration() {
   try {
-    if (match(TokenKind::FUN)) {
+    if (match(TokenKind::CLASS))
+      return classDeclaration();
+
+    if (match(TokenKind::FUN))
       return functionStatement("function");
-    }
-    if (match(TokenKind::VAR)) {
+
+    if (match(TokenKind::VAR))
       return variableDeclaration();
-    }
+
     return statement();
+
   } catch (const ParseError &e) {
     synchronize();
     return boost::blank{};
   }
+}
+
+// classDecl -> "class" IDENTIFIER "{" function* "}" ;
+Stmt Parser::classDeclaration() {
+  Token name = consume(TokenKind::IDENTIFIER, "Expect class name.");
+  consume(TokenKind::LEFT_BRACE, "Expect '{' before class body.");
+
+  std::vector<FunctionStmt> methods;
+
+  while (!check(TokenKind::RIGHT_BRACE) && !isAtEnd()) {
+    methods.push_back(functionStatement("method"));
+  }
+
+  consume(TokenKind::RIGHT_BRACE, "Expect '}' before class body.");
+
+  return ClassStmt{name, methods};
 }
 
 // varDecl -> "var" IDENTIFIER ( "=" expression )? ";" ;
@@ -237,7 +257,7 @@ Stmt Parser::expressionStatement() {
   return ExpressionStmt{expr};
 }
 
-Stmt Parser::functionStatement(const std::string &kind) {
+FunctionStmt Parser::functionStatement(const std::string &kind) {
   const Token name = consume(TokenKind::IDENTIFIER, std::string("Expect ").append(kind).append(" name."));
   consume(TokenKind::LEFT_PAREN, std::string("Expect '(' after ").append(kind).append(" name."));
 

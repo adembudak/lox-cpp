@@ -34,13 +34,14 @@ private:
 
 private:
   Stmt declaration();
+  Stmt classDeclaration();
   Stmt variableDeclaration();
   Stmt statement();
   Stmt forStatement();
   Stmt ifStatement();
   Stmt whileStatement();
   Stmt expressionStatement();
-  Stmt functionStatement(const std::string &kind);
+  FunctionStmt functionStatement(const std::string &kind);
   std::vector<Stmt> block();
   Stmt printStatement();
   Stmt returnStatement();

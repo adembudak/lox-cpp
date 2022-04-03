@@ -7,9 +7,9 @@ BlockStmt::BlockStmt(const std::vector<Stmt> &statements)
     : statements(statements) {
 }
 
-ClassStmt::ClassStmt(const Token &name, const VariableExpr &superClass, const std::vector<FunctionStmt> &methods)
+ClassStmt::ClassStmt(const Token &name, /* const VariableExpr &superClass, */ const std::vector<FunctionStmt> &methods)
     : name(name)
-    , superClass(superClass)
+    //    , superClass(superClass)
     , methods(methods) {
 }
 
