@@ -25,6 +25,11 @@ void Resolver::operator()(const BlockStmt &stmt) {
   endScope();
 }
 
+void Resolver::operator()(const ClassStmt &stmt) {
+  declare(stmt.name);
+  define(stmt.name);
+}
+
 void Resolver::operator()(const ExpressionStmt &stmt) {
   resolve(stmt.expression);
 }

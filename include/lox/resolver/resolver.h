@@ -30,6 +30,7 @@ public:
   void resolve(const Stmt &stmt);
 
   void operator()(const BlockStmt &stmt);
+  void operator()(const ClassStmt &stmt);
   void operator()(const ExpressionStmt &stmt);
   void operator()(const FunctionStmt &stmt);
   void operator()(const IfStmt &stmt);
