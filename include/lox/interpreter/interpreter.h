@@ -54,6 +54,7 @@ private:
     void operator()(const ReturnStmt &stmt) const;
     void operator()(const VariableStmt &stmt) const;
     void operator()(const BlockStmt &stmt) const;
+    void operator()(const ClassStmt &stmt) const;
     void operator()(const IfStmt &stmt) const;
     void operator()(const WhileStmt &stmt) const;
     void operator()([[maybe_unused]] const auto & /*unused*/) const;

@@ -38,7 +38,7 @@ function(add_lox_executable tgt)
   target_include_directories(${tgt} ${link} ${prefix_INCLUDE_DIRS} ${LOX_CPP_INCLUDE_DIR})
 endfunction()
 
-# ##################### #
+# #################### #
 ########################
 
 cmake_minimum_required(VERSION 3.22.0)
@@ -63,15 +63,16 @@ find_package(fmt QUIET REQUIRED CONFIG)
 
 add_lox_library(ast SOURCES ${LOX_CPP_SRC_DIR}/ast/stmt.cpp ${LOX_CPP_SRC_DIR}/ast/expr.cpp LINK Boost::boost)
 add_lox_library(astprinter SOURCES ${LOX_CPP_SRC_DIR}/astprinter/astprinter.cpp LINK Boost::boost)
-add_lox_library(return SOURCES ${LOX_CPP_SRC_DIR}/callable/return.cpp)
 add_lox_library(function SOURCES ${LOX_CPP_SRC_DIR}/callable/function.cpp LINK return)
+add_lox_library(return SOURCES ${LOX_CPP_SRC_DIR}/callable/return.cpp)
+add_lox_library(class SOURCES ${LOX_CPP_SRC_DIR}/callable/class.cpp)
 add_lox_library(environment SOURCES ${LOX_CPP_SRC_DIR}/environment/environment.cpp)
 add_lox_library(error SOURCES ${LOX_CPP_SRC_DIR}/error/error.cpp LINK fmt::fmt)
 add_lox_library(interpreter SOURCES ${LOX_CPP_SRC_DIR}/interpreter/interpreter.cpp LINK ast fmt::fmt)
 add_lox_library(parser SOURCES ${LOX_CPP_SRC_DIR}/parser/parser.cpp LINK ast)
 add_lox_library(scanner SOURCES ${LOX_CPP_SRC_DIR}/scanner/scanner.cpp)
 add_lox_library(resolver SOURCES ${LOX_CPP_SRC_DIR}/resolver/resolver.cpp LINK ast Boost::boost)
-add_lox_library(lox INTERFACE LINK scanner parser ast interpreter environment function astprinter error resolver)
+add_lox_library(lox INTERFACE LINK scanner parser ast interpreter environment function class astprinter error resolver)
 add_lox_library(lox ALIAS ALIAS_NAME lox::lox)
 
 if(WITH_TESTS)

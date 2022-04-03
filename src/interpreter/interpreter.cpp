@@ -2,10 +2,11 @@
 #include "lox/literal.h"
 #include "lox/ast/expr.h"
 #include "lox/ast/stmt.h"
+#include "lox/callable/class.h"
+#include "lox/callable/function.h"
 #include "lox/callable/return.h"
 #include "lox/interpreter/interpreter.h"
 #include "lox/environment/environment.h"
-#include "lox/callable/function.h"
 #include "lox/error/error.h"
 
 #include <boost/variant/static_visitor.hpp>
@@ -201,6 +202,13 @@ void Interpreter::StatementVisitor::operator()(const VariableStmt &stmt) const {
 void Interpreter::StatementVisitor::operator()(const BlockStmt &stmt) const {
   const auto newEnvironment = m_interpreter.m_environment;
   executeBlock(stmt.statements, newEnvironment);
+}
+
+void Interpreter::StatementVisitor::operator()(const ClassStmt &stmt) const {
+  m_interpreter.m_environment.define(stmt.name, nullptr);
+
+  Class klass{stmt.name.lexeme};
+  m_interpreter.m_environment.assign(stmt.name, klass);
 }
 
 void Interpreter::StatementVisitor::operator()(const IfStmt &stmt) const {
