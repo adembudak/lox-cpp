@@ -23,6 +23,4 @@ public:
   std::size_t arity() const;
 };
 
-using Callable = std::variant<std::monostate, Function>;
-
 }

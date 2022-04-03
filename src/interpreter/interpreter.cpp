@@ -2,6 +2,7 @@
 #include "lox/literal.h"
 #include "lox/ast/expr.h"
 #include "lox/ast/stmt.h"
+#include "lox/callable/callable.h"
 #include "lox/callable/class.h"
 #include "lox/callable/function.h"
 #include "lox/callable/return.h"
