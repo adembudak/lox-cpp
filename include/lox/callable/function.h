@@ -2,6 +2,7 @@
 
 #include "lox/ast/stmt.h"
 #include "lox/literal.h"
+#include "lox/environment/environment.h"
 
 #include <vector>
 #include <variant>
@@ -12,8 +13,8 @@ class Environment;
 
 class Function {
 private:
-  const FunctionStmt &m_declaration;
-  const Environment &m_closure;
+  FunctionStmt m_declaration;
+  Environment m_closure;
 
 public:
   Function(const FunctionStmt &declaration, const Environment &closure);
