@@ -49,7 +49,7 @@ void Environment::assign(const Token &token, const std::any &value) {
 }
 
 void Environment::assignAt(const Token &token, const std::size_t distance, const std::any &value) {
-  ancestor(distance)->m_values[to_string(token.literal)] = value;
+  ancestor(distance)->m_values[std::string(token.literal)] = value;
 }
 
 bool Environment::isGlobalEnvironment() const {

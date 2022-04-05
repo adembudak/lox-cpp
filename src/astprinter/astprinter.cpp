@@ -166,7 +166,7 @@ std::string ASTPrinter::operator()(const GroupingExpr &expr) const {
 }
 
 std::string ASTPrinter::operator()(const LiteralExpr &expr) const {
-  return to_string(expr.literal);
+  return std::string(expr.literal);
 }
 
 std::string ASTPrinter::operator()(const LogicalExpr &expr) const {

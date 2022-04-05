@@ -5,53 +5,41 @@
 
 namespace lox {
 
-using Literal = std::variant<std::nullptr_t, bool, double, std::string>;
+class Literal {
+public:
+  using literal_t = std::variant<std::nullptr_t, bool, double, std::string>;
 
-template <class... Ts>
-struct overload : Ts... {
-  using Ts::operator()...;
+private:
+  literal_t m_data;
+
+public:
+  Literal() = default;
+  Literal(std::nullptr_t n)
+      : m_data(n) {
+  }
+
+  Literal(const bool b)
+      : m_data(b) {
+  }
+
+  Literal(const double d)
+      : m_data(d) {
+  }
+
+  Literal(const std::string &s)
+      : m_data(s) {
+  }
+
+  bool isTruthy() const;
+
+  literal_t data();
+  const literal_t data() const;
+
+  operator std::string() const;
 };
 
-template <class... Ts>
-overload(Ts...) -> overload<Ts...>;
-
-inline std::string to_string(const Literal &values) {
-  // clang-format off
-  using namespace std::string_literals;
-  return std::visit(overload {
-           [](const std::nullptr_t) { return "nil"s; },
-           [](const bool b) { return b ? "true"s: "false"s; },
-           [](const double d) { return std::to_string(d); },
-           [](const std::string& s) { return s;}
-      }, values);
-  // clang-format on
-}
-
-inline bool isTruthy(const Literal &value) {
-  // clang-format off
-  return std::visit(overload {
-           [](const std::nullptr_t) { return false; },
-           [](const bool b) { return b; },
-           [](const double ) { return true; },
-           [](const std::string &) { return true; }
-      }, value);
-  // clang-format on
-}
-
-inline bool operator==(const Literal &left, const Literal &right) {
-  if (left.index() != right.index()) // not the same type
-    return false;
-  if (left.index() == 2 && right.index() == 2) // double comparison is tricky, NaN etc.
-    return std::get<double>(left) == std::get<double>(right);
-  return isTruthy(left) == isTruthy(right);
-}
-
-inline bool operator!=(const Literal &left, const Literal &right) {
-  return !(left == right);
-}
-
-inline std::size_t hash_value(const Literal &value) {
-  return std::hash<Literal>{}(value);
-}
+bool operator==(const Literal &left, const Literal &right);
+bool operator!=(const Literal &left, const Literal &right);
+std::size_t hash_value(const Literal &value);
 
 }

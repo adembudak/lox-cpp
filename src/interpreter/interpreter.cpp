@@ -33,10 +33,10 @@ Literal Interpreter::ExpressionVisitor::operator()(const LiteralExpr &expr) cons
 Literal Interpreter::ExpressionVisitor::operator()(const LogicalExpr &expr) const {
   Literal left = std::any_cast<Literal>(evaluate(expr.left));
   if (expr.op.kind == TokenKind::OR) {
-    if (isTruthy(left))
+    if (left.isTruthy())
       return left;
   } else {
-    if (!isTruthy(left))
+    if (!left.isTruthy())
       return left;
   }
 
@@ -54,10 +54,10 @@ Literal Interpreter::ExpressionVisitor::operator()(const UnaryExpr &expr) const 
     using enum TokenKind;
 
     case MINUS:
-      return -std::get<double>(right);
+      return -std::get<double>(right.data());
 
     case BANG:
-      return !isTruthy(right);
+      return !right.isTruthy();
 
     default:;
   }
@@ -73,35 +73,35 @@ Literal Interpreter::ExpressionVisitor::operator()(const BinaryExpr &expr) const
     using enum TokenKind;
 
     case PLUS: {
-      if (std::holds_alternative<double>(left) && std::holds_alternative<double>(right))
-        return std::get<double>(left) + std::get<double>(right);
+      if (std::holds_alternative<double>(left.data()) && std::holds_alternative<double>(right.data()))
+        return std::get<double>(left.data()) + std::get<double>(right.data());
 
-      if (std::holds_alternative<std::string>(left) && std::holds_alternative<std::string>(right))
-        return std::get<std::string>(left) + std::get<std::string>(right);
+      if (std::holds_alternative<std::string>(left.data()) && std::holds_alternative<std::string>(right.data()))
+        return std::get<std::string>(left.data()) + std::get<std::string>(right.data());
 
       throw RuntimeError(expr.op, "Operands must be two numbers or two strings.");
     }
 
     case MINUS:
-      return std::get<double>(left) - std::get<double>(right);
+      return std::get<double>(left.data()) - std::get<double>(right.data());
 
     case SLASH:
-      return std::get<double>(left) / std::get<double>(right);
+      return std::get<double>(left.data()) / std::get<double>(right.data());
 
     case STAR:
-      return std::get<double>(left) * std::get<double>(right);
+      return std::get<double>(left.data()) * std::get<double>(right.data());
 
     case GREATER:
-      return std::get<double>(left) > std::get<double>(right);
+      return std::get<double>(left.data()) > std::get<double>(right.data());
 
     case GREATER_EQUAL:
-      return std::get<double>(left) >= std::get<double>(right);
+      return std::get<double>(left.data()) >= std::get<double>(right.data());
 
     case LESS:
-      return std::get<double>(left) < std::get<double>(right);
+      return std::get<double>(left.data()) < std::get<double>(right.data());
 
     case LESS_EQUAL:
-      return std::get<double>(left) <= std::get<double>(right);
+      return std::get<double>(left.data()) <= std::get<double>(right.data());
 
     case EQUAL_EQUAL:
       return left == right;
@@ -192,7 +192,7 @@ void Interpreter::StatementVisitor::operator()(const FunctionStmt &stmt) const {
 
 void Interpreter::StatementVisitor::operator()(const PrintStmt &stmt) const {
   Literal val = std::any_cast<Literal>(m_interpreter.m_expressionVisitor.evaluate(stmt.expression));
-  fmt::print("{}\n", to_string(val));
+  fmt::print("{}\n", std::string(val));
 }
 
 void Interpreter::StatementVisitor::operator()(const ReturnStmt &stmt) const {
@@ -224,7 +224,7 @@ void Interpreter::StatementVisitor::operator()(const ClassStmt &stmt) const {
 }
 
 void Interpreter::StatementVisitor::operator()(const IfStmt &stmt) const {
-  if (isTruthy(std::any_cast<Literal>(m_interpreter.m_expressionVisitor.evaluate(stmt.condition)))) {
+  if (std::any_cast<Literal>(m_interpreter.m_expressionVisitor.evaluate(stmt.condition)).isTruthy()) {
     execute(stmt.thenBranch);
   } else if (stmt.elseBranch.which() != 0) {
     execute(stmt.elseBranch);
@@ -232,7 +232,7 @@ void Interpreter::StatementVisitor::operator()(const IfStmt &stmt) const {
 }
 
 void Interpreter::StatementVisitor::operator()(const WhileStmt &stmt) const {
-  while (isTruthy(std::any_cast<Literal>(m_interpreter.m_expressionVisitor.evaluate(stmt.condition))))
+  while (std::any_cast<Literal>(m_interpreter.m_expressionVisitor.evaluate(stmt.condition)).isTruthy())
     execute(stmt.body);
 }
 
