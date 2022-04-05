@@ -116,27 +116,40 @@ Literal Interpreter::ExpressionVisitor::operator()(const BinaryExpr &expr) const
   return nullptr;
 }
 
-Literal Interpreter::ExpressionVisitor::operator()(const CallExpr &expr) const {
-  try {
-    Callable callee = std::any_cast<Function>(evaluate(expr.callee));
+std::any Interpreter::ExpressionVisitor::operator()(const CallExpr &expr) const {
 
-    std::vector<Literal> arguments;
-    std::transform(begin(expr.arguments), end(expr.arguments), back_inserter(arguments), //
-                   [this](const Expr &expr) { return std::any_cast<Literal>(evaluate(expr)); });
+  std::any ret = evaluate(expr.callee);
+  Callable callee;
 
-    Function function = std::get<Function>(callee);
-
-    if (function.arity() != arguments.size())
-      throw RuntimeError(expr.paren, std::string("Expected [")
-                                         .append(std::to_string(function.arity()))
-                                         .append("] arguments but got ")
-                                         .append(std::to_string(arguments.size()))
-                                         .append(".\n"));
-
-    return function.call(m_interpreter, arguments);
-  } catch (const std::bad_any_cast &e) {
+  if (ret.type() == typeid(Function))
+    callee = std::any_cast<Function>(evaluate(expr.callee));
+  else if (ret.type() == typeid(Class))
+    callee = std::any_cast<Class>(evaluate(expr.callee));
+  else
     throw RuntimeError(expr.paren, "Can only call functions and classes.");
+
+  std::vector<Literal> arguments;
+  std::transform(begin(expr.arguments), end(expr.arguments), back_inserter(arguments), //
+                 [this](const Expr &expr) { return std::any_cast<Literal>(evaluate(expr)); });
+
+  auto checkArity = [&expr](std::size_t funcArgs, std::size_t argsSize) {
+    if (funcArgs != argsSize)
+      throw RuntimeError(expr.paren,
+                         std::string("Expected [")
+                             .append(std::to_string(funcArgs)) //
+                             .append("] arguments but got ")   //
+                             .append(std::to_string(argsSize)) //
+                             .append(".\n"));
+  };
+
+  if (Function *callable = std::get_if<Function>(&callee)) {
+    checkArity(callable->arity(), arguments.size());
+    return callable->call(m_interpreter, arguments);
   }
+
+  Class *callable = std::get_if<Class>(&callee);
+  checkArity(callable->arity(), arguments.size());
+  return callable->call(m_interpreter, arguments);
 }
 
 std::any Interpreter::ExpressionVisitor::operator()(const VariableExpr &expr) const {
@@ -207,9 +220,7 @@ void Interpreter::StatementVisitor::operator()(const BlockStmt &stmt) const {
 
 void Interpreter::StatementVisitor::operator()(const ClassStmt &stmt) const {
   m_interpreter.m_environment.define(stmt.name, nullptr);
-
-  Class klass{stmt.name.lexeme};
-  m_interpreter.m_environment.assign(stmt.name, klass);
+  m_interpreter.m_environment.assign(stmt.name, Class{stmt.name.lexeme});
 }
 
 void Interpreter::StatementVisitor::operator()(const IfStmt &stmt) const {
@@ -283,5 +294,4 @@ std::any Interpreter::lookUpVariable(const Token &name, const Expr &expr) const 
     return m_environment.getAt(name, m_locals.find(expr)->second);
   return m_globals.get(name);
 }
-
 }
