@@ -9,6 +9,8 @@ private:
 
 public:
   explicit Instance(const Class &klass);
+
+  operator std::string() const;
 };
 
 }

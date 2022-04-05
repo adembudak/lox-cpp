@@ -4,6 +4,7 @@
 #include "lox/ast/stmt.h"
 #include "lox/callable/callable.h"
 #include "lox/callable/class.h"
+#include "lox/callable/instance.h"
 #include "lox/callable/function.h"
 #include "lox/callable/return.h"
 #include "lox/interpreter/interpreter.h"
@@ -15,6 +16,7 @@
 
 #include <variant>
 #include <string>
+#include <cassert>
 
 namespace lox {
 
@@ -191,8 +193,15 @@ void Interpreter::StatementVisitor::operator()(const FunctionStmt &stmt) const {
 }
 
 void Interpreter::StatementVisitor::operator()(const PrintStmt &stmt) const {
-  Literal val = std::any_cast<Literal>(m_interpreter.m_expressionVisitor.evaluate(stmt.expression));
-  fmt::print("{}\n", std::string(val));
+  std::any ret = m_interpreter.m_expressionVisitor.evaluate(stmt.expression);
+
+  if (ret.type() == typeid(Literal)) {
+    fmt::print("{}\n", std::string(std::any_cast<Literal>(ret)));
+  } else if (ret.type() == typeid(Class)) {
+    fmt::print("{}\n", std::string(std::any_cast<Class>(ret)));
+  } else {
+    fmt::print("{}\n", std::string(std::any_cast<Instance>(ret)));
+  }
 }
 
 void Interpreter::StatementVisitor::operator()(const ReturnStmt &stmt) const {
