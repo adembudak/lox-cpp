@@ -21,7 +21,7 @@ void error(const std::size_t line, const std::string_view message) {
 }
 
 ParseError error(const Token &token, const std::string_view message) {
-  if (token.kind == TokenKind::END_OF_FILE) {
+  if (token.kind == TokenKind::EndOfFile) {
     report(token.line, " at end", message);
   } else {
     report(token.line, " at '" + token.lexeme + "'", message);

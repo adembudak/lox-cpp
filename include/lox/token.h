@@ -9,16 +9,16 @@
 namespace lox {
 // clang-format off
 enum class TokenKind : std::uint8_t {
-    LEFT_PAREN, RIGHT_PAREN, LEFT_BRACE, RIGHT_BRACE,                               // parenthesis
-    EQUAL, EQUAL_EQUAL, BANG, BANG_EQUAL, LESS, LESS_EQUAL, GREATER, GREATER_EQUAL, // comparison
-    PLUS, MINUS, STAR, SLASH,                                                       // operators
-    DOT, COMMA, SEMICOLON,                                                          // dot
-    STRING, IDENTIFIER, NUMBER,                                                     // expressions
-    AND, OR, TRUE, FALSE,                                                           // boolean
-    IF, ELSE,                                                                       // condition
-    FOR, WHILE,                                                                     // loop
-    CLASS, SUPER, FUN, RETURN, VAR, PRINT, THIS,                                    // keywords
-    NIL, END_OF_FILE
+    LeftParen, RightParen, LeftBrace, RightBrace,                               // parenthesis
+    Equal, EqualEqual, Bang, BangEqual, Less, LessEqual, Greater, GreaterEqual, // comparison
+    Plus, Minus, Star, Slash,                                                   // operators
+    Dot, Comma, Semicolon,                                                      // dot
+    String, Identifier, Number,                                                 // expressions
+    And, Or, True, False,                                                       // boolean
+    If, Else,                                                                   // condition
+    For, While,                                                                 // loop
+    Class, Super, Fun, Return, Var, Print, This,                                // keywords
+    Nil, EndOfFile
   // clang-format on
 };
 

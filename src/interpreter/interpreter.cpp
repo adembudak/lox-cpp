@@ -34,7 +34,7 @@ Literal Interpreter::ExpressionVisitor::operator()(const LiteralExpr &expr) cons
 
 Literal Interpreter::ExpressionVisitor::operator()(const LogicalExpr &expr) const {
   Literal left = std::any_cast<Literal>(evaluate(expr.left));
-  if (expr.op.kind == TokenKind::OR) {
+  if (expr.op.kind == TokenKind::Or) {
     if (left.isTruthy())
       return left;
   } else {
@@ -66,10 +66,10 @@ Literal Interpreter::ExpressionVisitor::operator()(const UnaryExpr &expr) const 
   switch (expr.op.kind) {
     using enum TokenKind;
 
-    case MINUS:
+    case Minus:
       return -std::get<double>(right.data());
 
-    case BANG:
+    case Bang:
       return !right.isTruthy();
 
     default:;
@@ -85,7 +85,7 @@ Literal Interpreter::ExpressionVisitor::operator()(const BinaryExpr &expr) const
   switch (expr.op.kind) {
     using enum TokenKind;
 
-    case PLUS: {
+    case Plus: {
       if (std::holds_alternative<double>(left.data()) && std::holds_alternative<double>(right.data()))
         return std::get<double>(left.data()) + std::get<double>(right.data());
 
@@ -95,31 +95,31 @@ Literal Interpreter::ExpressionVisitor::operator()(const BinaryExpr &expr) const
       throw RuntimeError(expr.op, "Operands must be two numbers or two strings.");
     }
 
-    case MINUS:
+    case Minus:
       return std::get<double>(left.data()) - std::get<double>(right.data());
 
-    case SLASH:
+    case Slash:
       return std::get<double>(left.data()) / std::get<double>(right.data());
 
-    case STAR:
+    case Star:
       return std::get<double>(left.data()) * std::get<double>(right.data());
 
-    case GREATER:
+    case Greater:
       return std::get<double>(left.data()) > std::get<double>(right.data());
 
-    case GREATER_EQUAL:
+    case GreaterEqual:
       return std::get<double>(left.data()) >= std::get<double>(right.data());
 
-    case LESS:
+    case Less:
       return std::get<double>(left.data()) < std::get<double>(right.data());
 
-    case LESS_EQUAL:
+    case LessEqual:
       return std::get<double>(left.data()) <= std::get<double>(right.data());
 
-    case EQUAL_EQUAL:
+    case EqualEqual:
       return left == right;
 
-    case BANG_EQUAL:
+    case BangEqual:
       return left != right;
 
     default:

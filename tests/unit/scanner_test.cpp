@@ -20,13 +20,13 @@ TEST_CASE("Scanner", "Test individual elements") {
 
     REQUIRE(tokens.size() == 3);
 
-    REQUIRE(tokens[0].kind == TokenKind::LEFT_PAREN);
+    REQUIRE(tokens[0].kind == TokenKind::LeftParen);
     REQUIRE(tokens[0].line == 1);
 
-    REQUIRE(tokens[1].kind == TokenKind::RIGHT_PAREN);
+    REQUIRE(tokens[1].kind == TokenKind::RightParen);
     REQUIRE(tokens[1].line == 2);
 
-    REQUIRE(tokens[2].kind == TokenKind::END_OF_FILE);
+    REQUIRE(tokens[2].kind == TokenKind::EndOfFile);
   }
 
   SECTION("Braces") {
@@ -39,13 +39,13 @@ TEST_CASE("Scanner", "Test individual elements") {
 
     REQUIRE(tokens.size() == 3);
 
-    REQUIRE(tokens[0].kind == TokenKind::LEFT_BRACE);
+    REQUIRE(tokens[0].kind == TokenKind::LeftBrace);
     REQUIRE(tokens[0].line == 1);
 
-    REQUIRE(tokens[1].kind == TokenKind::RIGHT_BRACE);
+    REQUIRE(tokens[1].kind == TokenKind::RightBrace);
     REQUIRE(tokens[1].line == 3);
 
-    REQUIRE(tokens[2].kind == TokenKind::END_OF_FILE);
+    REQUIRE(tokens[2].kind == TokenKind::EndOfFile);
   }
 
   SECTION("Dot") {
@@ -55,8 +55,8 @@ TEST_CASE("Scanner", "Test individual elements") {
     const std::vector tokens = scanner.scan();
 
     REQUIRE(tokens.size() == 2);
-    REQUIRE(tokens[0].kind == TokenKind::DOT);
-    REQUIRE(tokens[1].kind == TokenKind::END_OF_FILE);
+    REQUIRE(tokens[0].kind == TokenKind::Dot);
+    REQUIRE(tokens[1].kind == TokenKind::EndOfFile);
   }
 
   SECTION("Comma") {
@@ -66,8 +66,8 @@ TEST_CASE("Scanner", "Test individual elements") {
     const std::vector tokens = scanner.scan();
 
     REQUIRE(tokens.size() == 2);
-    REQUIRE(tokens[0].kind == TokenKind::COMMA);
-    REQUIRE(tokens[1].kind == TokenKind::END_OF_FILE);
+    REQUIRE(tokens[0].kind == TokenKind::Comma);
+    REQUIRE(tokens[1].kind == TokenKind::EndOfFile);
   }
 
   SECTION("Minus") {
@@ -77,8 +77,8 @@ TEST_CASE("Scanner", "Test individual elements") {
     const std::vector tokens = scanner.scan();
 
     REQUIRE(tokens.size() == 2);
-    REQUIRE(tokens[0].kind == TokenKind::MINUS);
-    REQUIRE(tokens[1].kind == TokenKind::END_OF_FILE);
+    REQUIRE(tokens[0].kind == TokenKind::Minus);
+    REQUIRE(tokens[1].kind == TokenKind::EndOfFile);
   }
 
   SECTION("Plus") {
@@ -88,8 +88,8 @@ TEST_CASE("Scanner", "Test individual elements") {
     const std::vector tokens = scanner.scan();
 
     REQUIRE(tokens.size() == 2);
-    REQUIRE(tokens[0].kind == TokenKind::PLUS);
-    REQUIRE(tokens[1].kind == TokenKind::END_OF_FILE);
+    REQUIRE(tokens[0].kind == TokenKind::Plus);
+    REQUIRE(tokens[1].kind == TokenKind::EndOfFile);
   }
 
   SECTION("Semicolon") {
@@ -99,8 +99,8 @@ TEST_CASE("Scanner", "Test individual elements") {
     const std::vector tokens = scanner.scan();
 
     REQUIRE(tokens.size() == 2);
-    REQUIRE(tokens[0].kind == TokenKind::SEMICOLON);
-    REQUIRE(tokens[1].kind == TokenKind::END_OF_FILE);
+    REQUIRE(tokens[0].kind == TokenKind::Semicolon);
+    REQUIRE(tokens[1].kind == TokenKind::EndOfFile);
   }
 
   SECTION("Star") {
@@ -110,8 +110,8 @@ TEST_CASE("Scanner", "Test individual elements") {
     const std::vector tokens = scanner.scan();
 
     REQUIRE(tokens.size() == 2);
-    REQUIRE(tokens[0].kind == TokenKind::STAR);
-    REQUIRE(tokens[1].kind == TokenKind::END_OF_FILE);
+    REQUIRE(tokens[0].kind == TokenKind::Star);
+    REQUIRE(tokens[1].kind == TokenKind::EndOfFile);
   }
 
   SECTION("Bang, Bang Equal") {
@@ -122,13 +122,13 @@ TEST_CASE("Scanner", "Test individual elements") {
     const std::vector tokens = scanner.scan();
 
     REQUIRE(tokens.size() == 3);
-    REQUIRE(tokens[0].kind == TokenKind::BANG);
+    REQUIRE(tokens[0].kind == TokenKind::Bang);
     REQUIRE(tokens[0].line == 1);
 
-    REQUIRE(tokens[1].kind == TokenKind::BANG_EQUAL);
+    REQUIRE(tokens[1].kind == TokenKind::BangEqual);
     REQUIRE(tokens[1].line == 2);
 
-    REQUIRE(tokens[2].kind == TokenKind::END_OF_FILE);
+    REQUIRE(tokens[2].kind == TokenKind::EndOfFile);
     REQUIRE(tokens[1].line == 2);
   }
 
@@ -140,13 +140,13 @@ TEST_CASE("Scanner", "Test individual elements") {
     const std::vector tokens = scanner.scan();
 
     REQUIRE(tokens.size() == 3);
-    REQUIRE(tokens[0].kind == TokenKind::EQUAL);
+    REQUIRE(tokens[0].kind == TokenKind::Equal);
     REQUIRE(tokens[0].line == 1);
 
-    REQUIRE(tokens[1].kind == TokenKind::EQUAL_EQUAL);
+    REQUIRE(tokens[1].kind == TokenKind::EqualEqual);
     REQUIRE(tokens[1].line == 2);
 
-    REQUIRE(tokens[2].kind == TokenKind::END_OF_FILE);
+    REQUIRE(tokens[2].kind == TokenKind::EndOfFile);
     REQUIRE(tokens[1].line == 2);
   }
 
@@ -158,13 +158,13 @@ TEST_CASE("Scanner", "Test individual elements") {
     const std::vector tokens = scanner.scan();
 
     REQUIRE(tokens.size() == 3);
-    REQUIRE(tokens[0].kind == TokenKind::LESS);
+    REQUIRE(tokens[0].kind == TokenKind::Less);
     REQUIRE(tokens[0].line == 1);
 
-    REQUIRE(tokens[1].kind == TokenKind::LESS_EQUAL);
+    REQUIRE(tokens[1].kind == TokenKind::LessEqual);
     REQUIRE(tokens[1].line == 2);
 
-    REQUIRE(tokens[2].kind == TokenKind::END_OF_FILE);
+    REQUIRE(tokens[2].kind == TokenKind::EndOfFile);
     REQUIRE(tokens[1].line == 2);
   }
 
@@ -176,13 +176,13 @@ TEST_CASE("Scanner", "Test individual elements") {
     const std::vector tokens = scanner.scan();
 
     REQUIRE(tokens.size() == 3);
-    REQUIRE(tokens[0].kind == TokenKind::GREATER);
+    REQUIRE(tokens[0].kind == TokenKind::Greater);
     REQUIRE(tokens[0].line == 1);
 
-    REQUIRE(tokens[1].kind == TokenKind::GREATER_EQUAL);
+    REQUIRE(tokens[1].kind == TokenKind::GreaterEqual);
     REQUIRE(tokens[1].line == 2);
 
-    REQUIRE(tokens[2].kind == TokenKind::END_OF_FILE);
+    REQUIRE(tokens[2].kind == TokenKind::EndOfFile);
     REQUIRE(tokens[1].line == 2);
   }
 
@@ -195,7 +195,7 @@ TEST_CASE("Scanner", "Test individual elements") {
     const std::vector tokens = scanner.scan();
 
     REQUIRE(tokens.size() == 1);
-    REQUIRE(tokens[0].kind == TokenKind::END_OF_FILE);
+    REQUIRE(tokens[0].kind == TokenKind::EndOfFile);
   }
 
   SECTION("White Space") {
@@ -208,7 +208,7 @@ TEST_CASE("Scanner", "Test individual elements") {
     const std::vector tokens = scanner.scan();
 
     REQUIRE(tokens.size() == 1);
-    REQUIRE(tokens[0].kind == TokenKind::END_OF_FILE);
+    REQUIRE(tokens[0].kind == TokenKind::EndOfFile);
     REQUIRE(tokens[0].line == 4);
   }
 
@@ -220,11 +220,11 @@ TEST_CASE("Scanner", "Test individual elements") {
 
     REQUIRE(tokens.size() == 2);
 
-    REQUIRE(tokens[0].kind == TokenKind::STRING);
-    REQUIRE(std::get<std::string>(tokens[0].literal) == std::string(" this is a string "));
+    REQUIRE(tokens[0].kind == TokenKind::String);
+    REQUIRE(std::get<std::string>(tokens[0].literal.data()) == std::string(" this is a string "));
     REQUIRE(tokens[0].line == 1);
 
-    REQUIRE(tokens[1].kind == TokenKind::END_OF_FILE);
+    REQUIRE(tokens[1].kind == TokenKind::EndOfFile);
   }
 
   SECTION("Number") {
@@ -236,11 +236,11 @@ TEST_CASE("Scanner", "Test individual elements") {
 
     REQUIRE(tokens.size() == 2);
 
-    REQUIRE(tokens[0].kind == TokenKind::NUMBER);
-    REQUIRE(std::get<double>(tokens[0].literal) == 3.14159_a);
+    REQUIRE(tokens[0].kind == TokenKind::Number);
+    REQUIRE(std::get<double>(tokens[0].literal.data()) == 3.14159_a);
     REQUIRE(tokens[0].line == 1);
 
-    REQUIRE(tokens[1].kind == TokenKind::END_OF_FILE);
+    REQUIRE(tokens[1].kind == TokenKind::EndOfFile);
   }
 
   SECTION("for loop") {
@@ -249,26 +249,26 @@ TEST_CASE("Scanner", "Test individual elements") {
     Scanner scanner(input);
     const std::vector tokens = scanner.scan();
 
-    REQUIRE(tokens[0].kind == TokenKind::FOR);
+    REQUIRE(tokens[0].kind == TokenKind::For);
 
-    REQUIRE(tokens[1].kind == TokenKind::LEFT_PAREN);
-    REQUIRE(tokens[2].kind == TokenKind::VAR);
-    REQUIRE(tokens[3].kind == TokenKind::IDENTIFIER);
-    REQUIRE(tokens[4].kind == TokenKind::EQUAL);
-    REQUIRE(tokens[5].kind == TokenKind::NUMBER);
-    REQUIRE(std::get<double>(tokens[5].literal) == Approx(0));
-    REQUIRE(tokens[6].kind == TokenKind::SEMICOLON);
+    REQUIRE(tokens[1].kind == TokenKind::LeftParen);
+    REQUIRE(tokens[2].kind == TokenKind::Var);
+    REQUIRE(tokens[3].kind == TokenKind::Identifier);
+    REQUIRE(tokens[4].kind == TokenKind::Equal);
+    REQUIRE(tokens[5].kind == TokenKind::Number);
+    REQUIRE(std::get<double>(tokens[5].literal.data()) == Approx(0));
+    REQUIRE(tokens[6].kind == TokenKind::Semicolon);
 
-    REQUIRE(tokens[7].kind == TokenKind::TRUE);
-    REQUIRE(tokens[8].kind == TokenKind::SEMICOLON);
+    REQUIRE(tokens[7].kind == TokenKind::True);
+    REQUIRE(tokens[8].kind == TokenKind::Semicolon);
 
-    REQUIRE(tokens[9].kind == TokenKind::IDENTIFIER);
-    REQUIRE(tokens[10].kind == TokenKind::EQUAL);
-    REQUIRE(tokens[11].kind == TokenKind::IDENTIFIER);
-    REQUIRE(tokens[12].kind == TokenKind::PLUS);
-    REQUIRE(tokens[13].kind == TokenKind::IDENTIFIER);
-    REQUIRE(tokens[14].kind == TokenKind::RIGHT_PAREN);
-    REQUIRE(tokens[15].kind == TokenKind::END_OF_FILE);
+    REQUIRE(tokens[9].kind == TokenKind::Identifier);
+    REQUIRE(tokens[10].kind == TokenKind::Equal);
+    REQUIRE(tokens[11].kind == TokenKind::Identifier);
+    REQUIRE(tokens[12].kind == TokenKind::Plus);
+    REQUIRE(tokens[13].kind == TokenKind::Identifier);
+    REQUIRE(tokens[14].kind == TokenKind::RightParen);
+    REQUIRE(tokens[15].kind == TokenKind::EndOfFile);
   }
 
   SECTION("while loop") {
@@ -277,11 +277,11 @@ TEST_CASE("Scanner", "Test individual elements") {
     Scanner scanner(input);
     const std::vector tokens = scanner.scan();
 
-    REQUIRE(tokens[0].kind == TokenKind::WHILE);
-    REQUIRE(tokens[1].kind == TokenKind::LEFT_PAREN);
-    REQUIRE(tokens[2].kind == TokenKind::TRUE);
-    REQUIRE(tokens[3].kind == TokenKind::RIGHT_PAREN);
-    REQUIRE(tokens[4].kind == TokenKind::END_OF_FILE);
+    REQUIRE(tokens[0].kind == TokenKind::While);
+    REQUIRE(tokens[1].kind == TokenKind::LeftParen);
+    REQUIRE(tokens[2].kind == TokenKind::True);
+    REQUIRE(tokens[3].kind == TokenKind::RightParen);
+    REQUIRE(tokens[4].kind == TokenKind::EndOfFile);
   }
 
   SECTION("and-or") {
@@ -290,20 +290,20 @@ TEST_CASE("Scanner", "Test individual elements") {
     Scanner scanner(input);
     const std::vector tokens = scanner.scan();
 
-    REQUIRE(tokens[0].kind == TokenKind::LEFT_PAREN);
-    REQUIRE(tokens[1].kind == TokenKind::IDENTIFIER);
-    REQUIRE(tokens[2].kind == TokenKind::OR);
+    REQUIRE(tokens[0].kind == TokenKind::LeftParen);
+    REQUIRE(tokens[1].kind == TokenKind::Identifier);
+    REQUIRE(tokens[2].kind == TokenKind::Or);
 
-    REQUIRE(tokens[3].kind == TokenKind::LEFT_PAREN);
-    REQUIRE(tokens[4].kind == TokenKind::IDENTIFIER);
-    REQUIRE(tokens[5].kind == TokenKind::AND);
-    REQUIRE(tokens[6].kind == TokenKind::IDENTIFIER);
-    REQUIRE(tokens[7].kind == TokenKind::RIGHT_PAREN);
-    REQUIRE(tokens[8].kind == TokenKind::RIGHT_PAREN);
+    REQUIRE(tokens[3].kind == TokenKind::LeftParen);
+    REQUIRE(tokens[4].kind == TokenKind::Identifier);
+    REQUIRE(tokens[5].kind == TokenKind::And);
+    REQUIRE(tokens[6].kind == TokenKind::Identifier);
+    REQUIRE(tokens[7].kind == TokenKind::RightParen);
+    REQUIRE(tokens[8].kind == TokenKind::RightParen);
 
-    REQUIRE(tokens[9].kind == TokenKind::EQUAL_EQUAL);
-    REQUIRE(tokens[10].kind == TokenKind::IDENTIFIER);
-    REQUIRE(tokens[11].kind == TokenKind::END_OF_FILE);
+    REQUIRE(tokens[9].kind == TokenKind::EqualEqual);
+    REQUIRE(tokens[10].kind == TokenKind::Identifier);
+    REQUIRE(tokens[11].kind == TokenKind::EndOfFile);
   }
 
   SECTION("function") {
@@ -318,26 +318,26 @@ TEST_CASE("Scanner", "Test individual elements") {
     Scanner scanner(input);
     const std::vector tokens = scanner.scan();
 
-    REQUIRE(tokens[0].kind == TokenKind::FUN);
-    REQUIRE(tokens[1].kind == TokenKind::IDENTIFIER);
-    REQUIRE(tokens[2].kind == TokenKind::LEFT_PAREN);
-    REQUIRE(tokens[3].kind == TokenKind::RIGHT_PAREN);
-    REQUIRE(tokens[4].kind == TokenKind::LEFT_BRACE);
+    REQUIRE(tokens[0].kind == TokenKind::Fun);
+    REQUIRE(tokens[1].kind == TokenKind::Identifier);
+    REQUIRE(tokens[2].kind == TokenKind::LeftParen);
+    REQUIRE(tokens[3].kind == TokenKind::RightParen);
+    REQUIRE(tokens[4].kind == TokenKind::LeftBrace);
 
-    REQUIRE(tokens[5].kind == TokenKind::PRINT);
-    REQUIRE(tokens[6].kind == TokenKind::STRING);
-    REQUIRE(std::get<std::string>(tokens[6].literal) == "Alors on danse x 9");
+    REQUIRE(tokens[5].kind == TokenKind::Print);
+    REQUIRE(tokens[6].kind == TokenKind::String);
+    REQUIRE(std::get<std::string>(tokens[6].literal.data()) == "Alors on danse x 9");
 
-    REQUIRE(tokens[7].kind == TokenKind::SEMICOLON);
+    REQUIRE(tokens[7].kind == TokenKind::Semicolon);
 
-    REQUIRE(tokens[8].kind == TokenKind::RETURN);
-    REQUIRE(tokens[9].kind == TokenKind::NUMBER);
-    REQUIRE(std::get<double>(tokens[9].literal) == 0);
-    REQUIRE(tokens[10].kind == TokenKind::SEMICOLON);
+    REQUIRE(tokens[8].kind == TokenKind::Return);
+    REQUIRE(tokens[9].kind == TokenKind::Number);
+    REQUIRE(std::get<double>(tokens[9].literal.data()) == 0);
+    REQUIRE(tokens[10].kind == TokenKind::Semicolon);
 
-    REQUIRE(tokens[11].kind == TokenKind::RIGHT_BRACE);
+    REQUIRE(tokens[11].kind == TokenKind::RightBrace);
 
-    REQUIRE(tokens[12].kind == TokenKind::END_OF_FILE);
+    REQUIRE(tokens[12].kind == TokenKind::EndOfFile);
   }
 
   SECTION("if-else, true-false") {
@@ -348,23 +348,23 @@ TEST_CASE("Scanner", "Test individual elements") {
     Scanner scanner(input);
     const std::vector tokens = scanner.scan();
 
-    REQUIRE(tokens[0].kind == TokenKind::IF);
-    REQUIRE(tokens[1].kind == TokenKind::LEFT_PAREN);
-    REQUIRE(tokens[2].kind == TokenKind::IDENTIFIER);
+    REQUIRE(tokens[0].kind == TokenKind::If);
+    REQUIRE(tokens[1].kind == TokenKind::LeftParen);
+    REQUIRE(tokens[2].kind == TokenKind::Identifier);
     REQUIRE(tokens[2].lexeme == "p");
-    REQUIRE(tokens[3].kind == TokenKind::RIGHT_PAREN);
+    REQUIRE(tokens[3].kind == TokenKind::RightParen);
 
-    REQUIRE(tokens[4].kind == TokenKind::LEFT_BRACE);
-    REQUIRE(tokens[5].kind == TokenKind::RETURN);
-    REQUIRE(tokens[6].kind == TokenKind::TRUE);
-    REQUIRE(tokens[7].kind == TokenKind::SEMICOLON);
-    REQUIRE(tokens[8].kind == TokenKind::RIGHT_BRACE);
+    REQUIRE(tokens[4].kind == TokenKind::LeftBrace);
+    REQUIRE(tokens[5].kind == TokenKind::Return);
+    REQUIRE(tokens[6].kind == TokenKind::True);
+    REQUIRE(tokens[7].kind == TokenKind::Semicolon);
+    REQUIRE(tokens[8].kind == TokenKind::RightBrace);
 
-    REQUIRE(tokens[9].kind == TokenKind::ELSE);
-    REQUIRE(tokens[10].kind == TokenKind::LEFT_BRACE);
-    REQUIRE(tokens[11].kind == TokenKind::RETURN);
-    REQUIRE(tokens[12].kind == TokenKind::FALSE);
-    REQUIRE(tokens[13].kind == TokenKind::SEMICOLON);
-    REQUIRE(tokens[14].kind == TokenKind::RIGHT_BRACE);
+    REQUIRE(tokens[9].kind == TokenKind::Else);
+    REQUIRE(tokens[10].kind == TokenKind::LeftBrace);
+    REQUIRE(tokens[11].kind == TokenKind::Return);
+    REQUIRE(tokens[12].kind == TokenKind::False);
+    REQUIRE(tokens[13].kind == TokenKind::Semicolon);
+    REQUIRE(tokens[14].kind == TokenKind::RightBrace);
   }
 }

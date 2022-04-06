@@ -17,7 +17,7 @@ Token Parser::peek() const {
 }
 
 bool Parser::isAtEnd() const {
-  return peek().kind == TokenKind::END_OF_FILE;
+  return peek().kind == TokenKind::EndOfFile;
 }
 
 Token Parser::previous() const {
@@ -67,25 +67,25 @@ void Parser::synchronize() {
   using enum TokenKind;
   while (!isAtEnd()) {
 
-    if (previous().kind == SEMICOLON)
+    if (previous().kind == Semicolon)
       return;
 
     switch (peek().kind) {
-      case CLASS:
+      case Class:
         [[fallthrough]];
-      case FUN:
+      case Fun:
         [[fallthrough]];
-      case VAR:
+      case Var:
         [[fallthrough]];
-      case FOR:
+      case For:
         [[fallthrough]];
-      case IF:
+      case If:
         [[fallthrough]];
-      case WHILE:
+      case While:
         [[fallthrough]];
-      case PRINT:
+      case Print:
         [[fallthrough]];
-      case RETURN:
+      case Return:
         return;
       default:
         break;
@@ -100,13 +100,13 @@ void Parser::synchronize() {
 // declaration -> variableDeclaration | statement
 Stmt Parser::declaration() {
   try {
-    if (match(TokenKind::CLASS))
+    if (match(TokenKind::Class))
       return classDeclaration();
 
-    if (match(TokenKind::FUN))
+    if (match(TokenKind::Fun))
       return functionStatement("function");
 
-    if (match(TokenKind::VAR))
+    if (match(TokenKind::Var))
       return variableDeclaration();
 
     return statement();
@@ -119,57 +119,57 @@ Stmt Parser::declaration() {
 
 // classDecl -> "class" IDENTIFIER "{" function* "}" ;
 Stmt Parser::classDeclaration() {
-  Token name = consume(TokenKind::IDENTIFIER, "Expect class name.");
-  consume(TokenKind::LEFT_BRACE, "Expect '{' before class body.");
+  Token name = consume(TokenKind::Identifier, "Expect class name.");
+  consume(TokenKind::LeftBrace, "Expect '{' before class body.");
 
   std::vector<FunctionStmt> methods;
 
-  while (!check(TokenKind::RIGHT_BRACE) && !isAtEnd()) {
+  while (!check(TokenKind::RightBrace) && !isAtEnd()) {
     methods.push_back(functionStatement("method"));
   }
 
-  consume(TokenKind::RIGHT_BRACE, "Expect '}' before class body.");
+  consume(TokenKind::RightBrace, "Expect '}' before class body.");
 
   return ClassStmt{name, methods};
 }
 
 // varDecl -> "var" IDENTIFIER ( "=" expression )? ";" ;
 Stmt Parser::variableDeclaration() {
-  Token name = consume(TokenKind::IDENTIFIER, "Expect variable name.");
+  Token name = consume(TokenKind::Identifier, "Expect variable name.");
 
   Expr initializer;
-  if (match(TokenKind::EQUAL)) {
+  if (match(TokenKind::Equal)) {
     initializer = expression();
   }
 
-  consume(TokenKind::SEMICOLON, "Expr ';' after variable declaration.");
+  consume(TokenKind::Semicolon, "Expr ';' after variable declaration.");
 
   return VariableStmt{name, initializer};
 }
 
 // statement -> exprStmt | forStmt | ifStmt | printStmt | whileStmt | block ;
 Stmt Parser::statement() {
-  if (match(TokenKind::FOR)) {
+  if (match(TokenKind::For)) {
     return forStatement();
   }
 
-  if (match(TokenKind::IF)) {
+  if (match(TokenKind::If)) {
     return ifStatement();
   }
 
-  if (match(TokenKind::PRINT)) {
+  if (match(TokenKind::Print)) {
     return printStatement();
   }
 
-  if (match(TokenKind::RETURN)) {
+  if (match(TokenKind::Return)) {
     return returnStatement();
   }
 
-  if (match(TokenKind::WHILE)) {
+  if (match(TokenKind::While)) {
     return whileStatement();
   }
 
-  if (match(TokenKind::LEFT_BRACE)) {
+  if (match(TokenKind::LeftBrace)) {
     return BlockStmt{block()};
   }
 
@@ -178,33 +178,33 @@ Stmt Parser::statement() {
 
 // forStmt -> "for" "(" ( varDecl | exprStmt | ";" ) expression? ";" expression? ")" statement ;
 Stmt Parser::forStatement() {
-  consume(TokenKind::LEFT_PAREN, "Expect '(' after 'for'.");
+  consume(TokenKind::LeftParen, "Expect '(' after 'for'.");
 
   Stmt initializer = [&]() -> Stmt {
-    if (match(TokenKind::SEMICOLON))
+    if (match(TokenKind::Semicolon))
       return boost::blank{};
 
-    if (match(TokenKind::VAR))
+    if (match(TokenKind::Var))
       return variableDeclaration();
 
     return expressionStatement();
   }();
 
   Expr condition = [&]() -> Expr {
-    if (!check(TokenKind::SEMICOLON))
+    if (!check(TokenKind::Semicolon))
       return expression();
     return boost::blank{};
   }();
 
-  consume(TokenKind::SEMICOLON, "Expect ';' after loop condition.");
+  consume(TokenKind::Semicolon, "Expect ';' after loop condition.");
 
   Expr increment = [&]() -> Expr {
-    if (!check(TokenKind::RIGHT_PAREN))
+    if (!check(TokenKind::RightParen))
       return expression();
     return boost::blank{};
   }();
 
-  consume(TokenKind::RIGHT_PAREN, "Expect ')' after for clauses.");
+  consume(TokenKind::RightParen, "Expect ')' after for clauses.");
 
   Stmt body = statement();
 
@@ -226,14 +226,14 @@ Stmt Parser::forStatement() {
 
 // ifStmt -> "if" "(" expression ")" statement ( "else" statement )? ;
 Stmt Parser::ifStatement() {
-  consume(TokenKind::LEFT_PAREN, "Expect '(' after 'if'.");
+  consume(TokenKind::LeftParen, "Expect '(' after 'if'.");
   Expr condition = expression();
-  consume(TokenKind::RIGHT_PAREN, "Expect ')' after if condition.");
+  consume(TokenKind::RightParen, "Expect ')' after if condition.");
 
   Stmt thenBranch = statement();
 
   Stmt elseBranch;
-  if (match(TokenKind::ELSE)) {
+  if (match(TokenKind::Else)) {
     elseBranch = statement();
   }
 
@@ -241,9 +241,9 @@ Stmt Parser::ifStatement() {
 }
 
 Stmt Parser::whileStatement() {
-  consume(TokenKind::LEFT_PAREN, "Expect '(' after 'while'.");
+  consume(TokenKind::LeftParen, "Expect '(' after 'while'.");
   Expr condition = expression();
-  consume(TokenKind::RIGHT_PAREN, "Expect ')' after condition.");
+  consume(TokenKind::RightParen, "Expect ')' after condition.");
 
   Stmt body = statement();
 
@@ -253,26 +253,26 @@ Stmt Parser::whileStatement() {
 // exprStmt -> expression ";";
 Stmt Parser::expressionStatement() {
   Expr expr = expression();
-  consume(TokenKind::SEMICOLON, "Expect ';' after expression.");
+  consume(TokenKind::Semicolon, "Expect ';' after expression.");
   return ExpressionStmt{expr};
 }
 
 FunctionStmt Parser::functionStatement(const std::string &kind) {
-  const Token name = consume(TokenKind::IDENTIFIER, std::string("Expect ").append(kind).append(" name."));
-  consume(TokenKind::LEFT_PAREN, std::string("Expect '(' after ").append(kind).append(" name."));
+  const Token name = consume(TokenKind::Identifier, std::string("Expect ").append(kind).append(" name."));
+  consume(TokenKind::LeftParen, std::string("Expect '(' after ").append(kind).append(" name."));
 
   std::vector<Token> parameters;
-  if (!check(TokenKind::RIGHT_PAREN)) {
+  if (!check(TokenKind::RightParen)) {
     do {
       if (const std::size_t max_param = 255; parameters.size() >= max_param)
         error(peek(), "Can't have more than 255 parameters.");
 
-      parameters.push_back(consume(TokenKind::IDENTIFIER, "Expect parameter name."));
-    } while (match(TokenKind::COMMA));
+      parameters.push_back(consume(TokenKind::Identifier, "Expect parameter name."));
+    } while (match(TokenKind::Comma));
   }
-  consume(TokenKind::RIGHT_PAREN, "Expect ')' after parameters.");
+  consume(TokenKind::RightParen, "Expect ')' after parameters.");
 
-  consume(TokenKind::LEFT_BRACE, std::string("Expect '{' before ").append(kind).append(" body."));
+  consume(TokenKind::LeftBrace, std::string("Expect '{' before ").append(kind).append(" body."));
   std::vector<Stmt> body = block();
   return FunctionStmt{name, parameters, body};
 }
@@ -280,18 +280,18 @@ FunctionStmt Parser::functionStatement(const std::string &kind) {
 // block -> "{" declaration "}";
 std::vector<Stmt> Parser::block() {
   std::vector<Stmt> statements;
-  while (!check(TokenKind::RIGHT_BRACE) && !isAtEnd()) {
+  while (!check(TokenKind::RightBrace) && !isAtEnd()) {
     statements.push_back(declaration());
   }
 
-  consume(TokenKind::RIGHT_BRACE, "Expect '}' after block.");
+  consume(TokenKind::RightBrace, "Expect '}' after block.");
   return statements;
 }
 
 // printStmt -> "print" expression ";";
 Stmt Parser::printStatement() {
   Expr value = expression();
-  consume(TokenKind::SEMICOLON, "Expect ';' after value.");
+  consume(TokenKind::Semicolon, "Expect ';' after value.");
   return PrintStmt{value};
 }
 
@@ -299,11 +299,11 @@ Stmt Parser::returnStatement() {
   Token keyword = previous();
 
   Expr value;
-  if (!check(TokenKind::SEMICOLON)) {
+  if (!check(TokenKind::Semicolon)) {
     value = expression();
   }
 
-  consume(TokenKind::SEMICOLON, "Expect ';' after return value.");
+  consume(TokenKind::Semicolon, "Expect ';' after return value.");
   return ReturnStmt{keyword, value};
 }
 
@@ -316,7 +316,7 @@ Expr Parser::expression() {
 Expr Parser::assignment() {
   Expr expr = or_();
 
-  if (match(TokenKind::EQUAL)) {
+  if (match(TokenKind::Equal)) {
     Token equals = previous();
     Expr value = assignment();
 
@@ -335,7 +335,7 @@ Expr Parser::assignment() {
 Expr Parser::or_() {
   Expr expr = and_();
 
-  while (match(TokenKind::OR)) {
+  while (match(TokenKind::Or)) {
     Token op = previous();
     Expr right = and_();
     expr = LogicalExpr{expr, op, right};
@@ -348,7 +348,7 @@ Expr Parser::or_() {
 Expr Parser::and_() {
   Expr expr = equality();
 
-  while (match(TokenKind::AND)) {
+  while (match(TokenKind::And)) {
     Token op = previous();
     Expr right = equality();
     expr = LogicalExpr{expr, op, right};
@@ -361,7 +361,7 @@ Expr Parser::and_() {
 Expr Parser::equality() {
   Expr expr = comparison();
 
-  while (match({TokenKind::BANG_EQUAL, TokenKind::EQUAL_EQUAL})) {
+  while (match({TokenKind::BangEqual, TokenKind::EqualEqual})) {
     Token op = previous();
     Expr right = comparison();
     expr = BinaryExpr{expr, op, right};
@@ -375,7 +375,7 @@ Expr Parser::comparison() {
   Expr expr = term();
 
   using enum TokenKind;
-  while (match({GREATER, GREATER_EQUAL, LESS, LESS_EQUAL})) {
+  while (match({Greater, GreaterEqual, Less, LessEqual})) {
     Token op = previous();
     Expr right = term();
     expr = BinaryExpr{expr, op, right};
@@ -387,7 +387,7 @@ Expr Parser::comparison() {
 Expr Parser::term() {
   Expr expr = factor();
 
-  while (match({TokenKind::MINUS, TokenKind::PLUS})) {
+  while (match({TokenKind::Minus, TokenKind::Plus})) {
     Token op = previous();
     Expr right = factor();
     expr = BinaryExpr{expr, op, right};
@@ -399,7 +399,7 @@ Expr Parser::term() {
 Expr Parser::factor() {
   Expr expr = unary();
 
-  while (match({TokenKind::SLASH, TokenKind::STAR})) {
+  while (match({TokenKind::Slash, TokenKind::Star})) {
     Token op = previous();
     Expr right = unary();
     expr = BinaryExpr{expr, op, right};
@@ -409,7 +409,7 @@ Expr Parser::factor() {
 
 // unary -> ( "!" | "-" ) unary | call ;
 Expr Parser::unary() {
-  if (match({TokenKind::BANG, TokenKind::MINUS})) {
+  if (match({TokenKind::Bang, TokenKind::Minus})) {
     Token op = previous();
     Expr right = unary();
     return UnaryExpr{op, right};
@@ -423,10 +423,10 @@ Expr Parser::call() {
   Expr expr = primary();
 
   while (true) {
-    if (match(TokenKind::LEFT_PAREN)) {
+    if (match(TokenKind::LeftParen)) {
       expr = finishCall(expr);
-    } else if (match(TokenKind::DOT)) {
-      Token name = consume(TokenKind::IDENTIFIER, "Expect property name after '.'.");
+    } else if (match(TokenKind::Dot)) {
+      Token name = consume(TokenKind::Identifier, "Expect property name after '.'.");
       expr = GetExpr(expr, name);
     } else {
       break;
@@ -438,33 +438,33 @@ Expr Parser::call() {
 
 // primary -> NUMBER | STRING | "true" | "false" | "nil" | "(" expression ")" | IDENTIFIER ;
 Expr Parser::primary() {
-  if (match({TokenKind::NUMBER, TokenKind::STRING})) {
+  if (match({TokenKind::Number, TokenKind::String})) {
     Literal literal = previous().literal;
     return LiteralExpr{literal};
   }
 
-  if (match(TokenKind::TRUE)) {
+  if (match(TokenKind::True)) {
     Literal trueLiteral = true;
     return LiteralExpr{trueLiteral};
   }
 
-  if (match(TokenKind::FALSE)) {
+  if (match(TokenKind::False)) {
     Literal falseLiteral = false;
     return LiteralExpr{falseLiteral};
   }
 
-  if (match(TokenKind::NIL)) {
+  if (match(TokenKind::Nil)) {
     Literal nilLiteral = nullptr;
     return LiteralExpr{nilLiteral};
   }
 
-  if (match(TokenKind::IDENTIFIER)) {
+  if (match(TokenKind::Identifier)) {
     return VariableExpr{previous()};
   }
 
-  if (match(TokenKind::LEFT_PAREN)) {
+  if (match(TokenKind::LeftParen)) {
     Expr expr = expression();
-    consume(TokenKind::RIGHT_PAREN, "Expected ')' after expression.");
+    consume(TokenKind::RightParen, "Expected ')' after expression.");
     return GroupingExpr{expr};
   }
 
@@ -487,16 +487,16 @@ std::vector<Stmt> Parser::parse() {
 
 Expr Parser::finishCall(const Expr &callee) {
   std::vector<Expr> arguments;
-  if (!check(TokenKind::RIGHT_PAREN)) {
+  if (!check(TokenKind::RightParen)) {
     do {
       if (const std::size_t max_arg = 255; arguments.size() >= max_arg)
         error(peek(), "Can't have more than 255 arguments.");
 
       arguments.push_back(expression());
-    } while (match(TokenKind::COMMA));
+    } while (match(TokenKind::Comma));
   }
 
-  Token paren = consume(TokenKind::RIGHT_PAREN, "Expect ')' after arguments.");
+  Token paren = consume(TokenKind::RightParen, "Expect ')' after arguments.");
 
   return CallExpr{callee, paren, arguments};
 }

@@ -22,10 +22,10 @@
 namespace lox {
 
 const std::map<std::string, TokenKind> keywords{
-    {"and", TokenKind::AND},   {"class", TokenKind::CLASS}, {"else", TokenKind::ELSE},     {"false", TokenKind::FALSE},
-    {"for", TokenKind::FOR},   {"fun", TokenKind::FUN},     {"if", TokenKind::IF},         {"nil", TokenKind::NIL},
-    {"or", TokenKind::OR},     {"print", TokenKind::PRINT}, {"return", TokenKind::RETURN}, {"super", TokenKind::SUPER},
-    {"this", TokenKind::THIS}, {"true", TokenKind::TRUE},   {"var", TokenKind::VAR},       {"while", TokenKind::WHILE}};
+    {"and", TokenKind::And},   {"class", TokenKind::Class}, {"else", TokenKind::Else},     {"false", TokenKind::False},
+    {"for", TokenKind::For},   {"fun", TokenKind::Fun},     {"if", TokenKind::If},         {"nil", TokenKind::Nil},
+    {"or", TokenKind::Or},     {"print", TokenKind::Print}, {"return", TokenKind::Return}, {"super", TokenKind::Super},
+    {"this", TokenKind::This}, {"true", TokenKind::True},   {"var", TokenKind::Var},       {"while", TokenKind::While}};
 
 Scanner::Scanner(const std::string &source)
     : m_source(source) {
@@ -37,59 +37,59 @@ std::vector<Token> Scanner::scan() {
 
     switch (const char c = advance(); c) {
       case '(':
-        addToken(TokenKind::LEFT_PAREN);
+        addToken(TokenKind::LeftParen);
         break;
 
       case ')':
-        addToken(TokenKind::RIGHT_PAREN);
+        addToken(TokenKind::RightParen);
         break;
 
       case '{':
-        addToken(TokenKind::LEFT_BRACE);
+        addToken(TokenKind::LeftBrace);
         break;
 
       case '}':
-        addToken(TokenKind::RIGHT_BRACE);
+        addToken(TokenKind::RightBrace);
         break;
 
       case '.':
-        addToken(TokenKind::DOT);
+        addToken(TokenKind::Dot);
         break;
 
       case ',':
-        addToken(TokenKind::COMMA);
+        addToken(TokenKind::Comma);
         break;
 
       case '-':
-        addToken(TokenKind::MINUS);
+        addToken(TokenKind::Minus);
         break;
 
       case '+':
-        addToken(TokenKind::PLUS);
+        addToken(TokenKind::Plus);
         break;
 
       case ';':
-        addToken(TokenKind::SEMICOLON);
+        addToken(TokenKind::Semicolon);
         break;
 
       case '*':
-        addToken(TokenKind::STAR);
+        addToken(TokenKind::Star);
         break;
 
       case '!':
-        addToken(match('=') ? TokenKind::BANG_EQUAL : TokenKind::BANG);
+        addToken(match('=') ? TokenKind::BangEqual : TokenKind::Bang);
         break;
 
       case '=':
-        addToken(match('=') ? TokenKind::EQUAL_EQUAL : TokenKind::EQUAL);
+        addToken(match('=') ? TokenKind::EqualEqual : TokenKind::Equal);
         break;
 
       case '<':
-        addToken(match('=') ? TokenKind::LESS_EQUAL : TokenKind::LESS);
+        addToken(match('=') ? TokenKind::LessEqual : TokenKind::Less);
         break;
 
       case '>':
-        addToken(match('=') ? TokenKind::GREATER_EQUAL : TokenKind::GREATER);
+        addToken(match('=') ? TokenKind::GreaterEqual : TokenKind::Greater);
         break;
 
       case '/':
@@ -97,7 +97,7 @@ std::vector<Token> Scanner::scan() {
           while (peek() != '\n' && !isAtEnd())
             advance();
         else
-          addToken(TokenKind::SLASH);
+          addToken(TokenKind::Slash);
         break;
 
       case ' ':
@@ -125,7 +125,7 @@ std::vector<Token> Scanner::scan() {
         advance();
 
         const std::string value = m_source.substr(m_start + 1, m_current - m_start - 2);
-        addToken(TokenKind::STRING, value);
+        addToken(TokenKind::String, value);
       } break;
 
       default:
@@ -140,7 +140,7 @@ std::vector<Token> Scanner::scan() {
             advance();
 
           const double value = std::stod(m_source.substr(m_start, m_current - m_start));
-          addToken(TokenKind::NUMBER, value);
+          addToken(TokenKind::Number, value);
         }
 
         else if (isAlpha(c)) {
@@ -149,7 +149,7 @@ std::vector<Token> Scanner::scan() {
           }
 
           const std::string text = m_source.substr(m_start, m_current - m_start);
-          const TokenKind kind = keywords.contains(text) ? keywords.find(text)->second : TokenKind::IDENTIFIER;
+          const TokenKind kind = keywords.contains(text) ? keywords.find(text)->second : TokenKind::Identifier;
           addToken(kind);
         }
 
@@ -160,7 +160,7 @@ std::vector<Token> Scanner::scan() {
     }
   }
 
-  addToken(TokenKind::END_OF_FILE);
+  addToken(TokenKind::EndOfFile);
   return m_tokens;
 }
 
