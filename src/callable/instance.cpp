@@ -17,6 +17,10 @@ std::any Instance::get(const Token &name) {
   throw RuntimeError(name, std::string("Undefined property '").append(name.lexeme).append("'."));
 }
 
+void Instance::set(const Token &name, const std::any &val) {
+  m_fields[name.lexeme] = val;
+}
+
 Instance::operator std::string() const {
   return std::string(m_klass).append(" instance");
 }

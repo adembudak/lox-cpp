@@ -45,6 +45,17 @@ Literal Interpreter::ExpressionVisitor::operator()(const LogicalExpr &expr) cons
   return std::any_cast<Literal>(evaluate(expr.right));
 }
 
+std::any Interpreter::ExpressionVisitor::operator()(const SetExpr &expr) const {
+  std::any object = evaluate(expr);
+
+  if (object.type() == typeid(Instance))
+    throw RuntimeError(expr.name, "Only instances have fields.");
+
+  std::any value = evaluate(expr.value);
+  std::any_cast<Instance>(value).set(expr.name, value);
+  return value;
+}
+
 Literal Interpreter::ExpressionVisitor::operator()(const GroupingExpr &expr) const {
   return std::any_cast<Literal>(evaluate(expr.expression));
 }

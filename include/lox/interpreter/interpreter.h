@@ -31,6 +31,7 @@ private:
 
     Literal operator()(const LiteralExpr &expr) const;
     Literal operator()(const LogicalExpr &expr) const;
+    std::any operator()(const SetExpr &expr) const;
     Literal operator()(const GroupingExpr &expr) const;
     Literal operator()(const UnaryExpr &expr) const;
     Literal operator()(const BinaryExpr &expr) const;

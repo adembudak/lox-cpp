@@ -46,7 +46,7 @@ LogicalExpr::LogicalExpr(const Expr &left, const Token &op, const Expr &right)
 SetExpr::SetExpr(const Expr &object, const Token &name, const Expr &val)
     : object(object)
     , name(name)
-    , val(val) {
+    , value(val) {
 }
 
 SuperExpr::SuperExpr(const Token &keyword, const Token &method)
@@ -111,7 +111,7 @@ std::size_t hash_value(const LogicalExpr &expr) {
 std::size_t hash_value(const SetExpr &expr) {
   std::size_t h = hash_value(expr.name);
   boost::hash_combine(h, hash_value(expr.object));
-  boost::hash_combine(h, hash_value(expr.val));
+  boost::hash_combine(h, hash_value(expr.value));
   return h;
 }
 

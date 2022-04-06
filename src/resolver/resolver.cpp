@@ -114,6 +114,11 @@ void Resolver::operator()(const LogicalExpr &expr) {
   resolve(expr.right);
 }
 
+void Resolver::operator()(const SetExpr &expr) {
+  resolve(expr.value);
+  resolve(expr.object);
+}
+
 void Resolver::operator()(const UnaryExpr &expr) {
   resolve(expr.right);
 }

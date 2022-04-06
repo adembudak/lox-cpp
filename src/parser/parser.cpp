@@ -312,7 +312,7 @@ Expr Parser::expression() {
   return assignment();
 }
 
-// assignment -> IDENTIFIER "=" assignment | logic_or;
+// assignment -> ( call "." )? IDENTIFIER "=" assignment | logic_or ;
 Expr Parser::assignment() {
   Expr expr = or_();
 
@@ -320,10 +320,11 @@ Expr Parser::assignment() {
     Token equals = previous();
     Expr value = assignment();
 
-    if (auto *pVariableExpr = boost::get<VariableExpr>(&expr)) {
-      Token name = pVariableExpr->name;
-      return AssignExpr{name, value};
-    }
+    if (auto *pVariableExpr = boost::get<VariableExpr>(&expr))
+      return AssignExpr{pVariableExpr->name, value};
+    else if (auto *pGetExpr = boost::get<GetExpr>(&expr))
+      return SetExpr{pGetExpr->object, pGetExpr->name, value};
+
     error(equals, "Invalid assignment target.");
   }
 

@@ -16,6 +16,7 @@ public:
   explicit Instance(const Class &klass);
 
   std::any get(const Token &name);
+  void set(const Token &name, const std::any &val);
   operator std::string() const;
 };
 

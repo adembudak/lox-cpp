@@ -120,7 +120,7 @@ struct LogicalExpr {
 struct SetExpr {
   Expr object;
   Token name;
-  Expr val;
+  Expr value;
 
   SetExpr(const Expr &object, const Token &name, const Expr &val);
 

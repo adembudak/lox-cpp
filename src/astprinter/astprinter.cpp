@@ -179,7 +179,7 @@ std::string ASTPrinter::operator()(const LogicalExpr &expr) const {
 
 std::string ASTPrinter::operator()(const SetExpr &expr) const {
   std::ostringstream sout;
-  sout << '(' << "= " << visit(expr.object) << ' ' << expr.name.lexeme << ' ' << visit(expr.val) << ')';
+  sout << '(' << "= " << visit(expr.object) << ' ' << expr.name.lexeme << ' ' << visit(expr.value) << ')';
   return sout.str();
 }
 
