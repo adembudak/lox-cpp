@@ -98,6 +98,10 @@ void Resolver::operator()(const CallExpr &expr) {
     resolve(argument);
 }
 
+void Resolver::operator()(const GetExpr &expr) {
+  resolve(expr.object);
+}
+
 void Resolver::operator()(const GroupingExpr &expr) {
   resolve(expr.expression);
 }

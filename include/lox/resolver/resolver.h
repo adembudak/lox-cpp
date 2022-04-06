@@ -44,6 +44,7 @@ public:
   void operator()(const AssignExpr &expr);
   void operator()(const BinaryExpr &expr);
   void operator()(const CallExpr &expr);
+  void operator()(const GetExpr &expr);
   void operator()(const GroupingExpr &expr);
   void operator()(const LiteralExpr &expr);
   void operator()(const LogicalExpr &expr);

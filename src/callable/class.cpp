@@ -12,7 +12,7 @@ Class::Class(const std::string &name)
     : m_name(name) {
 }
 
-std::any Class::call(const Interpreter &interpreter, std::vector<Literal> &arguments) {
+std::any Class::call(const Interpreter &interpreter, const std::vector<Literal> &arguments) {
   (void)interpreter;
   (void)arguments;
 

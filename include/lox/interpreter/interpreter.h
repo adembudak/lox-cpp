@@ -35,6 +35,7 @@ private:
     Literal operator()(const UnaryExpr &expr) const;
     Literal operator()(const BinaryExpr &expr) const;
     std::any operator()(const CallExpr &expr) const;
+    std::any operator()(const GetExpr &expr) const;
     std::any operator()(const VariableExpr &expr) const;
     Literal operator()(const AssignExpr &expr) const;
     Literal operator()([[maybe_unused]] const auto & /*unused*/) const;

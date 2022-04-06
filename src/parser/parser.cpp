@@ -417,13 +417,16 @@ Expr Parser::unary() {
   return call();
 }
 
-// call -> primary ( "(" arguments? ")" )* ;
+// call -> primary ( "(" arguments? ")" | "." IDENTIFIER )* ;
 Expr Parser::call() {
   Expr expr = primary();
 
   while (true) {
     if (match(TokenKind::LEFT_PAREN)) {
       expr = finishCall(expr);
+    } else if (match(TokenKind::DOT)) {
+      Token name = consume(TokenKind::IDENTIFIER, "Expect property name after '.'.");
+      expr = GetExpr(expr, name);
     } else {
       break;
     }

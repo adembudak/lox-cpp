@@ -154,6 +154,15 @@ std::any Interpreter::ExpressionVisitor::operator()(const CallExpr &expr) const 
   return callable->call(m_interpreter, arguments);
 }
 
+std::any Interpreter::ExpressionVisitor::operator()(const GetExpr &expr) const {
+  std::any ret = evaluate(expr.object);
+  if (ret.type() == typeid(Instance)) {
+    Instance instance = std::any_cast<Instance>(ret);
+    return instance.get(expr.name);
+  }
+  throw RuntimeError(expr.name, "Only instances have properties.");
+}
+
 std::any Interpreter::ExpressionVisitor::operator()(const VariableExpr &expr) const {
   return m_interpreter.m_environment.get(expr.name);
 }
