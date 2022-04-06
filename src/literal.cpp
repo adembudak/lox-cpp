@@ -17,12 +17,20 @@ overload(Ts...) -> overload<Ts...>;
 
 namespace lox {
 
-Literal::literal_t Literal::data() {
-  return m_data;
+Literal::Literal(std::nullptr_t n)
+    : m_data(n) {
 }
 
-const Literal::literal_t Literal::data() const {
-  return m_data;
+Literal::Literal(const bool b)
+    : m_data(b) {
+}
+
+Literal::Literal(const double d)
+    : m_data(d) {
+}
+
+Literal::Literal(const std::string &s)
+    : m_data(s) {
 }
 
 bool Literal::isTruthy() const {
@@ -34,6 +42,14 @@ bool Literal::isTruthy() const {
            [](const std::string &) { return true; }
       }, m_data);
   // clang-format on
+}
+
+Literal::literal_t Literal::data() {
+  return m_data;
+}
+
+const Literal::literal_t Literal::data() const {
+  return m_data;
 }
 
 Literal::operator std::string() const {

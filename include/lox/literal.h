@@ -14,27 +14,14 @@ private:
 
 public:
   Literal() = default;
-  Literal(std::nullptr_t n)
-      : m_data(n) {
-  }
-
-  Literal(const bool b)
-      : m_data(b) {
-  }
-
-  Literal(const double d)
-      : m_data(d) {
-  }
-
-  Literal(const std::string &s)
-      : m_data(s) {
-  }
+  Literal(std::nullptr_t n);
+  Literal(const bool b);
+  Literal(const double d);
+  Literal(const std::string &s);
 
   bool isTruthy() const;
-
   literal_t data();
   const literal_t data() const;
-
   operator std::string() const;
 };
 
