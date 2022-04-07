@@ -9,29 +9,33 @@
 
 namespace lox {
 
+void report(const std::size_t line, const std::string_view message) {
+  const std::string line_message = fmt::format(fmt::emphasis::bold | fg(fmt::color::red), "[line {}]:", line);
+  fmt::print(stderr, fg(fmt::color::red), "{0} Error: {1}\n", line_message, message);
+}
+
 void report(const std::size_t line, const std::string_view where, const std::string_view message) {
-  if (!where.empty())
-    fmt::print(stderr, fg(fmt::color::red), "[line {0}] Error{1}: {2}\n", line, where, message);
-  else
-    fmt::print(stderr, fg(fmt::color::red), "[line {0}] Error: {1}\n", line, message);
+  const std::string line_message = fmt::format(fmt::emphasis::bold | fg(fmt::color::red), "[line {}]:", line);
+  const std::string where_message = fmt::format(fmt::emphasis::bold | fg(fmt::color::ghost_white), "{}", where);
+  fmt::print(stderr, fg(fmt::color::red), "{0} Error at `{1}`: {2}\n", line_message, where_message, message);
 }
 
 void error(const std::size_t line, const std::string_view message) {
-  report(line, std::string{}, message);
+  report(line, message);
 }
 
 ParseError error(const Token &token, const std::string_view message) {
   if (token.kind == TokenKind::EndOfFile) {
     report(token.line, " at end", message);
   } else {
-    report(token.line, " at '" + token.lexeme + "'", message);
+    report(token.line, token.lexeme, message);
   }
 
   return ParseError{};
 }
 
 void runtimeError(const RuntimeError &error) {
-  fmt::print(stderr, fg(fmt::color::red), "{0}\n[line {1}]\n", error.what(), error.token().line);
+  report(error.token().line, error.what());
 }
 
 const char *RuntimeError::what() const noexcept {
