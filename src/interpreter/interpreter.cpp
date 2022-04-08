@@ -16,7 +16,8 @@
 
 #include <variant>
 #include <string>
-#include <cassert>
+#include <unordered_map>
+#include <iterator>
 
 namespace lox {
 
@@ -249,7 +250,14 @@ void Interpreter::StatementVisitor::operator()(const BlockStmt &stmt) const {
 
 void Interpreter::StatementVisitor::operator()(const ClassStmt &stmt) const {
   m_interpreter.m_environment.define(stmt.name, nullptr);
-  m_interpreter.m_environment.assign(stmt.name, Class{stmt.name.lexeme});
+
+  std::unordered_map<std::string, Function> methods;
+  std::transform(begin(stmt.methods), end(stmt.methods), inserter(methods, end(methods)), //
+                 [&](const FunctionStmt &method) {
+                   return std::pair{method.name.lexeme, Function{method, m_interpreter.m_environment}};
+                 });
+
+  m_interpreter.m_environment.assign(stmt.name, Class{stmt.name.lexeme, methods});
 }
 
 void Interpreter::StatementVisitor::operator()(const IfStmt &stmt) const {

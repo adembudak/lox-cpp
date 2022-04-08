@@ -10,9 +10,11 @@ Instance::Instance(const Class &klass)
     : m_klass(klass){};
 
 std::any Instance::get(const Token &name) {
-  if (m_fields.contains(name.lexeme)) {
+  if (m_fields.contains(name.lexeme))
     return m_fields.find(name.lexeme)->second;
-  }
+
+  if (const auto method = m_klass.findMethod(name.lexeme))
+    return *method;
 
   throw RuntimeError(name, std::string("Undefined property '").append(name.lexeme).append("'."));
 }

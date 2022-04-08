@@ -8,8 +8,16 @@
 #include <any>
 
 namespace lox {
-Class::Class(const std::string &name)
-    : m_name(name) {
+
+Class::Class(const std::string &name, const std::unordered_map<std::string, Function> &methods)
+    : m_name(name)
+    , m_methods(methods) {
+}
+
+std::optional<Function> Class::findMethod(const std::string &name) const {
+  if (m_methods.contains(name))
+    return m_methods.find(name)->second;
+  return std::nullopt;
 }
 
 std::any Class::call(const Interpreter &interpreter, const std::vector<Literal> &arguments) {

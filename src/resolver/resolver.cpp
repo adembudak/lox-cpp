@@ -28,6 +28,10 @@ void Resolver::operator()(const BlockStmt &stmt) {
 void Resolver::operator()(const ClassStmt &stmt) {
   declare(stmt.name);
   define(stmt.name);
+
+  for (const FunctionStmt &method : stmt.methods) {
+    resolveFunction(method, FunctionKind::Method);
+  }
 }
 
 void Resolver::operator()(const ExpressionStmt &stmt) {
