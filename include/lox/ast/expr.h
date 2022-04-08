@@ -166,10 +166,6 @@ struct VariableExpr {
   bool operator!=(const VariableExpr &) const = default;
 };
 
-inline bool operator==(const boost::blank &, const boost::blank &) {
-  return true;
-}
-
 std::size_t hash_value(const AssignExpr &expr);
 std::size_t hash_value(const BinaryExpr &expr);
 std::size_t hash_value(const CallExpr &expr);
