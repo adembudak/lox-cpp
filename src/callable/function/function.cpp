@@ -1,5 +1,5 @@
-#include "lox/callable/function.h"
-#include "lox/callable/return.h"
+#include "lox/callable/function/function.h"
+#include "lox/callable/function/return.h"
 #include "lox/environment/environment.h"
 #include "lox/interpreter/interpreter.h"
 

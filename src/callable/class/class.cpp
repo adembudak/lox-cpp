@@ -1,6 +1,6 @@
 #include "lox/literal.h"
-#include "lox/callable/class.h"
-#include "lox/callable/instance.h"
+#include "lox/callable/class/class.h"
+#include "lox/callable/class/instance.h"
 #include "lox/interpreter/interpreter.h"
 
 #include <string>

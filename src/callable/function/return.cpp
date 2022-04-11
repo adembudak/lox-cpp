@@ -1,5 +1,5 @@
 #include "lox/literal.h"
-#include "lox/callable/return.h"
+#include "lox/callable/function/return.h"
 
 namespace lox {
 

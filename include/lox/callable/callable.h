@@ -1,8 +1,8 @@
 #pragma once
 
 #include <variant>
-#include "lox/callable/class.h"
-#include "lox/callable/function.h"
+#include "lox/callable/class/class.h"
+#include "lox/callable/function/function.h"
 #include "lox/environment/environment.h"
 #include "lox/interpreter/interpreter.h"
 
@@ -35,7 +35,7 @@ public:
 
   std::any call(const Interpreter &interpreter, const std::vector<Literal> &arguments) const {
     return std::visit(overload{
-                          [&](const std::monostate) { return std::any{nullptr}; },                        //
+                          [&](const std::monostate) { return std::any{}; },                        //
                           [&](const Class &klass) { return klass.call(interpreter, arguments); },         //
                           [&](const Function &function) { return function.call(interpreter, arguments); } //
                       },

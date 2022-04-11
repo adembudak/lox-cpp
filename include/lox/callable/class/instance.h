@@ -1,8 +1,9 @@
 #pragma once
 #include <unordered_map>
+#include <string>
 #include <any>
 
-#include "lox/callable/class.h"
+#include "lox/callable/class/class.h"
 
 namespace lox {
 struct Token;

@@ -1,4 +1,4 @@
-#include "lox/callable/instance.h"
+#include "lox/callable/class/instance.h"
 #include "lox/token.h"
 #include "lox/error/error.h"
 
