@@ -142,7 +142,7 @@ Stmt Parser::variableDeclaration() {
     initializer = expression();
   }
 
-  consume(TokenKind::Semicolon, "Expr ';' after variable declaration.");
+  consume(TokenKind::Semicolon, "Expect ';' after variable declaration.");
 
   return VariableStmt{name, initializer};
 }
