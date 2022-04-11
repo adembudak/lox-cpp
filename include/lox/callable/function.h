@@ -9,7 +9,6 @@
 
 namespace lox {
 class Interpreter;
-class Environment;
 
 class Function {
 private:
