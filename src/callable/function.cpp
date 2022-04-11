@@ -14,7 +14,7 @@ Function::Function(const FunctionStmt &declaration, const Environment &closure)
     , m_closure(closure) {
 }
 
-Literal Function::call(const Interpreter &interpreter, const std::vector<Literal> &arguments) const {
+std::any Function::call(const Interpreter &interpreter, const std::vector<Literal> &arguments) const {
   auto environment = m_closure;
 
   for (std::size_t i = 0; i < m_declaration.params.size(); i++) {

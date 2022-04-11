@@ -18,7 +18,7 @@ private:
 public:
   Function(const FunctionStmt &declaration, const Environment &closure);
 
-  Literal call(const Interpreter &interpreter, const std::vector<Literal> &arguments) const;
+  std::any call(const Interpreter &interpreter, const std::vector<Literal> &arguments) const;
   std::size_t arity() const;
   operator std::string() const;
 };
