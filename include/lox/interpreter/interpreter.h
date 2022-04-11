@@ -71,6 +71,8 @@ private:
   ExpressionVisitor m_expressionVisitor;
   StatementVisitor m_statementVisitor;
 
+  std::any lookUpVariable(const Token &name, const Expr &expr) const;
+
 public:
   Interpreter(const std::vector<Stmt> &statements);
 
@@ -82,9 +84,6 @@ public:
 
   StatementVisitor &statementVisitor();
   const StatementVisitor &statementVisitor() const;
-
-private:
-  std::any lookUpVariable(const Token &name, const Expr &expr) const;
 };
 
 }
