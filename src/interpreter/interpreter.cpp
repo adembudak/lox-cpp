@@ -220,6 +220,8 @@ void Interpreter::StatementVisitor::operator()(const PrintStmt &stmt) const {
     fmt::print("{}\n", std::string(std::any_cast<Literal>(ret)));
   } else if (ret.type() == typeid(Class)) {
     fmt::print("{}\n", std::string(std::any_cast<Class>(ret)));
+  } else if (ret.type() == typeid(Function)) {
+    fmt::print("{}\n", std::string(std::any_cast<Function>(ret)));
   } else {
     fmt::print("{}\n", std::string(std::any_cast<Instance>(ret)));
   }

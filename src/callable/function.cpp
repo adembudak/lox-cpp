@@ -33,4 +33,8 @@ std::size_t Function::arity() const {
   return m_declaration.params.size();
 }
 
+Function::operator std::string() const {
+  return std::string("<fn ").append(m_declaration.name.lexeme).append(">");
+}
+
 }
