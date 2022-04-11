@@ -156,14 +156,8 @@ std::any Interpreter::ExpressionVisitor::operator()(const CallExpr &expr) const 
                              .append(".\n"));
   };
 
-  if (Function *callable = std::get_if<Function>(&callee)) {
-    checkArity(callable->arity(), arguments.size());
-    return callable->call(m_interpreter, arguments);
-  }
-
-  Class *callable = std::get_if<Class>(&callee);
-  checkArity(callable->arity(), arguments.size());
-  return callable->call(m_interpreter, arguments);
+  checkArity(callee.arity(), arguments.size());
+  return callee.call(m_interpreter, arguments);
 }
 
 std::any Interpreter::ExpressionVisitor::operator()(const GetExpr &expr) const {
@@ -182,7 +176,7 @@ std::any Interpreter::ExpressionVisitor::operator()(const VariableExpr &expr) co
 Literal Interpreter::ExpressionVisitor::operator()(const AssignExpr &expr) const {
   Literal value = std::any_cast<Literal>(evaluate(expr.value));
 
-  if (const auto &locals = m_interpreter.m_locals; locals.contains(expr)) {
+  if (const auto locals = m_interpreter.m_locals; locals.contains(expr)) {
     const std::size_t distance = locals.find(expr)->second;
     m_interpreter.m_environment.assignAt(expr.name, distance, value);
   } else {
