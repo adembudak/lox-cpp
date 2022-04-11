@@ -146,7 +146,7 @@ std::any Interpreter::ExpressionVisitor::operator()(const CallExpr &expr) const 
   std::transform(begin(expr.arguments), end(expr.arguments), back_inserter(arguments), //
                  [this](const Expr &expr) { return std::any_cast<Literal>(evaluate(expr)); });
 
-  auto checkArity = [&expr](std::size_t funcArgs, std::size_t argsSize) {
+  auto checkArity = [&expr](const std::size_t funcArgs, const std::size_t argsSize) {
     if (funcArgs != argsSize)
       throw RuntimeError(expr.paren,
                          std::string("Expected [")
