@@ -22,7 +22,7 @@ public:
   explicit Class(const std::string &name, const std::unordered_map<std::string, Function> &methods);
 
   std::optional<Function> findMethod(const std::string &name) const;
-  std::any call(const Interpreter &interpreter, const std::vector<Literal> &arguments);
+  std::any call(const Interpreter &interpreter, const std::vector<Literal> &arguments) const;
   std::size_t arity() const;
   operator std::string() const;
 };

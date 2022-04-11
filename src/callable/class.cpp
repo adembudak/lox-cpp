@@ -20,7 +20,7 @@ std::optional<Function> Class::findMethod(const std::string &name) const {
   return std::nullopt;
 }
 
-std::any Class::call(const Interpreter &interpreter, const std::vector<Literal> &arguments) {
+std::any Class::call(const Interpreter &interpreter, const std::vector<Literal> &arguments) const {
   (void)interpreter;
   (void)arguments;
 
