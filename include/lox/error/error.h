@@ -1,3 +1,5 @@
+#pragma once
+
 #include "lox/token.h"
 
 #include <exception>
