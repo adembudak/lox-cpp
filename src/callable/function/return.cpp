@@ -1,4 +1,4 @@
-#include "lox/literal.h"
+#include "lox/primitives/literal.h"
 #include "lox/callable/function/return.h"
 
 namespace lox {

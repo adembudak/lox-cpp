@@ -1,5 +1,5 @@
 #include "lox/callable/class/instance.h"
-#include "lox/token.h"
+#include "lox/primitives/token.h"
 #include "lox/error/error.h"
 
 #include <string>

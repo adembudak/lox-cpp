@@ -1,7 +1,7 @@
 #pragma once
 
 #include "lox/callable/function/function.h"
-#include "lox/literal.h"
+#include "lox/primitives/literal.h"
 
 #include <string>
 #include <vector>

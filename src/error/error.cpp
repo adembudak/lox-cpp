@@ -1,5 +1,5 @@
 #include "lox/error/error.h"
-#include "lox/token.h"
+#include "lox/primitives/token.h"
 
 #include <fmt/core.h>
 #include <fmt/color.h>

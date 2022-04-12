@@ -1,4 +1,4 @@
-#include "lox/token.h"
+#include "lox/primitives/token.h"
 #include "lox/scanner/scanner.h"
 #include "lox/error/error.h"
 

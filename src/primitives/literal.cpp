@@ -1,4 +1,4 @@
-#include "lox/literal.h"
+#include "lox/primitives/literal.h"
 
 #include <functional>
 #include <variant>

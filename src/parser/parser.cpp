@@ -1,6 +1,6 @@
 #include "lox/parser/parser.h"
-#include "lox/token.h"
-#include "lox/literal.h"
+#include "lox/primitives/token.h"
+#include "lox/primitives/literal.h"
 #include "lox/error/error.h"
 
 #include <boost/variant/get.hpp>

@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <string>
 
-#include "lox/token.h"
+#include "lox/primitives/token.h"
 
 namespace lox {
 

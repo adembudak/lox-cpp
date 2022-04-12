@@ -1,4 +1,4 @@
-#include "lox/literal.h"
+#include "lox/primitives/literal.h"
 #include "lox/callable/class/class.h"
 #include "lox/callable/class/instance.h"
 #include "lox/interpreter/interpreter.h"

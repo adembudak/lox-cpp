@@ -1,6 +1,6 @@
 #pragma once
 
-#include "lox/token.h"
+#include "lox/primitives/token.h"
 
 #include <exception>
 #include <string_view>

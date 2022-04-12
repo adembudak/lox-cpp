@@ -1,7 +1,7 @@
 #pragma once
 
-#include "lox/token.h"
-#include "lox/literal.h"
+#include "lox/primitives/token.h"
+#include "lox/primitives/literal.h"
 
 #include <unordered_map>
 #include <memory>

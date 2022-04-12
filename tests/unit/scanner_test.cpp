@@ -5,7 +5,7 @@
 #include <vector>
 #include <variant>
 
-#include "lox/token.h"
+#include "lox/primitives/token.h"
 #include "lox/scanner/scanner.h"
 
 TEST_CASE("Scanner", "Test individual elements") {

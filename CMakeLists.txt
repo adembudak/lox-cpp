@@ -61,7 +61,7 @@ set(LOX_CPP_TEST_DIR ${PROJECT_SOURCE_DIR}/tests)
 find_package(Boost QUIET REQUIRED CONFIG)
 find_package(fmt QUIET REQUIRED CONFIG)
 
-add_lox_library(literal SOURCES ${LOX_CPP_SRC_DIR}/literal.cpp)
+add_lox_library(literal SOURCES ${LOX_CPP_SRC_DIR}/primitives/literal.cpp)
 add_lox_library(ast SOURCES ${LOX_CPP_SRC_DIR}/ast/stmt.cpp ${LOX_CPP_SRC_DIR}/ast/expr.cpp LINK Boost::boost)
 add_lox_library(astprinter SOURCES ${LOX_CPP_SRC_DIR}/astprinter/astprinter.cpp LINK literal Boost::boost)
 add_lox_library(function SOURCES ${LOX_CPP_SRC_DIR}/callable/function/function.cpp LINK return)

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "lox/ast/stmt.h"
-#include "lox/literal.h"
+#include "lox/primitives/literal.h"
 #include "lox/environment/environment.h"
 
 #include <vector>

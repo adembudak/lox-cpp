@@ -1,4 +1,4 @@
-#include "lox/token.h"
+#include "lox/primitives/token.h"
 #include "lox/ast/stmt.h"
 
 namespace lox {

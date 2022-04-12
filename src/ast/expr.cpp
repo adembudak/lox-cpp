@@ -1,5 +1,5 @@
-#include "lox/token.h"
-#include "lox/literal.h"
+#include "lox/primitives/token.h"
+#include "lox/primitives/literal.h"
 #include "lox/ast/expr.h"
 
 #include <boost/functional/hash.hpp>
