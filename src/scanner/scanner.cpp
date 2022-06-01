@@ -164,10 +164,6 @@ std::vector<Token> Scanner::scan() {
   return m_tokens;
 }
 
-void Scanner::addToken(const TokenKind kind) {
-  addToken(kind, nullptr);
-}
-
 void Scanner::addToken(const TokenKind kind, const Literal &literal) {
   const std::string text = m_source.substr(m_start, m_current - m_start);
   m_tokens.push_back(Token{kind, text, literal, m_line});

@@ -23,8 +23,7 @@ public:
   std::vector<Token> scan();
 
 private:
-  void addToken(const TokenKind kind);
-  void addToken(const TokenKind kind, const Literal &literal);
+  void addToken(const TokenKind kind, const Literal &literal = nullptr);
 
   char peek() const;
   char peekNext() const;
