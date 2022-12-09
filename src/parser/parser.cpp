@@ -25,9 +25,9 @@ Token Parser::previous() const {
 }
 
 Token Parser::advance() {
-  if (!isAtEnd()) {
+  if (!isAtEnd())
     ++m_current;
-  }
+
   return previous();
 }
 
@@ -48,19 +48,19 @@ bool Parser::match(const TokenKind token) {
 bool Parser::match(std::initializer_list<TokenKind> tokens) {
   bool isMatched = std::any_of(cbegin(tokens), cend(tokens), [&](const auto &token) { return check(token); });
 
-  if (isMatched) {
+  if (isMatched)
     advance();
-  }
+
   return isMatched;
 }
 
 [[maybe_unused]] Token Parser::consume(const TokenKind token, const std::string_view err) {
-  if (check(token)) {
+  if (check(token))
     return advance();
-  }
 
   throw error(peek(), err);
 }
+
 void Parser::synchronize() {
   advance();
 
@@ -124,9 +124,8 @@ Stmt Parser::classDeclaration() {
 
   std::vector<FunctionStmt> methods;
 
-  while (!check(TokenKind::RightBrace) && !isAtEnd()) {
+  while (!check(TokenKind::RightBrace) && !isAtEnd())
     methods.push_back(functionStatement("method"));
-  }
 
   consume(TokenKind::RightBrace, "Expect '}' before class body.");
 
@@ -138,9 +137,8 @@ Stmt Parser::variableDeclaration() {
   Token name = consume(TokenKind::Identifier, "Expect variable name.");
 
   Expr initializer;
-  if (match(TokenKind::Equal)) {
+  if (match(TokenKind::Equal))
     initializer = expression();
-  }
 
   consume(TokenKind::Semicolon, "Expect ';' after variable declaration.");
 
@@ -149,29 +147,23 @@ Stmt Parser::variableDeclaration() {
 
 // statement -> exprStmt | forStmt | ifStmt | printStmt | whileStmt | block ;
 Stmt Parser::statement() {
-  if (match(TokenKind::For)) {
+  if (match(TokenKind::For))
     return forStatement();
-  }
 
-  if (match(TokenKind::If)) {
+  if (match(TokenKind::If))
     return ifStatement();
-  }
 
-  if (match(TokenKind::Print)) {
+  if (match(TokenKind::Print))
     return printStatement();
-  }
 
-  if (match(TokenKind::Return)) {
+  if (match(TokenKind::Return))
     return returnStatement();
-  }
 
-  if (match(TokenKind::While)) {
+  if (match(TokenKind::While))
     return whileStatement();
-  }
 
-  if (match(TokenKind::LeftBrace)) {
+  if (match(TokenKind::LeftBrace))
     return BlockStmt{block()};
-  }
 
   return expressionStatement();
 }
@@ -208,18 +200,16 @@ Stmt Parser::forStatement() {
 
   Stmt body = statement();
 
-  if (increment.which() != 0) {
+  if (increment.which() != 0)
     body = BlockStmt{{body, ExpressionStmt{increment}}};
-  }
 
-  if (condition.which() == 0) { // is its value boost::blank?
+  if (condition.which() == 0) // is its value boost::blank?
     condition = LiteralExpr{true};
-  }
+
   body = WhileStmt{condition, body};
 
-  if (initializer.which() != 0) {
+  if (initializer.which() != 0)
     body = BlockStmt{{initializer, body}};
-  }
 
   return body;
 }
@@ -233,9 +223,8 @@ Stmt Parser::ifStatement() {
   Stmt thenBranch = statement();
 
   Stmt elseBranch;
-  if (match(TokenKind::Else)) {
+  if (match(TokenKind::Else))
     elseBranch = statement();
-  }
 
   return IfStmt{condition, thenBranch, elseBranch};
 }
@@ -280,9 +269,8 @@ FunctionStmt Parser::functionStatement(const std::string &kind) {
 // block -> "{" declaration "}";
 std::vector<Stmt> Parser::block() {
   std::vector<Stmt> statements;
-  while (!check(TokenKind::RightBrace) && !isAtEnd()) {
+  while (!check(TokenKind::RightBrace) && !isAtEnd())
     statements.push_back(declaration());
-  }
 
   consume(TokenKind::RightBrace, "Expect '}' after block.");
   return statements;
@@ -299,9 +287,8 @@ Stmt Parser::returnStatement() {
   Token keyword = previous();
 
   Expr value;
-  if (!check(TokenKind::Semicolon)) {
+  if (!check(TokenKind::Semicolon))
     value = expression();
-  }
 
   consume(TokenKind::Semicolon, "Expect ';' after return value.");
   return ReturnStmt{keyword, value};
@@ -477,9 +464,8 @@ Parser::Parser(const std::vector<Token> &tokens)
 std::vector<Stmt> Parser::parse() {
   std::vector<Stmt> statements;
 
-  while (!isAtEnd()) {
+  while (!isAtEnd())
     statements.push_back(declaration());
-  }
 
   return statements;
 }
