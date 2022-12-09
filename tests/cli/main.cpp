@@ -18,10 +18,10 @@ bool prettyprint = false;
 
 void run(const std::string &source) {
   lox::Scanner scanner{source};
-  std::vector tokens = scanner.scan();
+  std::vector<lox::Token> tokens = scanner.scan();
 
   lox::Parser parser{tokens};
-  std::vector statements = parser.parse();
+  std::vector<lox::Stmt> statements = parser.parse();
 
   if (prettyprint) {
     lox::ASTPrinter astprinter{statements};
@@ -48,17 +48,14 @@ void runREPL() {
   const std::vector<std::string> exit_words{"exit", "quit", "wq"};
 
   std::cout << prompt;
+  std::string input;
   for (;;) {
-    std::string input;
     std::getline(std::cin, input);
-    if (!input.empty()) {
-      if (std::find(cbegin(exit_words), cend(exit_words), input) != end(exit_words)) {
-        break;
-      } else {
-        run(input);
-        std::cout << prompt;
-      }
-    }
+    if (std::find(cbegin(exit_words), cend(exit_words), input) != end(exit_words))
+      break;
+
+    run(input);
+    std::cout << prompt;
   }
 }
 }
