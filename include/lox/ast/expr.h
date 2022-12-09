@@ -53,7 +53,6 @@ struct AssignExpr {
   AssignExpr(const Token &name, const Expr &val);
 
   bool operator==(const AssignExpr &) const = default;
-  bool operator!=(const AssignExpr &) const = default;
 };
 
 struct BinaryExpr {
@@ -64,7 +63,6 @@ struct BinaryExpr {
   BinaryExpr(const Expr &left, const Token &op, const Expr &right);
 
   bool operator==(const BinaryExpr &) const = default;
-  bool operator!=(const BinaryExpr &) const = default;
 };
 
 struct CallExpr {
@@ -75,7 +73,6 @@ struct CallExpr {
   CallExpr(const Expr &callee, const Token &paren, const std::vector<Expr> &arguments);
 
   bool operator==(const CallExpr &) const = default;
-  bool operator!=(const CallExpr &) const = default;
 };
 
 struct GetExpr {
@@ -85,7 +82,6 @@ struct GetExpr {
   GetExpr(const Expr &object, const Token &name);
 
   bool operator==(const GetExpr &) const = default;
-  bool operator!=(const GetExpr &) const = default;
 };
 
 struct GroupingExpr {
@@ -94,7 +90,6 @@ struct GroupingExpr {
   explicit GroupingExpr(const Expr &expression);
 
   bool operator==(const GroupingExpr &) const = default;
-  bool operator!=(const GroupingExpr &) const = default;
 };
 
 struct LiteralExpr {
@@ -103,7 +98,6 @@ struct LiteralExpr {
   explicit LiteralExpr(const Literal &literal);
 
   bool operator==(const LiteralExpr &) const = default;
-  bool operator!=(const LiteralExpr &) const = default;
 };
 
 struct LogicalExpr {
@@ -114,7 +108,6 @@ struct LogicalExpr {
   LogicalExpr(const Expr &left, const Token &op, const Expr &right);
 
   bool operator==(const LogicalExpr &) const = default;
-  bool operator!=(const LogicalExpr &) const = default;
 };
 
 struct SetExpr {
@@ -125,7 +118,6 @@ struct SetExpr {
   SetExpr(const Expr &object, const Token &name, const Expr &val);
 
   bool operator==(const SetExpr &) const = default;
-  bool operator!=(const SetExpr &) const = default;
 };
 
 struct SuperExpr {
@@ -135,7 +127,6 @@ struct SuperExpr {
   SuperExpr(const Token &keyword, const Token &method);
 
   bool operator==(const SuperExpr &) const = default;
-  bool operator!=(const SuperExpr &) const = default;
 };
 
 struct ThisExpr {
@@ -144,7 +135,6 @@ struct ThisExpr {
   explicit ThisExpr(const Token &keyword);
 
   bool operator==(const ThisExpr &) const = default;
-  bool operator!=(const ThisExpr &) const = default;
 };
 
 struct UnaryExpr {
@@ -154,7 +144,6 @@ struct UnaryExpr {
   UnaryExpr(const Token &op, const Expr &right);
 
   bool operator==(const UnaryExpr &) const = default;
-  bool operator!=(const UnaryExpr &) const = default;
 };
 
 struct VariableExpr {
@@ -163,7 +152,6 @@ struct VariableExpr {
   explicit VariableExpr(const Token &name);
 
   bool operator==(const VariableExpr &) const = default;
-  bool operator!=(const VariableExpr &) const = default;
 };
 
 std::size_t hash_value(const AssignExpr &expr);

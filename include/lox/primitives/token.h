@@ -29,7 +29,6 @@ struct Token {
   std::size_t line;
 
   bool operator==(const Token &) const = default;
-  bool operator!=(const Token &) const = default;
 };
 
 inline std::size_t hash_value(const Token &token) {
