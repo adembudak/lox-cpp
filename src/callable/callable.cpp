@@ -21,12 +21,10 @@ overload(Ts...) -> overload<Ts...>;
 namespace lox {
 
 Callable::Callable(const Class &klass)
-    : m_callable(klass) {
-}
+    : m_callable(klass) {}
 
 Callable::Callable(const Function &function)
-    : m_callable(function) {
-}
+    : m_callable(function) {}
 
 std::any Callable::call(const Interpreter &interpreter, const std::vector<Literal> &arguments) const {
   return std::visit(overload{

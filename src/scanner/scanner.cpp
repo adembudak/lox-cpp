@@ -28,8 +28,7 @@ const std::map<std::string, TokenKind> keywords{
     {"this", TokenKind::This}, {"true", TokenKind::True},   {"var", TokenKind::Var},       {"while", TokenKind::While}};
 
 Scanner::Scanner(const std::string &source)
-    : m_source(source) {
-}
+    : m_source(source) {}
 
 std::vector<Token> Scanner::scan() {
   while (!isAtEnd()) {

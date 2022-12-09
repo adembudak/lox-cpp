@@ -9,63 +9,51 @@ namespace lox {
 
 AssignExpr::AssignExpr(const Token &name, const Expr &val)
     : name(name)
-    , value(val) {
-}
+    , value(val) {}
 
 BinaryExpr::BinaryExpr(const Expr &left, const Token &op, const Expr &right)
     : left(left)
     , op(op)
-    , right(right) {
-}
+    , right(right) {}
 
 CallExpr::CallExpr(const Expr &callee, const Token &paren, const std::vector<Expr> &arguments)
     : callee(callee)
     , paren(paren)
-    , arguments(arguments) {
-}
+    , arguments(arguments) {}
 
 GetExpr::GetExpr(const Expr &object, const Token &name)
     : object(object)
-    , name(name) {
-}
+    , name(name) {}
 
 GroupingExpr::GroupingExpr(const Expr &expression)
-    : expression(expression) {
-}
+    : expression(expression) {}
 
 LiteralExpr::LiteralExpr(const Literal &literal)
-    : literal(literal) {
-}
+    : literal(literal) {}
 
 LogicalExpr::LogicalExpr(const Expr &left, const Token &op, const Expr &right)
     : left(left)
     , op(op)
-    , right(right) {
-}
+    , right(right) {}
 
 SetExpr::SetExpr(const Expr &object, const Token &name, const Expr &val)
     : object(object)
     , name(name)
-    , value(val) {
-}
+    , value(val) {}
 
 SuperExpr::SuperExpr(const Token &keyword, const Token &method)
     : keyword(keyword)
-    , method(method) {
-}
+    , method(method) {}
 
 ThisExpr::ThisExpr(const Token &keyword)
-    : keyword(keyword) {
-}
+    : keyword(keyword) {}
 
 UnaryExpr::UnaryExpr(const Token &op, const Expr &right)
     : op(op)
-    , right(right) {
-}
+    , right(right) {}
 
 VariableExpr::VariableExpr(const Token &name)
-    : name(name) {
-}
+    : name(name) {}
 
 std::size_t hash_value(const AssignExpr &expr) {
   std::size_t h = hash_value(expr.name);

@@ -22,8 +22,7 @@
 namespace lox {
 
 Interpreter::ExpressionVisitor::ExpressionVisitor(Interpreter &interpreter)
-    : m_interpreter(interpreter) {
-}
+    : m_interpreter(interpreter) {}
 
 std::any Interpreter::ExpressionVisitor::evaluate(const Expr &expr) const {
   return boost::apply_visitor(m_interpreter.m_expressionVisitor, expr);
@@ -191,8 +190,7 @@ Literal Interpreter::ExpressionVisitor::operator()([[maybe_unused]] const auto &
 }
 
 Interpreter::StatementVisitor::StatementVisitor(Interpreter &interpreter)
-    : m_interpreter(interpreter) {
-}
+    : m_interpreter(interpreter) {}
 
 void Interpreter::StatementVisitor::execute(const Stmt &stmt) const {
   boost::apply_visitor(m_interpreter.m_statementVisitor, stmt);
@@ -289,8 +287,7 @@ Interpreter::Interpreter(const std::vector<Stmt> &statements)
     : m_statements(statements)
     , m_environment(m_globals)
     , m_expressionVisitor(*this)
-    , m_statementVisitor(*this) {
-}
+    , m_statementVisitor(*this) {}
 
 void Interpreter::interpret() const {
   try {

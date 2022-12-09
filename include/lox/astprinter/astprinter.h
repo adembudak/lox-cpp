@@ -18,8 +18,7 @@ private:
 public:
   ASTPrinter() = default;
   explicit ASTPrinter(const std::vector<Stmt> &statements)
-      : m_statements(statements) {
-  }
+      : m_statements(statements) {}
 
   void print(std::ostream &os);
 

@@ -472,8 +472,7 @@ Expr Parser::primary() {
 }
 
 Parser::Parser(const std::vector<Token> &tokens)
-    : m_tokens(tokens) {
-}
+    : m_tokens(tokens) {}
 
 std::vector<Stmt> Parser::parse() {
   std::vector<Stmt> statements;

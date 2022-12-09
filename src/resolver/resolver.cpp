@@ -7,8 +7,7 @@
 namespace lox {
 
 Resolver::Resolver(const Interpreter &interpreter)
-    : m_interpreter(interpreter) {
-}
+    : m_interpreter(interpreter) {}
 
 void Resolver::resolve(const std::vector<Stmt> &statements) {
   for (const Stmt &statement : statements)
@@ -110,8 +109,7 @@ void Resolver::operator()(const GroupingExpr &expr) {
   resolve(expr.expression);
 }
 
-void Resolver::operator()(const LiteralExpr & /*unused*/) {
-}
+void Resolver::operator()(const LiteralExpr & /*unused*/) {}
 
 void Resolver::operator()(const LogicalExpr &expr) {
   resolve(expr.left);

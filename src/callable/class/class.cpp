@@ -11,8 +11,7 @@ namespace lox {
 
 Class::Class(const std::string &name, const std::unordered_map<std::string, Function> &methods)
     : m_name(name)
-    , m_methods(methods) {
-}
+    , m_methods(methods) {}
 
 std::optional<Function> Class::findMethod(const std::string &name) const {
   if (m_methods.contains(name))

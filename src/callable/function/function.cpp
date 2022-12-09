@@ -11,8 +11,7 @@ namespace lox {
 
 Function::Function(const FunctionStmt &declaration, const Environment &closure)
     : m_declaration(declaration)
-    , m_closure(closure) {
-}
+    , m_closure(closure) {}
 
 std::any Function::call(const Interpreter &interpreter, const std::vector<Literal> &arguments) const {
   auto environment = m_closure;

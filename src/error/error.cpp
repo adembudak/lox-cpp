@@ -44,8 +44,7 @@ const char *RuntimeError::what() const noexcept {
 
 RuntimeError::RuntimeError(const Token &token, const std::string_view what_arg)
     : m_token{token}
-    , m_error_msg(what_arg) {
-}
+    , m_error_msg(what_arg) {}
 
 Token RuntimeError::token() const {
   return m_token;

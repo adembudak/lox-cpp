@@ -11,8 +11,7 @@
 namespace lox {
 
 Environment::Environment(const std::shared_ptr<Environment> &enclosing)
-    : m_enclosing(enclosing) {
-}
+    : m_enclosing(enclosing) {}
 
 void Environment::define(const Token &token, const std::any &value) {
   m_values[token.lexeme] = value;

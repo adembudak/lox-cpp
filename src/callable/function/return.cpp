@@ -4,8 +4,7 @@
 namespace lox {
 
 Return::Return(const Literal &value)
-    : m_value(value) {
-}
+    : m_value(value) {}
 
 Literal Return::value() const {
   return m_value;
