@@ -15,7 +15,7 @@ void ASTPrinter::print(std::ostream &os) {
 }
 
 std::string ASTPrinter::visit(const Stmt &stmt) const {
-  return boost::apply_visitor(ASTPrinter(), stmt);
+  return boost::apply_visitor(*this, stmt);
 }
 
 std::string ASTPrinter::operator()(const BlockStmt &stmt) const {
@@ -44,7 +44,7 @@ std::string ASTPrinter::operator()(const VariableStmt &stmt) const {
 }
 
 std::string ASTPrinter::visit(const Expr &expr) const {
-  return boost::apply_visitor(ASTPrinter(), expr);
+  return boost::apply_visitor(*this, expr);
 }
 
 std::string ASTPrinter::operator()(const ClassStmt &stmt) const {
