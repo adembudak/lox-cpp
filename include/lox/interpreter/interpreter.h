@@ -23,8 +23,10 @@ private:
   Environment m_globals;
   Environment m_environment;
 
-private:
-  struct ExpressionVisitor : public boost::static_visitor<std::any> {
+  class ExpressionVisitor : public boost::static_visitor<std::any> {
+    Interpreter &m_interpreter;
+
+  public:
     ExpressionVisitor(Interpreter &interpreter);
 
     std::any evaluate(const Expr &expr) const;
@@ -40,12 +42,12 @@ private:
     std::any operator()(const VariableExpr &expr) const;
     Literal operator()(const AssignExpr &expr) const;
     Literal operator()([[maybe_unused]] const auto & /*unused*/) const;
-
-  private:
-    Interpreter &m_interpreter;
   };
 
-  struct StatementVisitor : public boost::static_visitor<void> {
+  class StatementVisitor : public boost::static_visitor<void> {
+    Interpreter &m_interpreter;
+
+  public:
     StatementVisitor(Interpreter &interpreter);
 
     void execute(const Stmt &stmt) const;
@@ -62,9 +64,6 @@ private:
     void operator()([[maybe_unused]] const auto & /*unused*/) const;
 
     void executeBlock(const std::vector<Stmt> &statements, const Environment &env) const;
-
-  private:
-    Interpreter &m_interpreter;
   };
 
 private:
