@@ -50,8 +50,6 @@ struct AssignExpr {
   Token name;
   Expr value;
 
-  AssignExpr(const Token &name, const Expr &val);
-
   bool operator==(const AssignExpr &) const = default;
 };
 
@@ -59,8 +57,6 @@ struct BinaryExpr {
   Expr left;
   Token op;
   Expr right;
-
-  BinaryExpr(const Expr &left, const Token &op, const Expr &right);
 
   bool operator==(const BinaryExpr &) const = default;
 };
@@ -70,8 +66,6 @@ struct CallExpr {
   Token paren;
   std::vector<Expr> arguments;
 
-  CallExpr(const Expr &callee, const Token &paren, const std::vector<Expr> &arguments);
-
   bool operator==(const CallExpr &) const = default;
 };
 
@@ -79,23 +73,17 @@ struct GetExpr {
   Expr object;
   Token name;
 
-  GetExpr(const Expr &object, const Token &name);
-
   bool operator==(const GetExpr &) const = default;
 };
 
 struct GroupingExpr {
   Expr expression;
 
-  explicit GroupingExpr(const Expr &expression);
-
   bool operator==(const GroupingExpr &) const = default;
 };
 
 struct LiteralExpr {
   Literal literal;
-
-  explicit LiteralExpr(const Literal &literal);
 
   bool operator==(const LiteralExpr &) const = default;
 };
@@ -105,8 +93,6 @@ struct LogicalExpr {
   Token op;
   Expr right;
 
-  LogicalExpr(const Expr &left, const Token &op, const Expr &right);
-
   bool operator==(const LogicalExpr &) const = default;
 };
 
@@ -115,8 +101,6 @@ struct SetExpr {
   Token name;
   Expr value;
 
-  SetExpr(const Expr &object, const Token &name, const Expr &val);
-
   bool operator==(const SetExpr &) const = default;
 };
 
@@ -124,15 +108,11 @@ struct SuperExpr {
   Token keyword;
   Token method;
 
-  SuperExpr(const Token &keyword, const Token &method);
-
   bool operator==(const SuperExpr &) const = default;
 };
 
 struct ThisExpr {
   Token keyword;
-
-  explicit ThisExpr(const Token &keyword);
 
   bool operator==(const ThisExpr &) const = default;
 };
@@ -141,30 +121,81 @@ struct UnaryExpr {
   Token op;
   Expr right;
 
-  UnaryExpr(const Token &op, const Expr &right);
-
   bool operator==(const UnaryExpr &) const = default;
 };
 
 struct VariableExpr {
   Token name;
 
-  explicit VariableExpr(const Token &name);
-
   bool operator==(const VariableExpr &) const = default;
 };
 
-std::size_t hash_value(const AssignExpr &expr);
-std::size_t hash_value(const BinaryExpr &expr);
-std::size_t hash_value(const CallExpr &expr);
-std::size_t hash_value(const GetExpr &expr);
-std::size_t hash_value(const GroupingExpr &expr);
-std::size_t hash_value(const LiteralExpr &expr);
-std::size_t hash_value(const LogicalExpr &expr);
-std::size_t hash_value(const SetExpr &expr);
-std::size_t hash_value(const SuperExpr &expr);
-std::size_t hash_value(const ThisExpr &expr);
-std::size_t hash_value(const UnaryExpr &expr);
-std::size_t hash_value(const VariableExpr &expr);
+inline std::size_t hash_value(const AssignExpr &expr) {
+  std::size_t h = hash_value(expr.name);
+  boost::hash_combine(h, hash_value(expr.value));
+  return h;
+}
+
+inline std::size_t hash_value(const BinaryExpr &expr) {
+  std::size_t h = hash_value(expr.left);
+  boost::hash_combine(h, hash_value(expr.op));
+  boost::hash_combine(h, hash_value(expr.right));
+  return h;
+}
+
+inline std::size_t hash_value(const CallExpr &expr) {
+  std::size_t h = hash_value(expr.callee);
+  boost::hash_combine(h, hash_range(expr.arguments.begin(), expr.arguments.end()));
+  boost::hash_combine(h, expr.paren);
+  return h;
+}
+
+inline std::size_t hash_value(const GetExpr &expr) {
+  std::size_t h = hash_value(expr.name);
+  boost::hash_combine(h, expr.object);
+  return h;
+}
+
+inline std::size_t hash_value(const GroupingExpr &expr) {
+  return hash_value(expr.expression);
+}
+
+inline std::size_t hash_value(const LiteralExpr &expr) {
+  return hash_value(expr.literal);
+}
+
+inline std::size_t hash_value(const LogicalExpr &expr) {
+  std::size_t h = hash_value(expr.left);
+  boost::hash_combine(h, hash_value(expr.op));
+  boost::hash_combine(h, hash_value(expr.right));
+  return h;
+}
+
+inline std::size_t hash_value(const SetExpr &expr) {
+  std::size_t h = hash_value(expr.name);
+  boost::hash_combine(h, hash_value(expr.object));
+  boost::hash_combine(h, hash_value(expr.value));
+  return h;
+}
+
+inline std::size_t hash_value(const SuperExpr &expr) {
+  std::size_t h = hash_value(expr.keyword);
+  boost::hash_combine(h, hash_value(expr.method));
+  return h;
+}
+
+inline std::size_t hash_value(const ThisExpr &expr) {
+  return hash_value(expr.keyword);
+}
+
+inline std::size_t hash_value(const UnaryExpr &expr) {
+  std::size_t h = hash_value(expr.op);
+  boost::hash_combine(h, hash_value(expr.right));
+  return h;
+}
+
+inline std::size_t hash_value(const VariableExpr &expr) {
+  return hash_value(expr.name);
+}
 
 }
